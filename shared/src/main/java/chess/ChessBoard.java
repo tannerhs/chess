@@ -1,5 +1,5 @@
 package chess;
-
+const int BOARD_LENGTH=8;
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -7,7 +7,7 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-
+    private ChessPiece[BOARD_LENGTH][BOARD_LENGTH] board;  //make a 2-d array
     public ChessBoard() {
         
     }
