@@ -1,5 +1,5 @@
 package chess;
-const int BOARD_LENGTH=8;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -7,7 +7,8 @@ const int BOARD_LENGTH=8;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[BOARD_LENGTH][BOARD_LENGTH] board;  //make a 2-d array
+    public static final int BOARD_LENGTH=8;
+    private ChessPiece[][] board = new ChessPiece[BOARD_LENGTH][BOARD_LENGTH];  //make and initialize 2-d array
     public ChessBoard() {
         
     }
@@ -18,8 +19,10 @@ public class ChessBoard {
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
-    public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+    public void addPiece(ChessPosition position, ChessPiece piece) {  //FIXME ide says board is never written to
+
+        //board[0][0]=new ChessPiece(piece.getTeamColor(),piece.getPieceType());
+        board[position.getRow()][position.getColumn()]=piece;
     }
 
     /**
@@ -30,7 +33,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return board[position.getRow()][position.getColumn()];
     }
 
     /**
@@ -38,6 +41,6 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[BOARD_LENGTH][BOARD_LENGTH];  //is this acceptable with java's automatic garbage collection or should I clear each element from the 2d array?
     }
 }

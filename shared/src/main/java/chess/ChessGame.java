@@ -10,15 +10,19 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private TeamColor team;
+    private ChessBoard board;
 
+    public ChessGame() {
+        team=TeamColor.WHITE;
+        board = new ChessBoard();  //put pieces in starting positons at some point??
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return team;
     }
 
     /**
@@ -27,7 +31,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.team=team;
     }
 
     /**
@@ -56,7 +60,17 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        //check to see if move is found in validMoves; make sure to be careful with == since it might indicate a specific instance rather than having the same parameter
+//        for (entry:validMoves(move.getStartPosition())){
+//            if(entry.equals(move)) {
+//
+//                return;
+//                continue;
+//            }
+//        }
+        //set the proper final board position to the proper piece
+        //remove the piece from the starting position
+        throw new InvalidMoveException();
     }
 
     /**
@@ -105,6 +119,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }
