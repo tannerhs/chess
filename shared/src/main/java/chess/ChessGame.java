@@ -59,7 +59,7 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
+    public void makeMove(ChessMove move) throws InvalidMoveException {  //FIXME
         //check to see if move is found in validMoves; make sure to be careful with == since it might indicate a specific instance rather than having the same parameter
 //        for (entry:validMoves(move.getStartPosition())){
 //            if(entry.equals(move)) {
@@ -70,7 +70,7 @@ public class ChessGame {
 //        }
         //set the proper final board position to the proper piece
         //remove the piece from the starting position
-        throw new InvalidMoveException();
+        throw new InvalidMoveException("Invalid Move");
     }
 
     /**
@@ -101,6 +101,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        //if for each piece on both teams, there are no valid moves
+        //if there are no valid moves left that can lead to checkmate...
+        //keep thinkoing
         throw new RuntimeException("Not implemented");
     }
 
@@ -110,7 +113,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board=board;
     }
 
     /**
