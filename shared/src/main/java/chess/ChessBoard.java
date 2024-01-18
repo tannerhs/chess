@@ -37,10 +37,17 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {  //array holding pieces is 0-indexed, but ChessPositions are not
-        if (position!=null) {
+        int moveRow=position.getRow();
+        int moveCol= position.getColumn();
+        if(moveCol>=BOARD_LENGTH || moveCol<BOTTOM_ROW || moveRow>=BOARD_LENGTH || moveRow<BOTTOM_ROW) {
+            return null;  //if position is not valid, return null
+        }
+        else if (position!=null) {
             return board[position.getRow()-1][position.getColumn()-1];
         }
-        return null;
+        else {
+            return null;  //return null if position is null
+        }
     }
 
     /**
@@ -117,7 +124,7 @@ public class ChessBoard {
         return Arrays.deepHashCode(board);
     }
 
-    public String toString() {
+    public String toString() {  //generating this also works given you use the deepToString
         StringBuilder output=new StringBuilder("|");
         for(int r=8; r>0; r--) {
             for(int c=1; c<8; c++) {

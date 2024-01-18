@@ -3,7 +3,6 @@ package chess;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Represents a single chess piece
@@ -55,14 +54,16 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {  //called in chessBoard or ChessGame
         ChessPiece currentPiece= board.getPiece(myPosition);
         Collection<ChessMove> validMoves = new HashSet<ChessMove>();
+        ChessPieceRule rule;
 
         if(currentPiece.getPieceType()==PieceType.BISHOP) {
             //find valid moves based on current position, add to validMoves
             //call ChessPieceRule child class BishopRules method to get those moves
-            //validMoves=method();
+            rule=new BishopRules(myPosition,board,this.getTeamColor());
+            validMoves=rule.getValidMoves();
         }
         return validMoves;
     }

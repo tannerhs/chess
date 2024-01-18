@@ -12,7 +12,7 @@ public class ChessMove {
 
     private ChessPosition startPosition;
     private ChessPosition endPosition;
-    private ChessPiece.PieceType promotionPiece;
+    private ChessPiece.PieceType promotionPiece;  //null except for pawns, who will have four instances at one position, each with a different promotion piece type (Q,N,R,B)
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
@@ -48,8 +48,7 @@ public class ChessMove {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessMove chessMove = (ChessMove) o;
+        if (!(o instanceof ChessMove chessMove)) return false;
         return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
     }
 
