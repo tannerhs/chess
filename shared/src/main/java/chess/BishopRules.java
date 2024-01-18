@@ -41,20 +41,11 @@ public class BishopRules extends ChessPieceRule {  //create a new set of bishop 
             movePosition=new ChessPosition(moveRow,moveCol);  //make  a new position with updated row and column
             if((board.getPiece(movePosition)==null)) {  //if square empty or of opposite team color add move to valid moves
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
-                System.out.print("1 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else if (board.getPiece(movePosition).getTeamColor()!=team) {
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
                 keepLooking=false;
                 //you can't move past a piece you capture
-
-                System.out.print("1 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else {  //can't move past your own piece
                 keepLooking=false;
@@ -71,20 +62,11 @@ public class BishopRules extends ChessPieceRule {  //create a new set of bishop 
             movePosition=new ChessPosition(moveRow,moveCol);  //make  a new position with updated row and column
             if((board.getPiece(movePosition)==null)) {  //if square empty or of opposite team color add move to valid moves
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
-                System.out.print("2 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else if (board.getPiece(movePosition).getTeamColor()!=team) {
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
                 keepLooking=false;
                 //you can't move past a piece you capture
-
-                System.out.print("2 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else {  //can't move past your own piece
                 keepLooking=false;
@@ -101,20 +83,11 @@ public class BishopRules extends ChessPieceRule {  //create a new set of bishop 
             movePosition=new ChessPosition(moveRow,moveCol);  //make  a new position with updated row and column
             if((board.getPiece(movePosition)==null)) {  //if square empty or of opposite team color add move to valid moves
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
-                System.out.print("3 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else if (board.getPiece(movePosition).getTeamColor()!=team) {
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
                 keepLooking=false;
                 //you can't move past a piece you capture
-
-                System.out.print("3 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else {  //can't move past your own piece
                 keepLooking=false;
@@ -131,20 +104,12 @@ public class BishopRules extends ChessPieceRule {  //create a new set of bishop 
             movePosition=new ChessPosition(moveRow,moveCol);  //make  a new position with updated row and column
             if((board.getPiece(movePosition)==null)) {  //if square empty or of opposite team color add move to valid moves
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
-                System.out.print("4 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else if (board.getPiece(movePosition).getTeamColor()!=team) {
                 validMoves.add(new ChessMove(this.currentPosition,movePosition, null));
                 keepLooking=false;
                 //you can't move past a piece you capture
 
-                System.out.print("4 new move added at row ");
-                System.out.print(moveRow);
-                System.out.print(" and col ");
-                System.out.println(moveCol);
             }
             else {  //can't move past your own piece
                 keepLooking=false;
