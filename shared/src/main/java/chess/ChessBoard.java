@@ -21,8 +21,9 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {  //input positions start at 1,1 and are not 0-indexed
-
-        board[(position.getRow()-1)][(position.getColumn()-1)]=piece;
+        if (position.getRow()>=1 && position.getRow()<=8 && position.getColumn()>=1 && position.getColumn()<=8) {
+            board[(position.getRow() - 1)][(position.getColumn() - 1)] = piece;
+        }
     }
 
     /**
@@ -33,8 +34,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {  //array holding pieces is 0-indexed, but ChessPositions are not
-
-        return board[position.getRow()-1][position.getColumn()-1];
+        if (position!=null) {
+            return board[position.getRow()-1][position.getColumn()-1];
+        }
+        return null;
     }
 
     /**
@@ -53,8 +56,66 @@ public class ChessBoard {
     }
 
     public void setStartingPieces(){  //hardcode starting values; check to see if white or black should be at bottom of board
-        ChessPosition currentPosition=new ChessPosition(8,8);
+        ChessPosition currentPosition=new ChessPosition(1,1);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK));
+        currentPosition=new ChessPosition(1,2);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT));
+        currentPosition=new ChessPosition(1,3);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP));
+        currentPosition=new ChessPosition(1,4);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.QUEEN));
+        currentPosition=new ChessPosition(1,5);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KING));
+        currentPosition=new ChessPosition(1,6);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP));
+        currentPosition=new ChessPosition(1,7);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT));
+        currentPosition=new ChessPosition(1,8);
         addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK));
 
+        //black non-pawn pieces
+        currentPosition=new ChessPosition(8,1);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK));
+        currentPosition=new ChessPosition(8,2);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT));
+        currentPosition=new ChessPosition(8,3);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP));
+        currentPosition=new ChessPosition(8,4);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.QUEEN));
+        currentPosition=new ChessPosition(8,5);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING));
+        currentPosition=new ChessPosition(8,6);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP));
+        currentPosition=new ChessPosition(8,7);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT));
+        currentPosition=new ChessPosition(8,8);
+        addPiece(currentPosition,new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK));
+
+        for(int c=1; c<=8; c++) {  //put pawns up
+            currentPosition= new ChessPosition(2,c);
+            addPiece(currentPosition, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            currentPosition= new ChessPosition(7,c);
+            addPiece(currentPosition, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+        }
+
+
+    }
+
+    public String toString() {
+        StringBuffer output=new StringBuffer("");
+        for(int r=8; r>0; r--) {
+            for(int c=1; c<8; c++) {
+                ChessPiece currentSpot = getPiece(new ChessPosition(r,c));
+                if (currentSpot!=null) {
+                    output.append(getPiece(new ChessPosition(r,c)).toString());
+                }
+                else {
+                    output.append(" ");
+                }
+
+                output.append("|");
+            }
+        }
+        return output.toString();
     }
 }

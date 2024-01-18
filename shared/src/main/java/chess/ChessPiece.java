@@ -64,4 +64,49 @@ public class ChessPiece {
         }
         return validMoves;
     }
+
+    public String toString(){
+        if(team== ChessGame.TeamColor.WHITE) {
+            if(type==PieceType.PAWN) {
+                return "P";
+            }
+            else if(type== PieceType.BISHOP) {
+                return "B";
+            }
+            else if (type==PieceType.KNIGHT) {
+                return "N";
+            }
+            else if (type==PieceType.ROOK) {
+                return "R";
+            }
+            else if (type==PieceType.KING) {
+                return "K";
+            }
+            else if (type==PieceType.QUEEN) {
+                return "Q";
+            }
+        }
+        else if (team== ChessGame.TeamColor.BLACK) {
+            if(type==PieceType.PAWN) {
+                return "p";
+            }
+            else if(type== PieceType.BISHOP) {
+                return "b";
+            }
+            else if (type==PieceType.KNIGHT) {
+                return "n";
+            }
+            else if (type==PieceType.ROOK) {
+                return "r";
+            }
+            else if (type==PieceType.KING) {
+                return "k";
+            }
+            else if (type==PieceType.QUEEN) {
+                return "q";
+            }
+        }
+        return "no valid piece found";
+
+    }
 }
