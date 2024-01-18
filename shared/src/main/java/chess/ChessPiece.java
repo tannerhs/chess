@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -14,6 +15,7 @@ public class ChessPiece {
 
     ChessGame.TeamColor team;
     ChessPiece.PieceType type;
+    //can't store BishopRules or ChessPieceRule instances as class variables but local variables ok
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.team=pieceColor;
@@ -108,5 +110,18 @@ public class ChessPiece {
         }
         return "no valid piece found";
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return team == that.team && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(team, type);
     }
 }
