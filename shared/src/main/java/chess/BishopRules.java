@@ -12,9 +12,7 @@ public class BishopRules extends ChessPieceRule {  //create a new set of bishop 
     //all other variables defined in parent class
 
     public BishopRules(ChessPosition currentPosition, ChessBoard board, ChessGame.TeamColor team) {
-        this.currentPosition=currentPosition;
-        this.board=board;
-        this.team=team;
+        super(currentPosition,board,team);
     }
 
     @Override

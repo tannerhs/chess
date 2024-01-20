@@ -2,8 +2,8 @@ package chess;
 
 import java.util.Objects;
 
-import static chess.ChessBoard.BOARD_LENGTH;
-import static chess.ChessBoard.BOTTOM_ROW;
+import static chess.ChessBoard.*;
+import static chess.ChessBoard.LEFT_COL;
 
 /**
  * Represents a single square position on a chess board
@@ -39,6 +39,15 @@ public class ChessPosition {
      */
     public int getColumn() {
         return col;
+    }
+
+    boolean validPosition() { //check that position is within board
+        if(row>BOARD_LENGTH || row<BOTTOM_ROW || col>RIGHT_COL || col<LEFT_COL) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     @Override

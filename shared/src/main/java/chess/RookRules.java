@@ -10,9 +10,7 @@ import static chess.ChessBoard.*;
 public class RookRules extends ChessPieceRule {
     PieceType pieceType= PieceType.ROOK;
     public RookRules(ChessPosition currentPosition, ChessBoard board, ChessGame.TeamColor team) {
-        this.currentPosition=currentPosition;
-        this.board=board;
-        this.team=team;
+        super(currentPosition,board,team);
     }
 
     Collection<ChessMove> getValidMoves() {
