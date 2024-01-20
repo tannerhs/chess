@@ -86,6 +86,10 @@ public class ChessPiece {
             rule=new KnightRules(myPosition,board, this.getTeamColor());
             validMoves=rule.getValidMoves();
         }
+        else if (currentPiece.getPieceType()==PieceType.KING) {
+            rule=new KingRules(myPosition,board, this.getTeamColor());
+            validMoves=rule.getValidMoves();
+        }
         return validMoves;
     }
 
