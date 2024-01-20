@@ -18,7 +18,6 @@ public class QueenRules extends ChessPieceRule {
     Collection<ChessMove> getValidMoves() {
         //begin set of instructions common to all piece rules
         Collection<ChessMove> validMoves = new HashSet<>();
-        System.out.println("--------------------------------");
         //get current position
         int pieceRow = currentPosition.getRow();
         int pieceCol = currentPosition.getColumn();
@@ -38,7 +37,6 @@ public class QueenRules extends ChessPieceRule {
         while (keepLooking && moveRow < BOARD_LENGTH) {
             moveRow++;
             movePosition = new ChessPosition(moveRow, moveCol);  //make  a new position with updated row and column
-            System.out.println("rook move up");
 
             //begin if statements common to queen, rook and bishop
             if ((board.getPiece(movePosition) == null)) {  //if square empty or of opposite team color add move to valid moves
@@ -61,7 +59,6 @@ public class QueenRules extends ChessPieceRule {
             moveRow--;
             movePosition = new ChessPosition(moveRow, moveCol);  //make  a new position with updated row and column
 
-            System.out.println("rook move down");
 
             //begin if statements common to queen, rook and bishop
             if ((board.getPiece(movePosition) == null)) {  //if square empty or of opposite team color add move to valid moves
@@ -84,7 +81,6 @@ public class QueenRules extends ChessPieceRule {
             moveCol++;
             movePosition = new ChessPosition(moveRow, moveCol);  //make  a new position with updated row and column
 
-            System.out.println("rook moves right");
 
             //begin if statements common to queen, rook and bishop
             if ((board.getPiece(movePosition) == null)) {  //if square empty or of opposite team color add move to valid moves
@@ -107,7 +103,6 @@ public class QueenRules extends ChessPieceRule {
             moveCol--;
             movePosition = new ChessPosition(moveRow, moveCol);  //make  a new position with updated row and column
 
-            System.out.println("rook move left");
 
             //begin if statements common to queen, rook and bishop
             if ((board.getPiece(movePosition) == null)) {  //if square empty or of opposite team color add move to valid moves
