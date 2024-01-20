@@ -90,6 +90,14 @@ public class ChessPiece {
             rule=new KingRules(myPosition,board, this.getTeamColor());
             validMoves=rule.getValidMoves();
         }
+        else if (currentPiece.getPieceType()==PieceType.PAWN) {
+            rule = new PawnRules(myPosition,board,this.getTeamColor());
+            validMoves=rule.getValidMoves();
+        }
+        else {
+            System.out.println("piece type does not exist");
+            //throw new InvalidMoveException("piece type does not exist.");
+        }
         return validMoves;
     }
 
