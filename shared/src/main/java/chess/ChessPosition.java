@@ -2,6 +2,9 @@ package chess;
 
 import java.util.Objects;
 
+import static chess.ChessBoard.BOARD_LENGTH;
+import static chess.ChessBoard.BOTTOM_ROW;
+
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -12,8 +15,14 @@ public class ChessPosition {
     private int row;
     private int col;
     public ChessPosition(int row, int col) {
-        this.row=row;
-        this.col=col;
+        if((row<=BOARD_LENGTH) && (row>=BOTTOM_ROW) && (col<=BOARD_LENGTH) && col>=BOTTOM_ROW) {
+            this.row=row;
+            this.col=col;
+        }
+        else{
+            return;
+        }
+
     }
 
     /**

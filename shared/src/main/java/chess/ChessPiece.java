@@ -55,14 +55,27 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {  //called in chessBoard or ChessGame
-        ChessPiece currentPiece= board.getPiece(myPosition);
         Collection<ChessMove> validMoves = new HashSet<ChessMove>();
         ChessPieceRule rule;
+        if(myPosition==null || board==null) { //error checking
+            return validMoves;
+        }
+        ChessPiece currentPiece= board.getPiece(myPosition);
+        if(currentPiece==null) {
+            return validMoves;
+        }
+
 
         if(currentPiece.getPieceType()==PieceType.BISHOP) {
             //find valid moves based on current position, add to validMoves
             //call ChessPieceRule child class BishopRules method to get those moves
             rule=new BishopRules(myPosition,board,this.getTeamColor());
+            validMoves=rule.getValidMoves();
+        }
+        else if(currentPiece.getPieceType()==PieceType.ROOK) {
+            //find valid moves based on current position, add to validMoves
+            //call ChessPieceRule child class BishopRules method to get those moves
+            rule=new RookRules(myPosition,board,this.getTeamColor());
             validMoves=rule.getValidMoves();
         }
         return validMoves;

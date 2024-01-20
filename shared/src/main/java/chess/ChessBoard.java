@@ -12,6 +12,8 @@ public class ChessBoard {
     //be careful, only the boardlength for a 0-indexed array; starting at 1,
     public static final int BOARD_LENGTH=8;
     public static final int BOTTOM_ROW=1;
+    public static final int LEFT_COL = 1;
+    public static final int RIGHT_COL=8;
     private ChessPiece[][] board = new ChessPiece[BOARD_LENGTH][BOARD_LENGTH];  //make and initialize 2-d array
     public ChessBoard() {
         
@@ -39,7 +41,7 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {  //array holding pieces is 0-indexed, but ChessPositions are not
         int moveRow=position.getRow();
         int moveCol= position.getColumn();
-        if(moveCol>=BOARD_LENGTH || moveCol<BOTTOM_ROW || moveRow>=BOARD_LENGTH || moveRow<BOTTOM_ROW) {
+        if(moveCol>BOARD_LENGTH || moveCol<BOTTOM_ROW || moveRow>BOARD_LENGTH || moveRow<BOTTOM_ROW) {
             return null;  //if position is not valid, return null
         }
         else if (position!=null) {
