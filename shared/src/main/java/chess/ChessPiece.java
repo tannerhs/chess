@@ -78,6 +78,10 @@ public class ChessPiece {
             rule=new RookRules(myPosition,board,this.getTeamColor());
             validMoves=rule.getValidMoves();
         }
+        else if (currentPiece.getPieceType()==PieceType.QUEEN) {
+            rule=new QueenRules(myPosition,board, this.getTeamColor());
+            validMoves=rule.getValidMoves();
+        }
         return validMoves;
     }
 
