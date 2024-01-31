@@ -2,9 +2,6 @@ package chess;
 
 import java.util.Objects;
 
-import static chess.ChessBoard.*;
-import static chess.ChessBoard.LEFT_COL;
-
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -12,17 +9,11 @@ import static chess.ChessBoard.LEFT_COL;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    private int row;
-    private int col;
+    int row;
+    int col;
     public ChessPosition(int row, int col) {
-        if((row<=BOARD_LENGTH) && (row>=BOTTOM_ROW) && (col<=BOARD_LENGTH) && col>=BOTTOM_ROW) {
-            this.row=row;
-            this.col=col;
-        }
-        else{
-            return;
-        }
-
+        this.row=row;
+        this.col=col;
     }
 
     /**
@@ -41,20 +32,19 @@ public class ChessPosition {
         return col;
     }
 
-    boolean validPosition() { //check that position is within board
-        if(row>BOARD_LENGTH || row<BOTTOM_ROW || col>RIGHT_COL || col<LEFT_COL) {
-            return false;
-        }
-        else {
+    public boolean validPosition() {
+//        int row = this.getRow();
+//        int col = this.getColumn();
+        if(row<=8 && row>=1 && col<=8 && col>=1) {
             return true;
         }
+        return false;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessPosition that = (ChessPosition) o;
+        if (!(o instanceof ChessPosition that)) return false;
         return row == that.row && col == that.col;
     }
 

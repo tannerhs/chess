@@ -1,8 +1,11 @@
 package chess;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import static chess.ChessPiece.PieceType;
+
 
 /**
  * Represents a single chess piece
@@ -11,10 +14,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
     ChessGame.TeamColor team;
-    ChessPiece.PieceType type;
-    //can't store BishopRules or ChessPieceRule instances as class variables but local variables ok
+    PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.team=pieceColor;
@@ -54,108 +55,73 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {  //called in chessBoard or ChessGame
-        Collection<ChessMove> validMoves = new HashSet<ChessMove>();
-        ChessPieceRule rule;
-        if(myPosition==null || board==null) { //error checking
-            return validMoves;
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> myValidMoves = new HashSet<>();
+        if(!myPosition.validPosition() || board.getPiece(myPosition)==null) {
+            return myValidMoves;
         }
-        ChessPiece currentPiece= board.getPiece(myPosition);
-        if(currentPiece==null) {
-            return validMoves;
+        if(board.getPiece(myPosition)==null) {
+            return myValidMoves;
         }
 
+//        BishopRules rule5 = new BishopRules(board,myPosition);
+//        myValidMoves=rule5.getValidMoves(board, myPosition);
+//        System.out.println("piece:");
+//        System.out.println(board.getPiece(myPosition).toString());
+        //otherwise..
+        //select proper methods
+        if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
+            System.out.println("pawn piece in ChessPiecem.java");
+            PawnRules rule6 = new PawnRules(board, myPosition);
+            myValidMoves = rule6.getValidMoves(board,myPosition);
+        }
+        else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.BISHOP) {
+            System.out.println("bishop piece in ChessPiecem.java");
+            BishopRules rule5 = new BishopRules(board,myPosition);
+            myValidMoves=rule5.getValidMoves(board, myPosition);
+        }
+        else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.ROOK) {
+            //System.out.println("bishop piece in ChessPiecem.java");
+            RookRules rule5 = new RookRules(board,myPosition);
+            myValidMoves=rule5.getValidMoves(board, myPosition);
+        }
+        else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.QUEEN) {
+            //System.out.println("bishop piece in ChessPiecem.java");
+            QueenRules rule5 = new QueenRules(board,myPosition);
+            myValidMoves=rule5.getValidMoves(board, myPosition);
+        }
+        else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KING) {
+            //System.out.println("bishop piece in ChessPiecem.java");
+            KingRules rule5 = new KingRules(board,myPosition);
+            myValidMoves=rule5.getValidMoves(board, myPosition);
+        }
+        else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            //System.out.println("bishop piece in ChessPiecem.java");
+            KnightRules rule5 = new KnightRules(board,myPosition);
+            myValidMoves=rule5.getValidMoves(board, myPosition);
+        }
 
-        if(currentPiece.getPieceType()==PieceType.BISHOP) {
-            //find valid moves based on current position, add to validMoves
-            //call ChessPieceRule child class BishopRules method to get those moves
-            rule=new BishopRules(myPosition,board,this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else if(currentPiece.getPieceType()==PieceType.ROOK) {
-            //find valid moves based on current position, add to validMoves
-            //call ChessPieceRule child class BishopRules method to get those moves
-            rule=new RookRules(myPosition,board,this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else if (currentPiece.getPieceType()==PieceType.QUEEN) {
-            rule=new QueenRules(myPosition,board, this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else if (currentPiece.getPieceType()==PieceType.KNIGHT) {
-            rule=new KnightRules(myPosition,board, this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else if (currentPiece.getPieceType()==PieceType.KING) {
-            rule=new KingRules(myPosition,board, this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else if (currentPiece.getPieceType()==PieceType.PAWN) {
-            rule = new PawnRules(myPosition,board,this.getTeamColor());
-            validMoves=rule.getValidMoves();
-        }
-        else {
-            System.out.println("piece type does not exist");
-            //throw new InvalidMoveException("piece type does not exist.");
-        }
-        return validMoves;
-    }
-
-    public String toString(){
-        if(team== ChessGame.TeamColor.WHITE) {
-            if(type==PieceType.PAWN) {
-                return "P";
-            }
-            else if(type== PieceType.BISHOP) {
-                return "B";
-            }
-            else if (type==PieceType.KNIGHT) {
-                return "N";
-            }
-            else if (type==PieceType.ROOK) {
-                return "R";
-            }
-            else if (type==PieceType.KING) {
-                return "K";
-            }
-            else if (type==PieceType.QUEEN) {
-                return "Q";
-            }
-        }
-        else if (team== ChessGame.TeamColor.BLACK) {
-            if(type==PieceType.PAWN) {
-                return "p";
-            }
-            else if(type== PieceType.BISHOP) {
-                return "b";
-            }
-            else if (type==PieceType.KNIGHT) {
-                return "n";
-            }
-            else if (type==PieceType.ROOK) {
-                return "r";
-            }
-            else if (type==PieceType.KING) {
-                return "k";
-            }
-            else if (type==PieceType.QUEEN) {
-                return "q";
-            }
-        }
-        return "no valid piece found";
-
+        //myValidMoves.add(new ChessMove(myPosition,new ChessPosition(1,1),null));
+        return myValidMoves;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessPiece that = (ChessPiece) o;
+        if (!(o instanceof ChessPiece that)) return false;
         return team == that.team && type == that.type;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(team, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "team=" + team +
+                ", type=" + type +
+                '}';
     }
 }

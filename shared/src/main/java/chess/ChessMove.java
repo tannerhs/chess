@@ -1,6 +1,7 @@
 package chess;
-
 import java.util.Objects;
+
+import static chess.ChessPiece.*;
 
 /**
  * Represents moving a chess piece on a chessboard
@@ -9,10 +10,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
-
-    private ChessPosition startPosition;
-    private ChessPosition endPosition;
-    private ChessPiece.PieceType promotionPiece;  //null except for pawns, who will have four instances at one position, each with a different promotion piece type (Q,N,R,B)
+    ChessPosition startPosition;
+    ChessPosition endPosition;
+    PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
