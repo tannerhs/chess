@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static chess.ChessPiece.PieceType.KING;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -11,6 +13,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private static final int BOARD_LENGTH = 8;
+    private static final int BOARD_WIDTH = 8;
+
     TeamColor team;
     ChessBoard board;
     public ChessGame() {
@@ -85,7 +90,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
+        //1 find king of specified color
+        ChessPosition kingPosition = findKing(team);
+        //2 see if the moves of any of the other team coincide with that spot
+        getAllTeamNextMoves(team, getAllTeamPieces(team));
+        //for (piece:)
         return true;
     }
 
@@ -152,4 +161,29 @@ public class ChessGame {
         //go through each piece on team and see if any one has a nonzero amount of validMoves
         return false;
     }
+
+    public ChessPosition findKing(TeamColor team) {  //find position of given color of king for checking check and checkmate status
+        ChessPosition pos;
+        ChessPiece piece;
+        ChessPiece kingPiece = new ChessPiece(team,KING);  //piece to evaluate equality against
+        for(int r=1; r<=BOARD_LENGTH; r++) {  //I already accounted for no 0-indexing in my loop start point
+            for(int c=1; c<= BOARD_WIDTH; c++) {
+                pos = new ChessPosition(r,c);
+                piece = board.getPiece(pos);
+                if(kingPiece.equals(piece)) {  //this checks for team and piece equality but takes care of null too
+                    return pos;
+                }
+            }
+        }
+        return null;  //should never happen...
+    }
+
+    Collection<ChessPosition> getAllTeamPieces(TeamColor team) {  //takes given color and gives set of positions of all squares with those team members
+        return null;  //useful when computing check to see next move positions of other team
+    }
+
+    Collection<ChessMove> getAllTeamNextMoves(TeamColor team,Collection<ChessPosition> teamPiecePositions) {  //takes list of positions of team pieces and returns set of all possible moves
+        return null;
+    }
+
 }
