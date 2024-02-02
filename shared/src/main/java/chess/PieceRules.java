@@ -20,7 +20,7 @@ public abstract class PieceRules {
     public abstract Collection<ChessMove> getValidMoves(ChessBoard board, ChessPosition currentPosition);
 
     public Collection<ChessMove> getPawnMoves(ChessBoard board, ChessPosition currentPosition) {
-        System.out.println("pawn moves reached");
+        //System.out.println("pawn moves reached");
         int currentRow = currentPosition.getRow();
         int currentCol = currentPosition.getColumn();
         int moveRow = currentRow;
@@ -188,7 +188,7 @@ public abstract class PieceRules {
     }
 
     public Collection<ChessMove> diagnolMoves() {
-        System.out.println("diagnol moves reached");
+        //System.out.println("diagnol moves reached");
         diagnolUpLeft();
         diagnolUpRight();
         diagnolDownLeft();

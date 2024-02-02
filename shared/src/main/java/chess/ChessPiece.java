@@ -71,12 +71,12 @@ public class ChessPiece {
         //otherwise..
         //select proper methods
         if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
-            System.out.println("pawn piece in ChessPiecem.java");
+            //System.out.println("pawn piece in ChessPiecem.java");
             PawnRules rule6 = new PawnRules(board, myPosition);
             myValidMoves = rule6.getValidMoves(board,myPosition);
         }
         else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.BISHOP) {
-            System.out.println("bishop piece in ChessPiecem.java");
+            //System.out.println("bishop piece in ChessPiecem.java");
             BishopRules rule5 = new BishopRules(board,myPosition);
             myValidMoves=rule5.getValidMoves(board, myPosition);
         }

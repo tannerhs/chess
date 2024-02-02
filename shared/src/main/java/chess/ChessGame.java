@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 import static chess.ChessPiece.PieceType.KING;
 
 /**
@@ -53,10 +55,18 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {  //FIXME
         Collection<ChessMove> validMoves=board.getPiece(startPosition).pieceMoves(board,startPosition);
         //remove moves that put you in check or checkmate
+        validMoves = removeNonValidBoardMoves(validMoves);
         return validMoves;
+    }
+
+    private Collection<ChessMove> removeNonValidBoardMoves(Collection<ChessMove> validMoves) {
+        for(ChessMove move: validMoves) {
+            //if(move.)
+        }
+        return null;
     }
 
     /**
@@ -90,12 +100,31 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //for each move the other team can make that doesn't put them in check,
+        //if its end position is the current position of the king of teamColor,
+        //then teamColor is in check
+
         //1 find king of specified color
-        ChessPosition kingPosition = findKing(team);
+        ChessPosition kingPosition = findKing(teamColor);
+        //
+        System.out.print("kingPos: ");
+        System.out.print(kingPosition.getRow());
+        System.out.print(",");
+        System.out.println(kingPosition.getColumn());
+        System.out.println();
         //2 see if the moves of any of the other team coincide with that spot
-        getAllTeamNextMoves(team, getAllTeamPieces(team));
-        //for (piece:)
-        return true;
+        Collection<ChessMove> enemyMoves= getAllTeamNextMoves(((teamColor== WHITE)? BLACK:WHITE), getAllTeamPieces(team));
+        //
+        for (ChessMove move: enemyMoves) {
+            System.out.print("endPos: ");
+            System.out.print(move.getEndPosition().getRow());
+            System.out.print(",");
+            System.out.println(move.getEndPosition().getColumn());
+            if(move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -106,7 +135,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
 
-        return true;
+        return false;
     }
 
     /**
@@ -157,9 +186,11 @@ public class ChessGame {
 
 
     public boolean teamHasValidMoves(TeamColor team) {
-
-        //go through each piece on team and see if any one has a nonzero amount of validMoves
-        return false;
+        if(getAllTeamNextMoves(team, getAllTeamPieces(team)).size()==0) {
+            return false;
+        }
+        //go through each piece on team and see if any one has a nonzero amount of validMoves, else
+        return true;
     }
 
     public ChessPosition findKing(TeamColor team) {  //find position of given color of king for checking check and checkmate status
@@ -170,20 +201,68 @@ public class ChessGame {
             for(int c=1; c<= BOARD_WIDTH; c++) {
                 pos = new ChessPosition(r,c);
                 piece = board.getPiece(pos);
+
+
                 if(kingPiece.equals(piece)) {  //this checks for team and piece equality but takes care of null too
                     return pos;
                 }
             }
         }
+        System.out.println("null value returned by findKing");
+        System.out.println(board.getPiece(new ChessPosition(6,4)));
+        System.out.println(kingPiece);
+        System.out.println(kingPiece.equals(new ChessPosition(6,4)));
         return null;  //should never happen...
     }
 
     Collection<ChessPosition> getAllTeamPieces(TeamColor team) {  //takes given color and gives set of positions of all squares with those team members
-        return null;  //useful when computing check to see next move positions of other team
+        Collection<ChessPosition> allTeamPositions = new HashSet<>();
+        ChessPosition pos;
+        ChessPiece piece;
+        for(int r=1; r<=BOARD_LENGTH; r++) {  //I already accounted for no 0-indexing in my loop start point
+            for(int c=1; c<= BOARD_WIDTH; c++) {
+                pos = new ChessPosition(r,c);
+                piece = board.getPiece(pos);
+                if(piece!=null && piece.getTeamColor()==team) {  //this only checks color for non-null pieces
+                    allTeamPositions.add(pos);
+                }
+            }
+        }
+        return allTeamPositions;  //useful when computing check to see next move positions of other team
     }
 
-    Collection<ChessMove> getAllTeamNextMoves(TeamColor team,Collection<ChessPosition> teamPiecePositions) {  //takes list of positions of team pieces and returns set of all possible moves
-        return null;
+
+    //takes list of positions of team pieces and returns set of all possible next moves
+    // to determine check and checkmate for other team; also checks to make sure to remove all moves that
+    //put the playing team in check
+    Collection<ChessMove> getAllTeamNextMoves(TeamColor team,Collection<ChessPosition> teamPiecePositions) {
+        //FIXME make sure this move does not put playing team in check
+        Collection<ChessMove> allTeamPositions = new HashSet<>();
+        ChessPosition pos;
+        ChessPiece piece;
+        for(int r=1; r<=BOARD_LENGTH; r++) {  //I already accounted for no 0-indexing in my loop start point
+            for(int c=1; c<= BOARD_WIDTH; c++) {
+                pos = new ChessPosition(r,c);
+                piece = board.getPiece(pos);
+                if(piece!=null && piece.getTeamColor()==team) {  //this only checks color for non-null pieces
+                    for(ChessMove move: piece.pieceMoves(board,pos )) {
+                        //check move to see if it puts playing team in check, FIXME
+                        if(movePutsOwnTeamInCheck(move)) {
+                            allTeamPositions.add(move);
+                        }
+                    }
+                }
+            }
+        }
+        return allTeamPositions;  //useful when computing check to see next move positions of other team
     }
+
+
+    public boolean movePutsOwnTeamInCheck(ChessMove move) {
+        //FIXME, clone board and such
+        return true;
+    }
+
+
 
 }
