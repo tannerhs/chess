@@ -155,9 +155,8 @@ public class ChessGame {
         //1) find king of specified color
         ChessPosition kingPosition = findKing(teamColor);
         //
-        if(kingPosition==null) {
-            System.out.println("kingPos: null");
-            return false;  //FIXME?? if return statement not here, then isInCheck tests fail
+        if(kingPosition==null) {  //weird test cases don't always have both kings
+            return false;
         }
 
 
