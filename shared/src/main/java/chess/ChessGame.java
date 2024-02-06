@@ -60,30 +60,40 @@ public class ChessGame {
             return null;
         }
         else {
-            Collection<ChessMove> validMoves=board.getPiece(startPosition).pieceMoves(board,startPosition);
+            Collection<ChessMove> validMoves;
+            Collection<ChessMove> pieceMoves =board.getPiece(startPosition).pieceMoves(board,startPosition);
             //remove moves that put you in check or checkmate
-            validMoves = removeNonValidBoardMoves(validMoves);
+            TeamColor teamColor = board.getPiece(startPosition).getTeamColor();
+            validMoves = removeNonValidBoardMoves(pieceMoves,teamColor);
 
             return validMoves;
         }
     }
 
-    private Collection<ChessMove> removeNonValidBoardMoves(Collection<ChessMove> validMoves) {
-        if(validMoves==null) {
+    private Collection<ChessMove> removeNonValidBoardMoves(Collection<ChessMove> pieceMoves, TeamColor teamColor) {
+        if(pieceMoves==null) {
             return null;
         }
 
-        for(ChessMove move: validMoves) {
+        Collection<ChessMove> validMoves = new HashSet<>();  //create copy so you can iterate over one and change the other
+        for(ChessMove move: pieceMoves) {
             if(move==null) {
-                validMoves.remove(null);
+                //validMoves.remove(null);
             }
             else if(movePutsOwnTeamInCheck(move)) {
-                validMoves.remove(move);
+                //validMoves.remove(move);
             }
             else if (!move.startPosition.validPosition() || !move.endPosition.validPosition()) {
-                validMoves.remove(move);
+                //validMoves.remove(move);
             }
-      }
+            else if(moveLeavesTeamInCheck(move)) {
+                //validMoves.remove(move);
+            }
+            else {
+                validMoves.add(move);
+            }
+
+        }
         return validMoves;
     }
 
@@ -95,9 +105,11 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {  //check to see if in valid moves
         Collection<ChessMove> validMoves = validMoves(move.startPosition);
-        if (validMoves.contains(move)) {
-            ChessPosition currentPosition  = move.getStartPosition();
-            ChessPiece piece = board.getPiece(currentPosition);
+        ChessPosition currentPosition  = move.getStartPosition();
+        ChessPiece piece = board.getPiece(currentPosition);
+        TeamColor pieceTeam = piece.getTeamColor();
+
+        if (validMoves.contains(move) ) {  //FIXME && pieceTeam==this.team
             board.addPiece(move.getEndPosition(),piece);
             board.addPiece(move.getStartPosition(),null);
         }
@@ -188,7 +200,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if(isInCheck(teamColor)&& !teamHasValidMoves(teamColor)) {
+        if(isInCheckmate(teamColor)) {
             return false;  //in checkmate
         }
         else if(!isInCheck(teamColor) && !teamHasValidMoves(teamColor)) {
@@ -232,12 +244,14 @@ public class ChessGame {
     }
 
 
-    public boolean teamHasValidMoves(TeamColor team) {
-        if(getAllTeamNextMoves(team, getAllTeamPieces(team)).size()==0) {
-            return false;
+    public boolean teamHasValidMoves(TeamColor teamColor) {
+        for (ChessPosition pos: getAllTeamPieces(teamColor)) {
+            if (!validMoves(pos).isEmpty()) {
+                return true;
+            }
         }
         //go through each piece on team and see if any one has a nonzero amount of validMoves, else
-        return true;
+        return false;
     }
 
     public ChessPosition findKing(TeamColor teamColor) {  //find position of given color of king for checking check and checkmate status
@@ -325,8 +339,33 @@ public class ChessGame {
     }
 
 
-    //FIXME
-    //check to see if not moving out of check when you can in different method
+    //move leaves team in check
+    public boolean moveLeavesTeamInCheck(ChessMove move) {
+        try {
+            ChessGame gameClone = (ChessGame) this.clone();
+            //make move on cloned board to see if it puts team in check
+            ChessPiece piece = gameClone.board.getPiece(move.startPosition);  //get piece
+            TeamColor teamColor = piece.getTeamColor();  //This is essential since the tests get weird!
+            gameClone.board.addPiece(move.endPosition,piece);  //put in new location
+            gameClone.board.addPiece(move.startPosition,null);  //remove from old location
+
+            //check to see if moving into check when not currently in it
+            if(this.isInCheck(teamColor) && gameClone.isInCheck(teamColor)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }
+        catch (CloneNotSupportedException e) {
+            System.out.println("clone not supported exception");
+        }
+
+        return true;
+    }
+
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
