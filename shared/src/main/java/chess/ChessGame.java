@@ -7,6 +7,7 @@ import java.util.Objects;
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static chess.ChessPiece.PieceType.KING;
+import static chess.ChessPiece.PieceType.PAWN;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -17,6 +18,8 @@ import static chess.ChessPiece.PieceType.KING;
 public class ChessGame {
     private static final int BOARD_LENGTH = 8;
     private static final int BOARD_WIDTH = 8;
+    private static final int PAWN_PROMOTION_ROW_BLACK = 2;
+    static final int PAWN_PROMOTION_ROW_WHITE = 7;
 
     TeamColor team=WHITE;  //initialize to WHITE since white starts
     ChessBoard board;
@@ -109,12 +112,30 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(currentPosition);
         TeamColor pieceTeam = piece.getTeamColor();
 
-        if (validMoves.contains(move) ) {  //FIXME && pieceTeam==this.team
-            board.addPiece(move.getEndPosition(),piece);
-            board.addPiece(move.getStartPosition(),null);
+        if (validMoves.contains(move) ) {  //FIXME && pieceTeam==this.team\
+            if(isPawnPromotionMove(move)) {
+                board.addPiece(move.getEndPosition(),new ChessPiece(pieceTeam,move.getPromotionPiece()));
+                board.addPiece(move.getStartPosition(),null);
+            }
+            else {
+                board.addPiece(move.getEndPosition(),piece);
+                board.addPiece(move.getStartPosition(),null);
+            }
+
         }
         else {
             throw new InvalidMoveException("aaaah invalid move");
+        }
+    }
+
+    private boolean isPawnPromotionMove(ChessMove move) {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if(piece.getPieceType()==PAWN && ((piece.getTeamColor()==WHITE && move.getStartPosition().getRow()==PAWN_PROMOTION_ROW_WHITE)||
+                (piece.getTeamColor()==BLACK && move.getStartPosition().getRow()==PAWN_PROMOTION_ROW_BLACK))) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
