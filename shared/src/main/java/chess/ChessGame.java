@@ -112,7 +112,7 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(currentPosition);
         TeamColor pieceTeam = piece.getTeamColor();
 
-        if (validMoves.contains(move) ) {  //FIXME && pieceTeam==this.team\
+        if (validMoves.contains(move) && pieceTeam==this.team) {  //right team and valid move
             if(isPawnPromotionMove(move)) {
                 board.addPiece(move.getEndPosition(),new ChessPiece(pieceTeam,move.getPromotionPiece()));
                 board.addPiece(move.getStartPosition(),null);
@@ -121,6 +121,8 @@ public class ChessGame {
                 board.addPiece(move.getEndPosition(),piece);
                 board.addPiece(move.getStartPosition(),null);
             }
+            //switch teams after making a move
+            team=(pieceTeam==WHITE)?BLACK:WHITE;
 
         }
         else {
