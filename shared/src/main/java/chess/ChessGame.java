@@ -18,7 +18,7 @@ public class ChessGame {
     private static final int BOARD_LENGTH = 8;
     private static final int BOARD_WIDTH = 8;
 
-    TeamColor team=WHITE;  //initialize to WHITE
+    TeamColor team=WHITE;  //initialize to WHITE since white starts
     ChessBoard board;
     public ChessGame() {
 
@@ -113,35 +113,23 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //for each move the other team can make that doesn't put them in check,
+        //for each move the other team can make (as determined by pieceMoves)
         //if its end position is the current position of the king of teamColor,
         //then teamColor is in check
 
-
-
-        //1 find king of specified color
+        //1) find king of specified color
         ChessPosition kingPosition = findKing(teamColor);
         //
         if(kingPosition==null) {
             System.out.println("kingPos: null");
             return false;  //FIXME?? if return statement not here, then isInCheck tests fail
         }
-        else {
-//            System.out.print("kingPos: ");
-//            System.out.print(kingPosition.getRow());
-//            System.out.print(",");
-//            System.out.println(kingPosition.getColumn());
-//            System.out.println();
-        }
 
-        //2 see if the moves of any of the other team coincide with that spot
+
+        //2) see if the moves of any of the other team coincide with that spot
         Collection<ChessMove> enemyMoves= getAllTeamNextMoves(((teamColor== WHITE)? BLACK:WHITE), getAllTeamPieces(team));
         //
         for (ChessMove move: enemyMoves) {
-//            System.out.print("endPos: ");
-//            System.out.print(move.getEndPosition().getRow());
-//            System.out.print(",");
-//            System.out.println(move.getEndPosition().getColumn());
             if(move.getEndPosition().equals(kingPosition)) {
                 return true;
             }
@@ -156,9 +144,41 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        //if in check and all next moves still leave teamColor team in check...
+        if(isInCheck(teamColor)) {
+            // see if the moves of teamColor can get it out of check
+            Collection<ChessMove> teamNextMoves= getAllTeamNextMoves(teamColor, getAllTeamPieces(teamColor));
+            //
+            for (ChessMove move: teamNextMoves) {  //make move on cloned board and see if still in check
 
-        return false;
+                try {
+                    //1) make move on cloned board
+                    ChessGame gameClone = (ChessGame) this.clone();
+                    //make move on cloned board to see if it puts team in check
+                    ChessPiece piece = gameClone.board.getPiece(move.startPosition);  //get piece
+                    gameClone.board.addPiece(move.endPosition,piece);  //put in new location
+                    gameClone.board.addPiece(move.startPosition,null);  //remove from old location
+
+                    //2) check is still in check
+                    if(!gameClone.isInCheck(teamColor)) {
+                        return false;
+                    }
+                }
+                catch (CloneNotSupportedException e) {
+                    System.out.println("clone not supported exception");
+                }
+
+
+            }
+
+            return true;
+        }
+        else {  //cannot be in checkmate if not in check
+            return false;
+        }
     }
+
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
