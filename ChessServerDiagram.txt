@@ -1,0 +1,110 @@
+actor Client
+participant Server
+participant RegistrationService
+participant DataAccess
+database db
+
+group #navy Registration #white
+Client -> Server: [POST] /user\n{username, password, email}
+Server -> RegistrationService: register(username, password, email)
+RegistrationService -> DataAccess: getUser(username)
+DataAccess -> db: SELECT username from user
+DataAccess --> RegistrationService: null
+RegistrationService -> DataAccess: createUser(username, password)
+DataAccess -> db: INSERT username, password, email INTO user
+RegistrationService -> DataAccess: createAuth(username)
+DataAccess -> db: INSERT username, authToken INTO auth
+DataAccess --> RegistrationService: authToken
+RegistrationService --> Server: authToken
+Server --> Client: 200\n{authToken}
+end
+
+group #orange Login #white
+Client -> Server: [POST] /session\n{username, password}
+Server->RegistrationService: login(username,password)
+RegistrationService->DataAccess: getUser(username)
+
+DataAccess->db:SELECT User with username from userList
+db-->DataAccess: User object
+RegistrationService->DataAccess: User.verifyUser(password)
+DataAccess->db: compare instance data password with entered password
+db-->DataAccess: return verification or refusal of password
+RegistrationService->DataAccess: createAuth(username)
+DataAccess->db:INSERT username, authToken INTO auth
+
+DataAccess->db: INSERT auth INTO authTokenList
+DataAccess-->RegistrationService:authToken
+RegistrationService-->Server:authToken
+Server-->Client: 200\n{authToken}
+end
+
+group #green Logout #white
+Client -> Server: [DELETE] /session\nauthToken
+Server->RegistrationService: logout(authToken)
+RegistrationService->DataAccess: checkAuth(authToken)
+DataAccess->db: SELECT authToken from authToken list to verify it exists
+db-->DataAccess:authToken object
+RegistrationService->DataAccess: removeAuth(authToken)
+DataAccess->db: DELETE authToken FROM authTokenList (set as null)
+db-->DataAccess: authToken deleted
+DataAccess-->RegistrationService: authToken deleted
+RegistrationService-->Server: logout(authToken) returns
+Server-->Client: session ended message
+end
+
+group #red List Games #white
+Client -> Server: [GET] /game\nauthToken
+Server->RegistrationService: getGames(authToken)
+RegistrationService->DataAccess: checkAuth(authToken)
+DataAccess->db: SELECT authToken from authToken list to verify it exists
+RegistrationService->DataAccess:getUser(authToken)
+db-->DataAccess: username stored in authToken
+RegistrationService->DataAccess: getGames(username)
+DataAccess->db: SELECT Game objects where username is listed as a player or observer
+db-->DataAccess: list of Game objects
+DataAccess-->RegistrationService: list of Game objects
+RegistrationService-->Server:list of Game objects
+Server-->Client:JSON representing Game objects
+end
+
+group #purple Create Game #white
+Client -> Server: [POST] /game\nauthToken\n{gameName}
+Server->RegistrationService: createGame(authToken, gameName)
+RegistrationService->DataAccess: checkAuth(authToken)
+DataAccess->db: SELECT authToken from authTokenList to verify it exists
+RegistrationService->DataAccess: createGame(gameName)
+DataAccess->db: INSERT new Game INTO GameList
+db-->DataAccess: Game object
+DataAccess-->RegistrationService: Game object
+RegistrationService-->Server: gameObject
+Server-->Client: JSON representing Game object
+end
+
+group #yellow Join Game #black
+Client -> Server: [PUT] /game\nauthToken\n{ClientColor, gameID}
+Server->RegistrationService: joinGame(authToken,ClientColor,gameID)
+RegistrationService->DataAccess: checkAuth(authToken)
+DataAccess->db: SELECT authToken from authToken list to verify it exists
+RegistrationService->DataAccess: getUser(authToken)
+db-->DataAccess:username field of User
+RegistrationService->DataAccess:getGame(gameID)
+DataAccess->db: SELECT Game object with gameID
+db-->DataAccess: Game object
+RegistrationService->DataAccess: Game.setPlayer(ClientColor,User)
+DataAccess->db: INSERT username INTO player slot for specified color in Game object
+db-->DataAccess: Game object
+DataAccess-->RegistrationService: Game object
+RegistrationService-->Server: Game object
+Server-->Client: JSON representing Game object
+end
+
+group #gray Clear application #white
+Client -> Server: [DELETE] /db
+Server->RegistrationService: clearDB()
+RegistrationService->DataAccess: clearDB()
+DataAccess->db: DELETE all Users, Games, and authTokens
+db-->DataAccess: database cleared message
+DataAccess-->RegistrationService: database cleared message
+RegistrationService-->Server: database cleared message
+Server-->Client: database cleared message
+end
