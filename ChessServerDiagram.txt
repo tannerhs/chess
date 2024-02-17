@@ -28,7 +28,6 @@ DataAccess->db:SELECT User with username from userList
 db-->DataAccess: User object
 RegistrationService->DataAccess: User.verifyUser(password)
 DataAccess->db: compare instance data password with entered password
-db-->DataAccess: return verification or refusal of password
 RegistrationService->DataAccess: createAuth(username)
 DataAccess->db: INSERT authData object INTO auth (list of authData objects)
 DataAccess-->RegistrationService:authToken
@@ -70,10 +69,10 @@ RegistrationService->DataAccess: checkAuth(authToken)
 DataAccess->db:SELECT authToken from auth to verify it exists
 RegistrationService->DataAccess: createGame(gameName)
 DataAccess->db:INSERT new Game INTO games
-db-->DataAccess: Game object
-DataAccess-->RegistrationService: Game object
-RegistrationService-->Server: gameObject
-Server-->Client: JSON representing Game object
+db-->DataAccess:gameID
+DataAccess-->RegistrationService:gameID
+RegistrationService-->Server:gameID
+Server-->Client:gameID
 end
 
 group #yellow Join Game #black
@@ -88,10 +87,10 @@ DataAccess->db: SELECT Game object with gameID
 db-->DataAccess: Game object
 RegistrationService->DataAccess:Game.setPlayer(ClientColor,username)
 DataAccess->db: INSERT username INTO player slot for specified color in Game object
-db-->DataAccess: Game object
-DataAccess-->RegistrationService: Game object
-RegistrationService-->Server: Game object
-Server-->Client: JSON representing Game object
+db-->DataAccess:null
+DataAccess-->RegistrationService:null
+RegistrationService-->Server:null
+Server-->Client:null
 end
 
 group #gray Clear application #white
