@@ -1,4 +1,6 @@
 package responses;
 
-public record LoginResponse() {
+import dataAccess.AuthDAO;
+
+public record LoginResponse(AuthDAO authDAO) {
 }

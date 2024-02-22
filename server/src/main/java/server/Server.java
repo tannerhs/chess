@@ -1,10 +1,25 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.*;
+import handlers.ClearHandler;
 import handlers.RegisterHandler;
 import spark.*;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 public class Server {
+
+    static UserDAO usersDAO; //pass around as needed
+    static GameDAO gamesDAO;  //pass 'round as needed
+    static AuthDAO authDAO;  //pass around as needed
+
+    public Server(){
+        usersDAO= new MemoryUserDAO();
+        gamesDAO = new MemoryGameDAO();
+        authDAO = new MemoryAuthDAO();
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -26,8 +41,10 @@ public class Server {
 
     public void createRoutes() {
         Spark.get("/hello", (req, res) -> "Hello BYU!");
-        Spark.delete("/db",(req,res) -> new RegisterHandler().handleRequest(req,res));  //clear application
-
+        System.out.println("before lambda");
+        Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
+        System.out.println("after lambda");
+        Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
         //register and clear
 
         //data access and data model clases

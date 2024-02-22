@@ -9,7 +9,13 @@ import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
     static List<AuthData> auth=new ArrayList<AuthData>();  //static allows you to not forget everything
-
+    //static Collection<AuthData>
+//    String authToken;
+//    String username;
+//    public MemoryAuthDAO(String authToken,String username){
+//        this.authToken=authToken;
+//        this.username=username;
+//    }
     @Override
     public void clearAll() {
         while (auth.size()>0) {
