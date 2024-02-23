@@ -1,6 +1,5 @@
 package dataAccess;
 
-import model.AuthData;
 import model.UserData;
 
 import java.util.ArrayList;
@@ -32,8 +31,15 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public void addUser(UserData addedUser) {
-        users.add(addedUser);
+    public boolean addUser(UserData addedUser) {
+        if(users.contains(addedUser)) {
+            return false;
+        }
+        else {
+            users.add(addedUser);
+            return true;
+        }
+
     }
 
 

@@ -35,7 +35,8 @@ public class RegisterHandler {
 
         }
         else {
-            response ="{message: "+deserializer.toJson(message, String.class)+"}";
+            //response ="{message: "+deserializer.toJson(message, String.class)+"}";
+            response = message;
         }
         res.status(statusCode);
         res.body(response);

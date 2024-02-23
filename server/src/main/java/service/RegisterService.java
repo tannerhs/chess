@@ -27,18 +27,24 @@ public class RegisterService {
         String errorMessage=null;
         if(username==null || password==null || email==null) {
             statusCode=400;
-            errorMessage = "Error: bad request";
+            errorMessage = "{\"message\": \"Error: bad request\"}";
         }
         else {
             //add user to database
             UserData addedUser = new UserData(username, password,email);
-            users.addUser(addedUser);
-            //create and add new auth token
-            addedAuth = auth.createAuth(username);
-            statusCode=200;  //success
-            //create response and return
-        }
+            if (users.addUser(addedUser)==true) {
+                //create and add new auth token
+                addedAuth = auth.createAuth(username);
+                statusCode=200;  //success
+            }
+            else {
+                addedAuth=null;
+                statusCode=403;
+                errorMessage = "{\"message\": \"Error: already taken\"}";
+            }
 
+        }
+        //create response and return
         RegisterResponse response = new RegisterResponse(addedAuth,statusCode,errorMessage);
         return response;
     }
