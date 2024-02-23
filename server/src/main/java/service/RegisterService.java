@@ -22,13 +22,24 @@ public class RegisterService {
     }
 
     public RegisterResponse register() {
-        //add user to database
-        UserData addedUser = new UserData(username, password,email);
-        users.addUser(addedUser);
-        //create and add new auth token
-        AuthData addedAuth = auth.createAuth(username);
-        //create response and return
-        RegisterResponse response = new RegisterResponse(addedAuth);
+        int statusCode=200;  //success unless..
+        AuthData addedAuth=null;
+        String errorMessage=null;
+        if(username==null || password==null || email==null) {
+            statusCode=400;
+            errorMessage = "Error: bad request";
+        }
+        else {
+            //add user to database
+            UserData addedUser = new UserData(username, password,email);
+            users.addUser(addedUser);
+            //create and add new auth token
+            addedAuth = auth.createAuth(username);
+            statusCode=200;  //success
+            //create response and return
+        }
+
+        RegisterResponse response = new RegisterResponse(addedAuth,statusCode,errorMessage);
         return response;
     }
 }

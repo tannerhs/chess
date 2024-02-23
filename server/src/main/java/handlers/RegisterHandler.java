@@ -25,7 +25,19 @@ public class RegisterHandler {
         RegisterRequest regRequest = new RegisterRequest(users,auth,addUser);
         RegisterService regService = new RegisterService(regRequest);
         Gson deserializer = new Gson();
-        String response =deserializer.toJson(regService.register().addedAuth(), AuthData.class);  //call register service and convert result to json
+        RegisterResponse regResponse = regService.register();
+        AuthData addedAuth=regResponse.addedAuth();
+        int statusCode = regResponse.statusCode();
+        String message = regResponse.errorMessage();
+        String response = "lol";
+        if(statusCode==200) {
+            response =deserializer.toJson(addedAuth, AuthData.class);  //call register service and convert result to json
+
+        }
+        else {
+            response ="{message: "+deserializer.toJson(message, String.class)+"}";
+        }
+        res.status(statusCode);
         res.body(response);
         //System.out.println(res);
         return response;
