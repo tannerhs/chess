@@ -11,6 +11,7 @@ public class ServiceTests {
     @Test
     public void createAuthSuccessTest() {  //use AuthDAO so this applies to next stage as well
         String username = "ths29";
+        System.out.println(authDAO.createAuth("robert"));
         assertNotNull(authDAO.createAuth(username), "Response did not return authentication String");
     }
 
@@ -31,6 +32,11 @@ public class ServiceTests {
         password="5678";
         email = "grin@gmail.com";
         //then try to do it again, should fail
-        //assertNull(userDAO.createUser(username,password,email));
+        //assertNotNull(userDAO.createUser(new UserData(username,password,email)));
+    }
+
+    @Test
+    void RegisterResponseFormation(){
+        //
     }
 }

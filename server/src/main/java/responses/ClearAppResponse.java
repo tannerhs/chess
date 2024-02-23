@@ -4,5 +4,5 @@ import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 
-public record ClearAppResponse() {
+public record ClearAppResponse(String message) {
 }

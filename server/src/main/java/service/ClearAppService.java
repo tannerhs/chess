@@ -2,18 +2,19 @@ package service;
 
 import dataAccess.*;
 import requests.ClearAppRequest;
+import responses.ClearAppResponse;
 
 public class ClearAppService {
-    public ClearAppService(ClearAppRequest clearRequest){
+    ClearAppRequest clearRequest;
+    public  ClearAppService(ClearAppRequest clearRequest){
+        this.clearRequest=clearRequest;
 
+    }
+
+    public ClearAppResponse clearApp() {
         clearRequest.userDAO().clear();
         clearRequest.authDAO().clearAll();
         clearRequest.gameDAO().clear();
-
-        //
-    }
-
-    public ClearAppService(UserDAO userDAO) {
-        //
+        return new ClearAppResponse("database cleared");
     }
 }

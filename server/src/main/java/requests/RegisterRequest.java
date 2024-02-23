@@ -1,4 +1,8 @@
 package requests;
 
-public record RegisterRequest() {
+import dataAccess.AuthDAO;
+import dataAccess.UserDAO;
+import model.UserData;
+
+public record RegisterRequest(UserDAO users, AuthDAO auth, UserData addUser) {
 }

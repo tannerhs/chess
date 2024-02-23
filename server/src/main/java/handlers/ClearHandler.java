@@ -4,6 +4,7 @@ import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import requests.ClearAppRequest;
+import responses.ClearAppResponse;
 import service.ClearAppService;
 import spark.Request;
 import spark.Response;
@@ -18,7 +19,8 @@ public class ClearHandler {
         //call ServerClass
         System.out.println("ClearHandler handleRequest()");
         ClearAppRequest clearRequest = new ClearAppRequest(users,games,auth);
-        ClearAppService clearAppService = new ClearAppService(clearRequest);
+        ClearAppService clearAppService = new ClearAppService(clearRequest);  //init service object
+        clearAppService.clearApp();  //now clear
         res.status(FAILURE);
         res.type("application/json");
         res.body("{}");

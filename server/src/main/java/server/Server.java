@@ -43,8 +43,9 @@ public class Server {
         Spark.get("/hello", (req, res) -> "Hello BYU!");
         System.out.println("before lambda");
         Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
-        System.out.println("after lambda");
         Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
+        System.out.println("after lambda");
+
         //register and clear
 
         //data access and data model clases
