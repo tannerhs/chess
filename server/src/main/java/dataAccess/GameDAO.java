@@ -13,4 +13,7 @@ public interface GameDAO {
     public void updateGame(GameData gameData);
     public GameData[] listGames();
 
+    GameData get(int i);
+
+    int size();
 }

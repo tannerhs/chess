@@ -1,15 +1,14 @@
 package service;
 
 import dataAccess.*;
+import requests.ClearAppRequest;
 
 public class ClearAppService {
-    public ClearAppService(){
-        UserDAO userDAO = new MemoryUserDAO();
-        userDAO.clear();
-        AuthDAO authDAO = new MemoryAuthDAO();
-        authDAO.clearAll();
-        GameDAO gameDAO = new MemoryGameDAO();
-        gameDAO.clear();
+    public ClearAppService(ClearAppRequest clearRequest){
+
+        clearRequest.userDAO().clear();
+        clearRequest.authDAO().clearAll();
+        clearRequest.gameDAO().clear();
 
         //
     }

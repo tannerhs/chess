@@ -1,7 +1,6 @@
 package dataAccess;
 
 import model.AuthData;
-import model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +8,7 @@ import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
     static List<AuthData> auth=new ArrayList<AuthData>();  //static allows you to not forget everything
-    //static Collection<AuthData>
-//    String authToken;
-//    String username;
-//    public MemoryAuthDAO(String authToken,String username){
-//        this.authToken=authToken;
-//        this.username=username;
-//    }
+
     @Override
     public void clearAll() {
         while (auth.size()>0) {
@@ -25,7 +18,12 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) {
-        //
+        for(int i=0; i<auth.size(); i++) {
+            if(auth.get(i).authToken()==authToken) {
+                auth.remove(i);
+                continue;
+            }
+        }
     }
 
     @Override
@@ -33,6 +31,11 @@ public class MemoryAuthDAO implements AuthDAO{
         String token = UUID.randomUUID().toString();
         auth.add(new AuthData(token,username));
         return token;
+    }
+
+    @Override
+    public List<AuthData> getAuthDataList() {
+        return auth;
     }
 
     @Override
@@ -54,5 +57,15 @@ public class MemoryAuthDAO implements AuthDAO{
     public void delete(String token) {
         int index=getAuthIndex(token);
         auth.remove(index);
+    }
+
+    @Override
+    public AuthData get(int i) {
+        return auth.get(i);
+    }
+
+    @Override
+    public int size() {
+        return auth.size();
     }
 }

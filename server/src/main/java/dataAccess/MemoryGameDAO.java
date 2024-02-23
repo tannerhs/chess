@@ -9,6 +9,9 @@ public class MemoryGameDAO implements GameDAO {
     static List<GameData> games = new ArrayList<>();
     @Override
     public void clear() {
+        for(int i=0; i<games.size(); i++) {
+            games.remove(0);
+        }
 
     }
 
@@ -30,5 +33,18 @@ public class MemoryGameDAO implements GameDAO {
     @Override
     public GameData[] listGames() {
         return new GameData[0];
+    }
+
+    @Override
+    public GameData get(int i) {
+        return games.get(i);
+    }
+
+    //public GameData get(int gameID) //FIXME
+
+
+    @Override
+    public int size() {
+        return games.size();
     }
 }

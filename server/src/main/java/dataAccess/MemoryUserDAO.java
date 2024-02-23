@@ -1,10 +1,10 @@
 package dataAccess;
 
+import model.AuthData;
 import model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO{
     static List<UserData> users=new ArrayList<UserData>();  //static allows you to not forget everything
@@ -31,6 +31,11 @@ public class MemoryUserDAO implements UserDAO{
         return null;
     }
 
+    @Override
+    public void addUser(UserData addedUser) {
+        users.add(addedUser);
+    }
+
 
     public int getUserIndex(String username) {
         for(int i=0; i<users.size(); i++) {
@@ -39,5 +44,15 @@ public class MemoryUserDAO implements UserDAO{
             }
         }
         return -1;
+    }
+
+    @Override
+    public UserData get(int i) {
+        return users.get(i);
+    }
+
+    @Override
+    public int size() {
+        return users.size();
     }
 }
