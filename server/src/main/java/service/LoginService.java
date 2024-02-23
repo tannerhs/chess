@@ -37,10 +37,10 @@ public class LoginService {  //FIXME
     }
 
 
-    String createAuth(String username,AuthDAO auth) {
+    AuthData createAuth(String username,AuthDAO auth) {
         //calls method in AuthDAO
-        String token = auth.createAuth(username);
-        return token;
+        AuthData addedAuth = auth.createAuth(username);
+        return addedAuth;
     }
 
     AuthData getAuth(String username, AuthDAO auth) {

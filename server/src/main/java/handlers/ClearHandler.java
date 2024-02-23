@@ -17,7 +17,7 @@ public class ClearHandler {
 
     public Object handleRequest(Request req, Response res, UserDAO users, GameDAO games, AuthDAO auth) {
         //call ServerClass
-        System.out.println("ClearHandler handleRequest()");
+        //System.out.println("ClearHandler handleRequest()");
         ClearAppRequest clearRequest = new ClearAppRequest(users,games,auth);
         ClearAppService clearAppService = new ClearAppService(clearRequest);  //init service object
         clearAppService.clearApp();  //now clear

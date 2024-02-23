@@ -2,6 +2,7 @@ package service;
 
 import dataAccess.AuthDAO;
 import dataAccess.UserDAO;
+import model.AuthData;
 import model.UserData;
 import requests.RegisterRequest;
 import responses.RegisterResponse;
@@ -25,12 +26,9 @@ public class RegisterService {
         UserData addedUser = new UserData(username, password,email);
         users.addUser(addedUser);
         //create and add new auth token
-        if(this.auth==null) {
-            System.out.println("null auth..");
-        }
-        String token = auth.createAuth(username);
+        AuthData addedAuth = auth.createAuth(username);
         //create response and return
-        RegisterResponse response = new RegisterResponse(token);
+        RegisterResponse response = new RegisterResponse(addedAuth);
         return response;
     }
 }

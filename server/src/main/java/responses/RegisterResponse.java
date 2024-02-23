@@ -1,4 +1,6 @@
 package responses;
 
-public record RegisterResponse(String authToken) {
+import model.AuthData;
+
+public record RegisterResponse(AuthData addedAuth) {
 }

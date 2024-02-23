@@ -1,16 +1,13 @@
 package dataAccess;
 
 import model.AuthData;
-import model.GameData;
-import model.UserData;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface AuthDAO {
     public void clearAll();
     public void deleteAuth(String authToken);
-    public String createAuth(String username);  //token is string
+    public AuthData createAuth(String username);  //token is string
 
     List<AuthData> getAuthDataList();
 
