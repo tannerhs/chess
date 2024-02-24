@@ -36,14 +36,16 @@ public class LoginService {  //FIXME
         UserData user = users.getUser(username);
         if (user==null || password==null) {
             responseAuth = new AuthData(null,null); //fields all null
-            statusCode=500;
-            errorMessage="{\"message\": \"Error: null user\"}";
+            statusCode=401;
+            errorMessage="{\"message\": \"Error: unauthorized\"}";
         }
-        else if(password.equals(user.password())){
+        else if(password!= null && password.equals(user.password())){
             responseAuth = auth.createAuth(username);
         }
         else {
-            //
+            responseAuth = new AuthData(null,null); //fields all null
+            statusCode=500;
+            errorMessage="{\"message\": \"Error: null user\"}";
         }
 
         LoginResponse response = new LoginResponse(responseAuth,statusCode, errorMessage);
