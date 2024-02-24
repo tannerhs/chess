@@ -34,7 +34,7 @@ public class LoginService {  //FIXME
         String errorMessage="lol";
         AuthData responseAuth=null;
         UserData user = users.getUser(username);
-        if (user==null || password==null) {
+        if (user==null || password==null || !user.password().equals(password)) {
             responseAuth = new AuthData(null,null); //fields all null
             statusCode=401;
             errorMessage="{\"message\": \"Error: unauthorized\"}";
