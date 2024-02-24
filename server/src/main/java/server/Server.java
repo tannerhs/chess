@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.*;
 import handlers.ClearHandler;
+import handlers.LoginHandler;
 import handlers.RegisterHandler;
 import spark.*;
 
@@ -44,6 +45,7 @@ public class Server {
         System.out.println("before lambda");
         Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
         Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
+        Spark.post("/session", (req,res) -> new LoginHandler().handleRequest(req,res,usersDAO,authDAO));
         System.out.println("after lambda");
 
         //register and clear

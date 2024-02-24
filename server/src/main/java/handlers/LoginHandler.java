@@ -5,26 +5,29 @@ import dataAccess.AuthDAO;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import org.eclipse.jetty.util.log.Log;
+import requests.LoginInfo;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LoginResponse;
 import responses.RegisterResponse;
+import service.LoginService;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
 
-public class RegisterHandler extends Handler {
+public class LoginHandler extends Handler {
     @Override
-    public Object handleRequest(Request req, Response res,UserDAO users, AuthDAO auth) {
+    public Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth) {
         Gson serializer = new Gson();
-        //LoginRequest loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
-        UserData addUser = serializer.fromJson(req.body(), UserData.class);
-        RegisterRequest regRequest = new RegisterRequest(users,auth,addUser);
-        RegisterService regService = new RegisterService(regRequest);
+        LoginInfo loginInfo = serializer.fromJson(req.body(), LoginInfo.class);
+        LoginRequest loginRequest = new LoginRequest(loginInfo.username(), loginInfo.password(), users, auth);
+        LoginService loginService = new LoginService(loginRequest);
         Gson deserializer = new Gson();
-        RegisterResponse regResponse = regService.register();
-        AuthData addedAuth=regResponse.addedAuth();
-        int statusCode = regResponse.statusCode();
-        String message = regResponse.errorMessage();
+        LoginResponse loginResponse = loginService.login();
+        AuthData addedAuth=loginResponse.addedAuth();
+        int statusCode = loginResponse.statusCode();
+        String message = loginResponse.errorMessage();
         String response = "lol";
         if(statusCode==200) {
             response =deserializer.toJson(addedAuth, AuthData.class);  //call register service and convert result to json
@@ -36,8 +39,6 @@ public class RegisterHandler extends Handler {
         }
         res.status(statusCode);
         res.body(response);
-        //System.out.println(res);
         return response;
     }
-
 }

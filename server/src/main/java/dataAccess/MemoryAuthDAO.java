@@ -42,12 +42,13 @@ public class MemoryAuthDAO implements AuthDAO{
     @Override
     public AuthData getAuth(String token) {  //error check
         int index= getAuthIndex(token);
-        return (index==-1) ? auth.get(index) : null;
+        System.out.println("getAuthIndex returns "+index);
+        return (index==-1) ? null : auth.get(index);
     }
 
     public int getAuthIndex(String token) {
         for(int i=0; i<auth.size();i++) {
-            if(auth.get(i).authToken()==token) {
+            if(auth.get(i).authToken().equals(token)) {
                 return i;
             }
         }

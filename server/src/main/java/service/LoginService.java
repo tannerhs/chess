@@ -16,19 +16,37 @@ import java.util.Collection;
 import java.util.List;
 
 public class LoginService {  //FIXME
-    LoginRequest request;
-    LoginResponse response;
+    String username;
+    String password;
+    UserDAO users;
+    AuthDAO auth;
+
+    public LoginService(LoginRequest request) {
+        this.username=request.username();
+        this.password=request.password();
+        this.users = request.users();
+        this.auth= request.auth();
+    }
 
     //login an existing user
-    public LoginResponse LoginService(LoginRequest request, UserDAO users , GameDAO games, AuthDAO auth) {
-        this.request=request;
-        UserData user = users.getUser(request.username());
-        if (user==null) {
-            LoginResponse response = new LoginResponse(new AuthData("","")); //fields all null
+    public LoginResponse login() {
+        int statusCode=200;
+        String errorMessage="lol";
+        AuthData responseAuth=null;
+        UserData user = users.getUser(username);
+        if (user==null || password==null) {
+            responseAuth = new AuthData(null,null); //fields all null
+            statusCode=500;
+            errorMessage="{\"message\": \"Error: null user\"}";
+        }
+        else if(password.equals(user.password())){
+            responseAuth = auth.createAuth(username);
+        }
+        else {
+            //
         }
 
-        AuthData responseAuth = getAuth(request.username(),auth);
-        LoginResponse response = new LoginResponse(responseAuth);
+        LoginResponse response = new LoginResponse(responseAuth,statusCode, errorMessage);
         return response;
     }
     UserData getUser(String username, UserDAO users) {  //if it returns null, can't log in, return error
