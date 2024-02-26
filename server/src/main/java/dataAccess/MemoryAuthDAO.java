@@ -17,13 +17,15 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws UnauthorizedAccessException {
         for(int i=0; i<auth.size(); i++) {
-            if(auth.get(i).authToken()==authToken) {
+            if(auth.get(i).authToken().equals(authToken)) {
                 auth.remove(i);
-                continue;
+                return;
             }
         }
+        throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+        //throw new DataAccessException("cannot delete what is not there");
     }
 
     @Override
@@ -55,11 +57,11 @@ public class MemoryAuthDAO implements AuthDAO{
         return -1;
     }
 
-    @Override
-    public void delete(String token) {
-        int index=getAuthIndex(token);
-        auth.remove(index);
-    }
+//    @Override  //FIXME delete and deleteAuth are redundant
+//    public void delete(String token) {
+//        int index=getAuthIndex(token);
+//        auth.remove(index);
+//    }
 
     @Override
     public AuthData get(int i) {

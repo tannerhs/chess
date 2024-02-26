@@ -8,10 +8,16 @@ import spark.Response;
 
 import java.util.Collection;
 
-public abstract class Handler {
+public class Handler {
     public Object handleRequest(Request req, Response res) {
         return null;
     }  //take in HTTP stuff, return a json
 
-    public abstract Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth);
+    public Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth) {
+        return null;
+    }
+
+    public Object handleRequest(Request req, Response res, AuthDAO auth) {
+        return null;
+    }
 }
