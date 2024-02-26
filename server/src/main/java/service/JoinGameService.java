@@ -27,18 +27,18 @@ public class JoinGameService {
     }
 
     public JoinGameResponse joinGame() throws BadRequestException, AuthenticationException, PlayerFieldTakenException {
-        GameData gameToJoin = games.getGame(gameID);
+        GameData gameToJoin = games.getGameByID(gameID);
         AuthData currentAuthData = auth.getAuth(authToken);
 
         //|| users.getUser(currentAuthData.username())==null
 
-        if(gameToJoin==null || games==null || nonstandardColor(playerColor) ) {  //FIXME non-white/black/nonspecified color
+        if(gameToJoin==null || games==null ) {  //FIXME non-white/black/nonspecified color
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else if(auth==null ||currentAuthData==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
-        else if ((gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) ||
+        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) ||
                 (gameToJoin.blackUsername()!=null && playerColor.equals("BLACK"))) {  //already taken
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
@@ -53,6 +53,9 @@ public class JoinGameService {
     }
 
     public boolean nonstandardColor(String playerColor) {
-        return false;
+        if(playerColor.equals(null) || playerColor.equals("WHITE") || playerColor.equals("BLACK") || playerColor.equals("")) {
+            return false;  //no color is fine
+        }
+        return true;
     }
 }
