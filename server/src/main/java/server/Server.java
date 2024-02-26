@@ -1,12 +1,8 @@
 package server;
 
-import com.google.gson.Gson;
 import dataAccess.*;
 import handlers.*;
 import spark.*;
-
-import java.util.Collection;
-import java.util.HashMap;
 
 public class Server {
 
@@ -46,6 +42,8 @@ public class Server {
         Spark.post("/session", (req,res) -> new LoginHandler().handleRequest(req,res,usersDAO,authDAO));
         Spark.delete("/session", (req,res) -> new LogoutHandler().handleRequest(req,res,authDAO));
         Spark.post("/game", (req,res) -> new CreateGameHandler().handleRequest(req,res,authDAO,gamesDAO));
+        Spark.get("/game", (req,res) -> new ListGamesHandler().handleRequest(req,res, authDAO, gamesDAO));
+        Spark.put("/game", (req,res) -> new JoinGameHandler().handleRequest(req,res,usersDAO,authDAO,gamesDAO));
         System.out.println("after lambda");
 
         //register and clear
