@@ -18,13 +18,15 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws UnauthorizedAccessException {
+        if(getAuth(authToken)==null) {  //if authToken does not exist, cannot remove an authToken from auth
+            throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+        }
         for(int i=0; i<auth.size(); i++) {
             if(auth.get(i).authToken().equals(authToken)) {
                 auth.remove(i);
                 return;
             }
         }
-        throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         //throw new DataAccessException("cannot delete what is not there");
     }
 
@@ -72,4 +74,6 @@ public class MemoryAuthDAO implements AuthDAO{
     public int size() {
         return auth.size();
     }
+
+
 }

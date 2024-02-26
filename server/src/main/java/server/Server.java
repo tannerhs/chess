@@ -57,26 +57,7 @@ public class Server {
 
     }
 
-    private Object ClearApplication(Request req, Response res) {
-        return null;
-    }
-    private Object addName(Request req, Response res) {
-        //names.add(req.params(""));
-        return listNames(req, res);
-    }
 
-    private Object listNames(Request req, Response res) {
-        res.type("application/json");
-        return new Gson().toJson("");
-    }
-    private static <T> T getBody(Request request, Class<T> clazz) {
-        return null;
-//        var body = new Gson().fromJson(request.body(), clazz);
-//        if (body == null) {
-//            throw new RuntimeException("missing required body");
-//        }
-//        return body;
-    }
 
 
 

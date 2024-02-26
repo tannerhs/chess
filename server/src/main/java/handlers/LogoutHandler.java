@@ -21,16 +21,19 @@ public class LogoutHandler extends Handler {
     @Override
     public Object handleRequest(Request req, Response res, AuthDAO auth) {
         //Gson serializer = new Gson();
-        String authToken = req.headers().toString();
+        String authToken = req.headers("Authorization").toString();
+        System.out.println("authToken?:" + authToken);
+        System.out.println("req body: "+req.body());
         LogoutRequest logoutRequest = new LogoutRequest(authToken, auth);
         String message="";
-        int statusCode=200;
         try {
             LogoutService logoutService = new LogoutService(logoutRequest);
             //Gson deserializer = new Gson();
             logoutService.logout();
             //statusCode = logoutResponse.statusCode();
             //message = logoutResponse.errorMessage();
+
+            //FIXME remove LogoutResponse class, blank when successful and exception handles message otherwise
         }
         catch(UnauthorizedAccessException e) {
             message=e.getMessage();

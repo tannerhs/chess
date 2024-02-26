@@ -18,4 +18,5 @@ public interface AuthDAO {
     public AuthData get(int i);
 
     int size();
+
 }

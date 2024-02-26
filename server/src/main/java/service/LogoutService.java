@@ -14,7 +14,7 @@ public class LogoutService {
         this.auth = request.auth();
     }
 
-    public void logout() throws UnauthorizedAccessException {
+    public void logout() throws UnauthorizedAccessException {  //user cannot logout another user, ie AuthData can only remove itself
         auth.deleteAuth(authToken);
 
         //return new LogoutResponse(statusCode, errorMessage);
