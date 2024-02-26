@@ -1,13 +1,13 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import requests.JoinGameRequest;
 import service.JoinGameService;
 import spark.Request;
 import spark.Response;
+
+import javax.naming.AuthenticationException;
 
 public class JoinGameHandler {
 
@@ -21,7 +21,21 @@ public class JoinGameHandler {
         try{
             JoinGameRequest request = new JoinGameRequest(playerColor,gameID, authToken,users,auth,games);
             JoinGameService service = new JoinGameService(request);
-        } catch(Exception e) {
+            service.joinGame();
+        }
+        catch (BadRequestException e) {
+            message = e.getMessage();
+            res.status(400);
+        }
+        catch(AuthenticationException e) {
+            message=e.getMessage();
+            res.status(401);
+        }
+        catch(PlayerFieldTakenException e) {
+            message=e.getMessage();
+            res.status(403);
+        }
+        catch(Exception e) {
             //
             res.status(500);
         }

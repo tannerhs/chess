@@ -29,13 +29,13 @@ public class JoinGameService {
     public JoinGameResponse joinGame() throws BadRequestException, AuthenticationException, PlayerFieldTakenException {
         GameData gameToJoin = games.getGame(gameID);
         AuthData currentAuthData = auth.getAuth(authToken);
-        String username = currentAuthData.username();
+
         //|| users.getUser(currentAuthData.username())==null
 
-        if(auth==null || gameToJoin==null || games==null || nonstandardColor(playerColor) ) {  //FIXME non-white/black/nonspecified color
+        if(gameToJoin==null || games==null || nonstandardColor(playerColor) ) {  //FIXME non-white/black/nonspecified color
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
-        else if(currentAuthData==null) {  //authentication exists but not valid
+        else if(auth==null ||currentAuthData==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
         else if ((gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) ||
@@ -43,6 +43,7 @@ public class JoinGameService {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
         else {
+            String username = currentAuthData.username();
             games.joinGame(gameID,username,playerColor);
             JoinGameResponse response = new JoinGameResponse();  //does nothing
             return response;

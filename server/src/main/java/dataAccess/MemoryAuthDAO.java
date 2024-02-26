@@ -67,7 +67,7 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public AuthData get(int i) {
-        return auth.get(i);
+        return (i!=-1) ? auth.get(i): null;
     }
 
     @Override
