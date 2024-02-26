@@ -4,7 +4,6 @@ import dataAccess.AuthDAO;
 
 import dataAccess.UnauthorizedAccessException;
 import requests.LogoutRequest;
-import responses.LogoutResponse;
 
 public class LogoutService {
     String authToken;
@@ -16,7 +15,6 @@ public class LogoutService {
 
     public void logout() throws UnauthorizedAccessException {  //user cannot logout another user, ie AuthData can only remove itself
         auth.deleteAuth(authToken);
-
-        //return new LogoutResponse(statusCode, errorMessage);
     }
+
 }

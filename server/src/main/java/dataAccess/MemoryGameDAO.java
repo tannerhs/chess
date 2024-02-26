@@ -1,12 +1,14 @@
 package dataAccess;
 
 import model.GameData;
+import responses.createGameResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MemoryGameDAO implements GameDAO {
     static List<GameData> games = new ArrayList<>();
+    static int gameIDCounter=0;
     @Override
     public void clear() {
         for(int i=0; i<games.size(); i++) {
@@ -15,9 +17,13 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
+
+
     @Override
-    public int createGame(GameData gameData) {
-        return 0;
+    public createGameResponse createGame(String gameName) {
+        int gameID=gameIDCounter+1;
+        games.add(new GameData(gameID,gameName));
+        return new createGameResponse(gameID);
     }
 
     @Override
