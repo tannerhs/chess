@@ -12,7 +12,6 @@ import javax.naming.AuthenticationException;
 public class JoinGameHandler {
 
     public Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth, GameDAO games) {
-        System.out.println("join game");
         String message="";
         Gson deserializer = new Gson();
         JoinGameSparkRequestBody bodyVars = deserializer.fromJson(req.body(),JoinGameSparkRequestBody.class);
@@ -37,7 +36,7 @@ public class JoinGameHandler {
             res.status(403);
         }
         catch(Exception e) {
-            //
+            message=e.getMessage();
             res.status(500);
         }
 

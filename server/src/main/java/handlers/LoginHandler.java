@@ -30,8 +30,6 @@ public class LoginHandler extends Handler {
             Gson deserializer = new Gson();
             LoginResponse loginResponse = loginService.login();
             AuthData addedAuth=loginResponse.addedAuth();
-            int statusCode = loginResponse.statusCode();
-            //String message = loginResponse.errorMessage();
             String response =deserializer.toJson(addedAuth, AuthData.class);  //call register service and convert result to json
 
             res.body(response);

@@ -22,7 +22,6 @@ public class CreateGameHandler {
         String authToken = req.headers("Authorization");
         String gameName = req.body();
         String message;
-        int gameID;
         CreateGameRequest request = new CreateGameRequest(authToken,gameName,auth, games);
         try{
             CreateGameService creatGameService = new CreateGameService(request);
@@ -45,7 +44,6 @@ public class CreateGameHandler {
             return e.getMessage();
         }
 
-        //return gameID json
     }
 
 }

@@ -35,8 +35,6 @@ public class Server {
     }
 
     public void createRoutes() {
-        Spark.get("/hello", (req, res) -> "Hello BYU!");
-        System.out.println("before lambda");
         Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
         Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
         Spark.post("/session", (req,res) -> new LoginHandler().handleRequest(req,res,usersDAO,authDAO));
@@ -44,12 +42,6 @@ public class Server {
         Spark.post("/game", (req,res) -> new CreateGameHandler().handleRequest(req,res,authDAO,gamesDAO));
         Spark.get("/game", (req,res) -> new ListGamesHandler().handleRequest(req,res, authDAO, gamesDAO));
         Spark.put("/game", (req,res) -> new JoinGameHandler().handleRequest(req,res,usersDAO,authDAO,gamesDAO));
-        System.out.println("after lambda");
-
-        //register and clear
-
-        //data access and data model classes
-
     }
 
 

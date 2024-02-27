@@ -33,7 +33,6 @@ public class LogoutHandler extends Handler {
             res.status(401);
         }
         catch (Exception e) {  //catch DataAccessExceptions etc.
-            //throw DataAccessException
             message=e.getMessage();
             res.status(500);
         }
