@@ -1,10 +1,13 @@
-package chess;
+package chess.rules;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 import static chess.ChessGame.TeamColor.*;
-
 public abstract class PieceRules {
     Collection<ChessMove> validMoves;
     ChessBoard board;
@@ -33,14 +36,12 @@ public abstract class PieceRules {
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if(movePosition.validPosition() && board.getPiece(movePosition)==null) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                     //now see if can go two spaces
                     moveRow++;
                     movePosition=new ChessPosition(moveRow,moveCol);
                     if(movePosition.validPosition() && board.getPiece(movePosition)==null) {
                         validMoves.add(new ChessMove(currentPosition,movePosition,null));
                     }
-
                 }
                 //diagnol moves attacking only if piece there
                 getDiagnolPawnMovesWhite();
@@ -69,7 +70,6 @@ public abstract class PieceRules {
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if(movePosition.validPosition() && board.getPiece(movePosition)==null) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                 }
                 moveCol=currentCol+1; //diagnol attack one
                 movePosition = new ChessPosition(moveRow,moveCol);
@@ -81,7 +81,6 @@ public abstract class PieceRules {
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if (board.getPiece(movePosition)!=null && piece.getTeamColor()!=board.getPiece(movePosition).getTeamColor()) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                 }
             }
         }
@@ -91,7 +90,6 @@ public abstract class PieceRules {
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if(movePosition.validPosition() && board.getPiece(movePosition)==null) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                     //now see if can go two spaces
                     moveRow--;
                     movePosition=new ChessPosition(moveRow,moveCol);
@@ -119,26 +117,22 @@ public abstract class PieceRules {
                 if (board.getPiece(movePosition)!=null && piece.getTeamColor()!=board.getPiece(movePosition).getTeamColor()) {
                     promotionMove(movePosition);
                 }
-
             }
             else {  //middle of board
                 moveRow--;
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if(movePosition.validPosition() && board.getPiece(movePosition)==null) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                 }
                 moveCol++; //diagnol attack one
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if (board.getPiece(movePosition)!=null && piece.getTeamColor()!=board.getPiece(movePosition).getTeamColor()) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                 }
                 moveCol-=2;  //second diagnol promotoion
                 movePosition = new ChessPosition(moveRow,moveCol);
                 if (board.getPiece(movePosition)!=null && piece.getTeamColor()!=board.getPiece(movePosition).getTeamColor()) {
                     validMoves.add(new ChessMove(currentPosition,movePosition,null));
-
                 }
             }
         }
@@ -173,7 +167,6 @@ public abstract class PieceRules {
         int moveCol = currentCol;
         ChessPosition movePosition;
         moveRow--;
-
         moveCol--;
         movePosition=new ChessPosition(moveRow,moveCol);
         if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
@@ -412,10 +405,7 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void moveRightOne() {  //king
@@ -433,10 +423,7 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void moveRightUpOne() {  //king
@@ -455,10 +442,7 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void moveRightDownOne() {  //king
@@ -477,10 +461,7 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void moveLefttUpOne() {  //king
@@ -499,10 +480,7 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void moveLeftDownOne() {  //king
@@ -522,9 +500,7 @@ public abstract class PieceRules {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
         else {  //own piece blocking you
-
         }
-
     }
 
     public void moveUpOne() {  //king
@@ -543,9 +519,7 @@ public abstract class PieceRules {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
         else {  //own piece blocking you
-
         }
-
     }
 
     public void moveDownOne() {  //king
@@ -563,17 +537,13 @@ public abstract class PieceRules {
         else if (movePosition.validPosition() && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-        else {  //own piece blocking you
-
-        }
-
+        //otherwise own piece blocking you, do nothing
     }
 
     public void knightMoves(){
         int currentRow = currentPosition.getRow();
         int currentCol = currentPosition.getColumn();
         ChessPosition movePosition;
-
 
         //move right one up 2
         int moveRow = currentRow;
@@ -615,10 +585,6 @@ public abstract class PieceRules {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
 
-
-
-
-
         //move right two up one
         moveRow = currentRow;
         moveCol = currentCol;
@@ -658,14 +624,11 @@ public abstract class PieceRules {
         if(movePosition.validPosition() && (board.getPiece(movePosition)==null || board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor())) {
             validMoves.add(new ChessMove(currentPosition,movePosition,null));
         }
-
     }
-
     public void promotionMove(ChessPosition movePosition){  //make all four promotion piece variations
         validMoves.add(new ChessMove(currentPosition,movePosition, ChessPiece.PieceType.QUEEN));
         validMoves.add(new ChessMove(currentPosition,movePosition, ChessPiece.PieceType.KNIGHT));
         validMoves.add(new ChessMove(currentPosition,movePosition, ChessPiece.PieceType.BISHOP));
         validMoves.add(new ChessMove(currentPosition,movePosition, ChessPiece.PieceType.ROOK));
     }
-
 }

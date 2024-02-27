@@ -1,9 +1,13 @@
-package chess;
+package chess.rules;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.Collection;
 
 public class QueenRules extends PieceRules {
-    QueenRules(ChessBoard board, ChessPosition currentPosition) {
+    public QueenRules(ChessBoard board, ChessPosition currentPosition) {
         super(board, currentPosition);
     }
 

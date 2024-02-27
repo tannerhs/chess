@@ -1,10 +1,14 @@
-package chess;
+package chess.rules;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.Collection;
 
 public class RookRules extends PieceRules {
 
-    RookRules(ChessBoard board, ChessPosition currentPosition) {
+    public RookRules(ChessBoard board, ChessPosition currentPosition) {
         super(board, currentPosition);
     }
 

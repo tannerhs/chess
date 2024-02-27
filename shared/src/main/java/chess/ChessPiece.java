@@ -1,10 +1,10 @@
 package chess;
 
-import javax.swing.plaf.IconUIResource;
+import chess.rules.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import static chess.ChessPiece.PieceType;
 
 
 /**
