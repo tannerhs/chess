@@ -2,7 +2,9 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataAccess.AuthDAO;
+import dataAccess.BadRequestException;
 import dataAccess.GameDAO;
+import dataAccess.UnauthorizedAccessException;
 import requests.ListGamesRequest;
 import responses.ListGamesResponse;
 import service.ListGamesService;
@@ -25,16 +27,16 @@ public class ListGamesHandler {
             res.body(message);
             return message;
         }
-//        catch (BadRequestException e) {
-//            message =e.getMessage();
-//            res.status(400);
-//            return message;
-//        }
-//        catch (AuthenticationException e) {
-//            message=e.getMessage();
-//            res.status(401);
-//            return message;
-//        }
+        catch (BadRequestException e) {
+            message =e.getMessage();
+            res.status(400);
+            return message;
+        }
+        catch (UnauthorizedAccessException e) {
+            message=e.getMessage();
+            res.status(401);
+            return message;
+        }
         catch (Exception e) {
             return e.getMessage();
         }

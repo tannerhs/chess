@@ -11,10 +11,10 @@ public class MemoryGameDAO implements GameDAO {
     static int gameIDCounter=0;
     @Override
     public void clear() {
-        if(games==null || games.size()==0) {
-            return;
-        }
-        for(int i=0; i<games.size(); i++) {
+//        if(games==null || games.size()==0) {
+//            return;
+//        }
+        while(games.size()>0) {
             games.remove(0);
         }
 
