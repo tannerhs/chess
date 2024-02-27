@@ -15,7 +15,10 @@ public class RegisterService {
     String username;
     String password;
     String email;
-    public RegisterService(RegisterRequest request) {
+    public RegisterService(RegisterRequest request) throws BadRequestException {
+        if(request.addUser()==null || request.users()==null || request.auth()==null){
+            throw new BadRequestException("");
+        }
         this.users = request.users();
         this.auth= request.auth();
         this.username = request.addUser().username();

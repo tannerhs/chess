@@ -16,12 +16,19 @@ public class ClearHandler {
     static final int FAILURE = 500;
 
     public Object handleRequest(Request req, Response res, UserDAO users, GameDAO games, AuthDAO auth) {
-        System.out.println("clear");
-        ClearAppRequest clearRequest = new ClearAppRequest(users,games,auth);
-        ClearAppService clearAppService = new ClearAppService(clearRequest);  //init service object
-        clearAppService.clearApp();  //now clear
-        res.body("{}");
-        return "{}";
+        try {
+            System.out.println("clear");
+            ClearAppRequest clearRequest = new ClearAppRequest(users,games,auth);
+            ClearAppService clearAppService = new ClearAppService(clearRequest);  //init service object
+            clearAppService.clearApp();  //now clear
+            res.body("{}");
+            return "{}";
+        }
+        catch (Exception e) {
+            res.status(500);
+            return e.getMessage();
+        }
+
     }
 
 
