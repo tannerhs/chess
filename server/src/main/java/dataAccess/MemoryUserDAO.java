@@ -34,9 +34,7 @@ public class MemoryUserDAO implements UserDAO{
                 return users.get(i);
             }
         }
-        System.out.println("users.size(): "+ users.size());
-        System.out.println("users.get(0).username(): " + users.get(0).username());
-        System.out.println("given username: " + username);
+
         return null;
     }
 

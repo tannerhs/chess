@@ -67,8 +67,10 @@ public class MemoryGameDAO implements GameDAO {
     public void joinGame(int GameID, String username, String playerColor) {
         GameData currentGame = getGameByID(GameID);
         int gameIndex = getGameIndex(GameID);
-
-        if(playerColor=="WHITE") {
+        if(playerColor==null){
+            //observer
+        }
+        else if(playerColor=="WHITE") {
             games.set(gameIndex,new GameData(GameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
             //
         }

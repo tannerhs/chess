@@ -1,9 +1,6 @@
 package service;
 
-import dataAccess.AuthDAO;
-import dataAccess.GameDAO;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.util.log.Log;
@@ -29,24 +26,23 @@ public class LoginService {  //FIXME
     }
 
     //login an existing user
-    public LoginResponse login() {
+    public LoginResponse login() throws UnauthorizedAccessException {
         int statusCode=200;
         String errorMessage="lol";
         AuthData responseAuth=null;
-        UserData user = users.getUser(username);
-        if (user==null || password==null || !user.password().equals(password)) {
-            responseAuth = new AuthData(null,null); //fields all null
-            statusCode=401;
-            errorMessage="{\"message\": \"Error: unauthorized\"}";
-        }
-        else if(password!= null && password.equals(user.password())){
-            responseAuth = auth.createAuth(username);
+        if(users==null) {
+            throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
-            responseAuth = new AuthData(null,null); //fields all null
-            statusCode=500;
-            errorMessage="{\"message\": \"Error: null user\"}";
+            UserData user = users.getUser(username);
+            if ( user==null || password==null || !user.password().equals(password)) {
+                throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+            }
+            else {
+                responseAuth = auth.createAuth(username);
+            }
         }
+
 
         LoginResponse response = new LoginResponse(responseAuth,statusCode, errorMessage);
         return response;

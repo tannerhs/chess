@@ -2,6 +2,7 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataAccess.AuthDAO;
+import dataAccess.UnauthorizedAccessException;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -24,21 +25,21 @@ public class LoginHandler extends Handler {
         LoginRequest loginRequest = new LoginRequest(loginInfo.username(), loginInfo.password(), users, auth);
         LoginService loginService = new LoginService(loginRequest);
         Gson deserializer = new Gson();
-        LoginResponse loginResponse = loginService.login();
-        AuthData addedAuth=loginResponse.addedAuth();
-        int statusCode = loginResponse.statusCode();
-        String message = loginResponse.errorMessage();
-        String response = "lol";
-        if(statusCode==200) {
-            response =deserializer.toJson(addedAuth, AuthData.class);  //call register service and convert result to json
+        try{
+            LoginResponse loginResponse = loginService.login();
+            AuthData addedAuth=loginResponse.addedAuth();
+            int statusCode = loginResponse.statusCode();
+            //String message = loginResponse.errorMessage();
+            String response =deserializer.toJson(addedAuth, AuthData.class);  //call register service and convert result to json
 
+            res.body(response);
+            return response;
         }
-        else {
-            //response ="{message: "+deserializer.toJson(message, String.class)+"}";
-            response = message;
+        catch(UnauthorizedAccessException e){
+            res.status(401);
+            return e.getMessage();
         }
-        res.status(statusCode);
-        res.body(response);
-        return response;
+
+
     }
 }

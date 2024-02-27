@@ -1,6 +1,8 @@
 package service;
 
 import dataAccess.AuthDAO;
+import dataAccess.BadRequestException;
+import dataAccess.PlayerFieldTakenException;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -21,13 +23,12 @@ public class RegisterService {
         this.email = request.addUser().email();
     }
 
-    public RegisterResponse register() {
+    public RegisterResponse register() throws PlayerFieldTakenException, BadRequestException {
         int statusCode=200;  //success unless..
         AuthData addedAuth=null;
         String errorMessage=null;
         if(username==null || password==null || email==null) {
-            statusCode=400;
-            errorMessage = "{\"message\": \"Error: bad request\"}";
+            throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else {
             //add user to database
@@ -35,12 +36,9 @@ public class RegisterService {
             if (users.addUser(addedUser)==true) {
                 //create and add new auth token
                 addedAuth = auth.createAuth(username);
-                statusCode=200;  //success
             }
             else {
-                addedAuth=null;
-                statusCode=403;
-                errorMessage = "{\"message\": \"Error: already taken\"}";
+                throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\"}");
             }
 
         }

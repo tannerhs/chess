@@ -38,8 +38,8 @@ public class JoinGameService {
         else if(auth==null ||currentAuthData==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
-        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) ||
-                (gameToJoin.blackUsername()!=null && playerColor.equals("BLACK"))) {  //already taken
+        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!="empty" && playerColor.equals("WHITE")) ||
+                (gameToJoin.blackUsername()!="empty" && playerColor.equals("BLACK"))) {  //already taken
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
         else {

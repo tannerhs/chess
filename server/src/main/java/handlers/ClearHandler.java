@@ -21,8 +21,7 @@ public class ClearHandler {
         ClearAppRequest clearRequest = new ClearAppRequest(users,games,auth);
         ClearAppService clearAppService = new ClearAppService(clearRequest);  //init service object
         clearAppService.clearApp();  //now clear
-        res.status(FAILURE);
-        res.type("application/json");
+        //res.type("application/json");
         res.body("{}");
         return "{}";
     }
