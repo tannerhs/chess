@@ -160,108 +160,21 @@ public abstract class PieceRules {
     }
     public void moveUp() {
         moveSetup(1,0);
-//        move("UP");
-//        int currentRow = currentPosition.getRow();
-//        int currentCol = currentPosition.getColumn();
-//        int moveRow = currentRow;
-//        int moveCol = currentCol;
-//        ChessPosition movePosition;
-//        boolean keepLooking=true;
-//
-//        while(keepLooking && moveRow<8) {
-//            moveRow++;
-//            movePosition=new ChessPosition(moveRow,moveCol);
-//            if(board.getPiece(movePosition)==null) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//            }
-//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//                keepLooking=false;  //stop after taking enemy piece
-//            }
-//            else {  //own piece blocking you
-//                keepLooking=false;
-//            }
-//        }
     }
 
 
     public void moveDown() {
         moveSetup(-1,0);
-//        int currentRow = currentPosition.getRow();
-//        int currentCol = currentPosition.getColumn();
-//        int moveRow = currentRow;
-//        int moveCol = currentCol;
-//        ChessPosition movePosition;
-//        boolean keepLooking=true;
-//
-//        while(keepLooking && moveRow>1) {
-//            moveRow--;
-//            movePosition=new ChessPosition(moveRow,moveCol);
-//
-//            if(board.getPiece(movePosition)==null) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//            }
-//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//                keepLooking=false;  //stop after taking enemy piece
-//            }
-//            else {  //own piece blocking you
-//                keepLooking=false;
-//            }
-//
-//        }
     }
 
 
     public void moveRight() {
         moveSetup(0,1);
-//        int currentRow = currentPosition.getRow();
-//        int currentCol = currentPosition.getColumn();
-//        int moveRow = currentRow;
-//        int moveCol = currentCol;
-//        ChessPosition movePosition;
-//        boolean keepLooking=true;
-//
-//        while(keepLooking && moveCol<8) {
-//            moveCol++;
-//            movePosition=new ChessPosition(moveRow,moveCol);
-//            if(board.getPiece(movePosition)==null) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//            }
-//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//                keepLooking=false;  //stop after taking enemy piece
-//            }
-//            else {  //own piece blocking you
-//                keepLooking=false;
-//            }
-//        }
     }
 
 
     public void moveLeft() {
         moveSetup(0,-1);
-//        int currentRow = currentPosition.getRow();
-//        int currentCol = currentPosition.getColumn();
-//        int moveRow = currentRow;
-//        int moveCol = currentCol;
-//        ChessPosition movePosition;
-//        boolean keepLooking=true;
-//
-//        while(keepLooking && moveCol>1) {
-//            moveCol--;
-//            movePosition=new ChessPosition(moveRow,moveCol);
-//            if(board.getPiece(movePosition)==null) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//            }
-//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-//                keepLooking=false;  //stop after taking enemy piece
-//            }
-//            else {  //own piece blocking you
-//                keepLooking=false;
-//            }
-//        }
     }
 
 
