@@ -35,7 +35,12 @@ public class LoginService {  //FIXME
         }
         else {
             UserData user = users.getUser(username);
-            if ( user==null || password==null || !user.password().equals(password)) {
+            if ( user==null || password==null) {
+                throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+            }
+            else if (!user.password().equals(password)) {
+                System.out.println("password: "+ password);
+                System.out.println("user.password(): "+user.password());
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
             else {
@@ -47,27 +52,8 @@ public class LoginService {  //FIXME
         LoginResponse response = new LoginResponse(responseAuth,statusCode, errorMessage);
         return response;
     }
-    UserData getUser(String username, UserDAO users) {  //if it returns null, can't log in, return error
-
-        return null;  //FIXME
-    }
 
 
-    AuthData createAuth(String username,AuthDAO auth) {
-        //calls method in AuthDAO
-        AuthData addedAuth = auth.createAuth(username);
-        return addedAuth;
-    }
-
-    AuthData getAuth(String username, AuthDAO auth) {
-        List<AuthData> list = auth.getAuthDataList();
-        for(int i=0; i<list.size(); i++) {
-            if(list.get(i).username()==username) {
-                return list.get(i);
-            }
-        }
-        return null;
-    }
 
 
 }

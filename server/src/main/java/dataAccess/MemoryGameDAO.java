@@ -64,21 +64,25 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void joinGame(int GameID, String username, String playerColor) {
+    public void joinGame(int GameID, String username, String playerColor) throws Exception {
         GameData currentGame = getGameByID(GameID);
         int gameIndex = getGameIndex(GameID);
-        if(playerColor==null){
+        if(gameIndex==-1) {
+            //
+        }
+        else if(playerColor==null || playerColor==""){
             //observer
         }
-        else if(playerColor=="WHITE") {
+        else if(playerColor.equals("WHITE")) {
             games.set(gameIndex,new GameData(GameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
             //
         }
-        else if(playerColor=="BLACK"){
+        else if(playerColor.equals("BLACK")){
             games.set(gameIndex,new GameData(GameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
 
         }
         else {
+            throw new Exception("{\"message\": \"Error: already taken\" }");
             //observer
         }
         //return null;

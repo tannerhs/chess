@@ -15,6 +15,8 @@ public interface AuthDAO {
 
 //    public void delete(String token);
 
+    int getAuthIndex(String token);
+
     public AuthData get(int i);
 
     int size();

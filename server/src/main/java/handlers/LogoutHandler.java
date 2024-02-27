@@ -14,7 +14,7 @@ public class LogoutHandler extends Handler {
 
         String message="";
         try {
-            System.out.println(req.headers());
+            System.out.println("Logout");
             if(req.headers()!=null) {
                 String authToken = req.headers("Authorization");
                 LogoutRequest logoutRequest = new LogoutRequest(authToken, auth);

@@ -50,6 +50,7 @@ public class MemoryAuthDAO implements AuthDAO{
         return (index==-1) ? null : auth.get(index);
     }
 
+    @Override
     public int getAuthIndex(String token) {
         for(int i=0; i<auth.size();i++) {
             if(auth.get(i).authToken().equals(token)) {

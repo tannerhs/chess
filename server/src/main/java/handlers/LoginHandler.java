@@ -20,12 +20,14 @@ import spark.Response;
 public class LoginHandler extends Handler {
     @Override
     public Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth) {
-        Gson serializer = new Gson();
-        LoginInfo loginInfo = serializer.fromJson(req.body(), LoginInfo.class);
-        LoginRequest loginRequest = new LoginRequest(loginInfo.username(), loginInfo.password(), users, auth);
-        LoginService loginService = new LoginService(loginRequest);
-        Gson deserializer = new Gson();
+
         try{
+            System.out.println("Login");
+            Gson serializer = new Gson();
+            LoginInfo loginInfo = serializer.fromJson(req.body(), LoginInfo.class);
+            LoginRequest loginRequest = new LoginRequest(loginInfo.username(), loginInfo.password(), users, auth);
+            LoginService loginService = new LoginService(loginRequest);
+            Gson deserializer = new Gson();
             LoginResponse loginResponse = loginService.login();
             AuthData addedAuth=loginResponse.addedAuth();
             int statusCode = loginResponse.statusCode();

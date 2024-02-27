@@ -18,6 +18,7 @@ public class CreateGameHandler {
     GameDAO games;
 
     public Object handleRequest(Request req, Response res, AuthDAO auth, GameDAO games) {
+        System.out.println("create game");
         String authToken = req.headers("Authorization");
         String gameName = req.body();
         String message;

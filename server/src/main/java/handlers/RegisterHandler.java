@@ -18,6 +18,7 @@ public class RegisterHandler extends Handler {
     @Override
     public Object handleRequest(Request req, Response res,UserDAO users, AuthDAO auth) {
         try {
+            System.out.println("Register");
             Gson serializer = new Gson();
             //LoginRequest loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
             UserData addUser = serializer.fromJson(req.body(), UserData.class);

@@ -26,27 +26,40 @@ public class JoinGameService {
         this.games= request.games();
     }
 
-    public JoinGameResponse joinGame() throws BadRequestException, AuthenticationException, PlayerFieldTakenException {
+    public Object joinGame() throws Exception {
         GameData gameToJoin = games.getGameByID(gameID);
-        AuthData currentAuthData = auth.getAuth(authToken);
 
         //|| users.getUser(currentAuthData.username())==null
 
         if(gameToJoin==null || games==null ) {  //FIXME non-white/black/nonspecified color
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
-        else if(auth==null ||currentAuthData==null) {  //authentication exists but not valid
+        else if(auth==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
-        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!="empty" && playerColor.equals("WHITE")) ||
-                (gameToJoin.blackUsername()!="empty" && playerColor.equals("BLACK"))) {  //already taken
+        else if(auth.getAuthIndex(authToken)==-1) {
+            throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
+        }
+        else if(nonstandardColor(playerColor)) {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
+        else if (gameToJoin.whiteUsername()!="" && gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) {
+            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
+        }
+        else if (gameToJoin.blackUsername()!="" && gameToJoin.blackUsername()!=null && playerColor.equals("BLACK")) {
+            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
+        }
+//        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!="" && playerColor.equals("WHITE")) ||
+//                (gameToJoin.blackUsername()!="" && playerColor.equals("BLACK"))) {  //already taken
+//            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
+//        }
         else {
+            System.out.println("playerColor");
+            AuthData currentAuthData = auth.getAuth(authToken);
             String username = currentAuthData.username();
             games.joinGame(gameID,username,playerColor);
-            JoinGameResponse response = new JoinGameResponse();  //does nothing
-            return response;
+            //JoinGameResponse response = new JoinGameResponse();  //does nothing
+            return "";
         }
         //return new JoinGameResponse(games);
         //return null;
