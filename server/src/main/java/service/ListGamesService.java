@@ -31,26 +31,29 @@ public class ListGamesService {
         if(auth==null) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
-        else if(auth.getAuth(authToken)==null) {  //authentication exists but not valid
+        else if(auth.getAuth(authToken)==null || auth.getAuthIndex(authToken)==-1) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
             Gson serializer = new Gson();
-            String response = "{";
-            for(int i=0; i<games.size();i++) {
-                response+=serializer.toJson(games.getGameByIndex(i),GameData.class);
-                if(i!=games.size()-1) {
-                    response+=", ";
-                }
-            }
-            response+="}";
+//            String response = "{";
+//            for(int i=0; i<games.size();i++) {
+//                response+=serializer.toJson(games.getGameByIndex(i),GameData.class);
+//                if(i!=games.size()-1) {
+//                    response+=", ";
+//                }
+//            }
+//            response+="}";
 
             if(games.size()==0) {
                 return "";
             }
-            response = serializer.toJson(new HashSet(games.listGames()));
-            //return response;
-            return "{}";
+            else if (games.size()==1) {
+                return serializer.toJson(games.getGameByIndex(0), GameData.class);
+            }
+            String response = "{\"games\" : "+serializer.toJson(new HashSet(games.listGames()),HashSet.class) + "}";
+            return response;
+            //return "{}";
         }
     }
 }
