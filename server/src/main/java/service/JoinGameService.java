@@ -58,6 +58,8 @@ public class JoinGameService {
             AuthData currentAuthData = auth.getAuth(authToken);
             String username = currentAuthData.username();
             games.joinGame(gameID,username,playerColor);
+            System.out.println("m games.size(): "+games.size());
+
             //JoinGameResponse response = new JoinGameResponse();  //does nothing
             return "";
         }

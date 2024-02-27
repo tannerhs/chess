@@ -45,12 +45,16 @@ public class ListGamesService {
 //            }
 //            response+="}";
 
-            if(games.size()==0) {
+            if(games==null) {
+                return"";
+            }
+            else if(games.size()==0) {
                 return "";
+                //return "{\"games\" : \"\"}";
             }
-            else if (games.size()==1) {
-                return serializer.toJson(games.getGameByIndex(0), GameData.class);
-            }
+//            else if (games.size()==1) {
+//                return "{\"games\" : "+serializer.toJson(games.getGameByIndex(0), GameData.class)+ "}";
+//            }
             String response = "{\"games\" : "+serializer.toJson(new HashSet(games.listGames()),HashSet.class) + "}";
             return response;
             //return "{}";

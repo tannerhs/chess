@@ -11,6 +11,9 @@ public class MemoryGameDAO implements GameDAO {
     static int gameIDCounter=0;
     @Override
     public void clear() {
+        if(games==null || games.size()==0) {
+            return;
+        }
         for(int i=0; i<games.size(); i++) {
             games.remove(0);
         }
@@ -45,6 +48,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public GameData getGameByID(int gameID) {
+        if(games==null || games.size()==0) return null;
         for(int i=0; i<games.size();i++) {
             if(gameID==games.get(i).gameID()) {
                 return games.get(i);
@@ -55,6 +59,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public int getGameIndex(int gameID) {
+        if(games==null || games.size()==0) return -1;
         for(int i=0; i<games.size();i++) {
             if(gameID==games.get(i).gameID()) {
                 return i;
@@ -75,11 +80,11 @@ public class MemoryGameDAO implements GameDAO {
         }
         else if(playerColor.equals("WHITE")) {
             games.set(gameIndex,new GameData(GameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
-            //
+            System.out.println("games.size(): "+games.size());
         }
         else if(playerColor.equals("BLACK")){
             games.set(gameIndex,new GameData(GameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
-
+            System.out.println("games.size(): "+games.size());
         }
         else {
             throw new Exception("{\"message\": \"Error: already taken\" }");
@@ -98,6 +103,9 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public int size() {
+        if(games==null) {
+            return 0;
+        }
         return games.size();
     }
 }
