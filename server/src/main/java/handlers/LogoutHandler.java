@@ -11,12 +11,20 @@ public class LogoutHandler extends Handler {
 
     @Override
     public Object handleRequest(Request req, Response res, AuthDAO auth) {
-        String authToken = req.headers("Authorization");
-        LogoutRequest logoutRequest = new LogoutRequest(authToken, auth);
+
         String message="";
         try {
-            LogoutService logoutService = new LogoutService(logoutRequest);
-            logoutService.logout();
+            System.out.println(req.headers());
+            if(req.headers()!=null) {
+                String authToken = req.headers("Authorization");
+                LogoutRequest logoutRequest = new LogoutRequest(authToken, auth);
+                LogoutService logoutService = new LogoutService(logoutRequest);
+                logoutService.logout();
+            }
+            else {
+                //throw invalid input
+            }
+
 
             //FIXME remove LogoutResponse class, blank when successful and exception handles message otherwise
         }

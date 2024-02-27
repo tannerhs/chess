@@ -53,7 +53,10 @@ public class JoinGameService {
     }
 
     public boolean nonstandardColor(String playerColor) {
-        if(playerColor.equals(null) || playerColor.equals("WHITE") || playerColor.equals("BLACK") || playerColor.equals("")) {
+        if(playerColor==null) {
+            return false;
+        }
+        else if(playerColor.equals("WHITE") || playerColor.equals("BLACK") || playerColor.equals("")) {
             return false;  //no color is fine
         }
         return true;

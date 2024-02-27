@@ -206,7 +206,7 @@ public class StandardAPITests {
         Assertions.assertFalse(
                 listResult.message != null && listResult.message.toLowerCase(Locale.ROOT).contains("error"),
                 "Response gave an error message");
-        Assertions.assertEquals(1, listResult.games.length);
+         Assertions.assertEquals(1, listResult.games.length);
         Assertions.assertEquals(existingUser.username, listResult.games[0].whiteUsername);
     }
 

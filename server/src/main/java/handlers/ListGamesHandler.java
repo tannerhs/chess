@@ -16,11 +16,12 @@ public class ListGamesHandler {
         ListGamesRequest request = new ListGamesRequest(authToken,auth,games);
         try{
             ListGamesService listGamesService = new ListGamesService(request);
-            ListGamesResponse response=listGamesService.listGames();
-            Gson deserializer = new Gson();
+            message=listGamesService.listGames();
+            //Gson deserializer = new Gson();
             //message="{"
             //for()
-            message=deserializer.toJson(response, GameDAO.class);
+            //message=deserializer.toJson(response, GameD.class);
+            res.body(message);
             return message;
         }
 //        catch (BadRequestException e) {

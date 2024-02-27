@@ -23,14 +23,14 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public CreateGameResponse createGame(String gameName) {
-        int gameID=gameIDCounter+1;
-        games.add(new GameData(gameID,gameName));
-        return new CreateGameResponse(gameID);
+        gameIDCounter+=1;
+        games.add(new GameData(gameIDCounter,gameName));
+        return new CreateGameResponse(gameIDCounter);
     }
 
     @Override
-    public GameData getGame(int gameID) {
-        return null;
+    public GameData getGameByIndex(int index) {
+        return games.get(index);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData[] listGames() {
-        return new GameData[0];
+    public List<GameData> listGames() {
+        return games;
     }
 
     @Override
@@ -83,6 +83,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     //public GameData get(int gameID) //FIXME
+
+    String getGameListJson() {
+        //
+        return "";
+    }
 
 
     @Override
