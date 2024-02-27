@@ -22,19 +22,12 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public UserData getUser(String username) {
-//        for(UserData user: users) {
-//            if (username==user.username()) {
-//                return user;
-//            }
-//        }
-
         for(int i=0; i<users.size();i++) {
             System.out.println("users.get(i).username(): " + users.get(i).username());
             if (username.equals(users.get(i).username())) {
                 return users.get(i);
             }
         }
-
         return null;
     }
 
@@ -58,11 +51,6 @@ public class MemoryUserDAO implements UserDAO{
             }
         }
         return -1;
-    }
-
-    @Override
-    public UserData get(int i) {
-        return users.get(i);
     }
 
     @Override

@@ -17,13 +17,8 @@ public class ListGamesHandler {
         String message;
         ListGamesRequest request = new ListGamesRequest(authToken,auth,games);
         try{
-            System.out.println("list games");
             ListGamesService listGamesService = new ListGamesService(request);
             message=listGamesService.listGames();
-            //Gson deserializer = new Gson();
-            //message="{"
-            //for()
-            //message=deserializer.toJson(response, GameD.class);
             res.body(message);
             return message;
         }

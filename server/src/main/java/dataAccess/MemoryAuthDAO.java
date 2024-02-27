@@ -27,7 +27,6 @@ public class MemoryAuthDAO implements AuthDAO{
                 return;
             }
         }
-        //throw new DataAccessException("cannot delete what is not there");
     }
 
     @Override
@@ -38,10 +37,6 @@ public class MemoryAuthDAO implements AuthDAO{
         return addedAuth;
     }
 
-    @Override
-    public List<AuthData> getAuthDataList() {
-        return auth;
-    }
 
     @Override
     public AuthData getAuth(String token) {  //error check
@@ -60,16 +55,6 @@ public class MemoryAuthDAO implements AuthDAO{
         return -1;
     }
 
-//    @Override  //FIXME delete and deleteAuth are redundant
-//    public void delete(String token) {
-//        int index=getAuthIndex(token);
-//        auth.remove(index);
-//    }
-
-    @Override
-    public AuthData get(int i) {
-        return (i!=-1) ? auth.get(i): null;
-    }
 
     @Override
     public int size() {

@@ -2,7 +2,6 @@ package dataAccess;
 
 import model.GameData;
 import responses.CreateGameResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +10,10 @@ public class MemoryGameDAO implements GameDAO {
     static int gameIDCounter=0;
     @Override
     public void clear() {
-//        if(games==null || games.size()==0) {
-//            return;
-//        }
-        while(games.size()>0) {
-            games.remove(0);
+        while(!games.isEmpty()) {
+            games.removeFirst();  //removes 0th item
         }
-
     }
-
-
-
 
 
     @Override
@@ -32,23 +24,13 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGameByIndex(int index) {
-        return games.get(index);
-    }
-
-    @Override
-    public void updateGame(GameData gameData) {
-
-    }
-
-    @Override
     public List<GameData> listGames() {
         return games;
     }
 
     @Override
     public GameData getGameByID(int gameID) {
-        if(games==null || games.size()==0) return null;
+        if(games==null || games.isEmpty()) return null;
         for(int i=0; i<games.size();i++) {
             if(gameID==games.get(i).gameID()) {
                 return games.get(i);
@@ -59,7 +41,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public int getGameIndex(int gameID) {
-        if(games==null || games.size()==0) return -1;
+        if(games==null || games.isEmpty()) return -1;
         for(int i=0; i<games.size();i++) {
             if(gameID==games.get(i).gameID()) {
                 return i;
@@ -73,9 +55,9 @@ public class MemoryGameDAO implements GameDAO {
         GameData currentGame = getGameByID(GameID);
         int gameIndex = getGameIndex(GameID);
         if(gameIndex==-1) {
-            //
+            System.out.println("is this reached?");
         }
-        else if(playerColor==null || playerColor==""){
+        else if(playerColor == null || playerColor.isEmpty()){  //needs to be ==null, not .equals()
             //observer
         }
         else if(playerColor.equals("WHITE")) {
@@ -90,14 +72,7 @@ public class MemoryGameDAO implements GameDAO {
             throw new Exception("{\"message\": \"Error: already taken\" }");
             //observer
         }
-        //return null;
-    }
 
-    //public GameData get(int gameID) //FIXME
-
-    String getGameListJson() {
-        //
-        return "";
     }
 
 

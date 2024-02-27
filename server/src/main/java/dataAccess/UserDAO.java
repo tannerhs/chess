@@ -9,7 +9,5 @@ public interface UserDAO {
 
     public boolean addUser(UserData addedUser);
 
-    UserData get(int i);
-
     int size();
 }
