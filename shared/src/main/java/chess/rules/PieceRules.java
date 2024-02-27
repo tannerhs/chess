@@ -134,7 +134,7 @@ public abstract class PieceRules {
         }
     }
 
-    public void moveUp() {
+    public void moveSetup(int rowIncrement, int colIncrement) {
         int currentRow = currentPosition.getRow();
         int currentCol = currentPosition.getColumn();
         int moveRow = currentRow;
@@ -142,8 +142,9 @@ public abstract class PieceRules {
         ChessPosition movePosition;
         boolean keepLooking=true;
 
-        while(keepLooking && moveRow<8) {
-            moveRow++;
+        while(keepLooking && ((moveRow<8 && rowIncrement==1) || (moveRow>1 && rowIncrement==-1) || (moveCol<8 && colIncrement==1) || (moveCol>1 && colIncrement==-1))) {
+            moveRow+=rowIncrement;
+            moveCol+=colIncrement;
             movePosition=new ChessPosition(moveRow,moveCol);
             if(board.getPiece(movePosition)==null) {
                 validMoves.add(new ChessMove(currentPosition,movePosition,null));
@@ -156,81 +157,111 @@ public abstract class PieceRules {
                 keepLooking=false;
             }
         }
+    }
+    public void moveUp() {
+        moveSetup(1,0);
+//        move("UP");
+//        int currentRow = currentPosition.getRow();
+//        int currentCol = currentPosition.getColumn();
+//        int moveRow = currentRow;
+//        int moveCol = currentCol;
+//        ChessPosition movePosition;
+//        boolean keepLooking=true;
+//
+//        while(keepLooking && moveRow<8) {
+//            moveRow++;
+//            movePosition=new ChessPosition(moveRow,moveCol);
+//            if(board.getPiece(movePosition)==null) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//            }
+//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//                keepLooking=false;  //stop after taking enemy piece
+//            }
+//            else {  //own piece blocking you
+//                keepLooking=false;
+//            }
+//        }
     }
 
 
     public void moveDown() {
-        int currentRow = currentPosition.getRow();
-        int currentCol = currentPosition.getColumn();
-        int moveRow = currentRow;
-        int moveCol = currentCol;
-        ChessPosition movePosition;
-        boolean keepLooking=true;
-
-        while(keepLooking && moveRow>1) {
-            moveRow--;
-            movePosition=new ChessPosition(moveRow,moveCol);
-            if(board.getPiece(movePosition)==null) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-            }
-            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-                keepLooking=false;  //stop after taking enemy piece
-            }
-            else {  //own piece blocking you
-                keepLooking=false;
-            }
-        }
+        moveSetup(-1,0);
+//        int currentRow = currentPosition.getRow();
+//        int currentCol = currentPosition.getColumn();
+//        int moveRow = currentRow;
+//        int moveCol = currentCol;
+//        ChessPosition movePosition;
+//        boolean keepLooking=true;
+//
+//        while(keepLooking && moveRow>1) {
+//            moveRow--;
+//            movePosition=new ChessPosition(moveRow,moveCol);
+//
+//            if(board.getPiece(movePosition)==null) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//            }
+//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//                keepLooking=false;  //stop after taking enemy piece
+//            }
+//            else {  //own piece blocking you
+//                keepLooking=false;
+//            }
+//
+//        }
     }
 
 
     public void moveRight() {
-        int currentRow = currentPosition.getRow();
-        int currentCol = currentPosition.getColumn();
-        int moveRow = currentRow;
-        int moveCol = currentCol;
-        ChessPosition movePosition;
-        boolean keepLooking=true;
-
-        while(keepLooking && moveCol<8) {
-            moveCol++;
-            movePosition=new ChessPosition(moveRow,moveCol);
-            if(board.getPiece(movePosition)==null) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-            }
-            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-                keepLooking=false;  //stop after taking enemy piece
-            }
-            else {  //own piece blocking you
-                keepLooking=false;
-            }
-        }
+        moveSetup(0,1);
+//        int currentRow = currentPosition.getRow();
+//        int currentCol = currentPosition.getColumn();
+//        int moveRow = currentRow;
+//        int moveCol = currentCol;
+//        ChessPosition movePosition;
+//        boolean keepLooking=true;
+//
+//        while(keepLooking && moveCol<8) {
+//            moveCol++;
+//            movePosition=new ChessPosition(moveRow,moveCol);
+//            if(board.getPiece(movePosition)==null) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//            }
+//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//                keepLooking=false;  //stop after taking enemy piece
+//            }
+//            else {  //own piece blocking you
+//                keepLooking=false;
+//            }
+//        }
     }
 
 
     public void moveLeft() {
-        int currentRow = currentPosition.getRow();
-        int currentCol = currentPosition.getColumn();
-        int moveRow = currentRow;
-        int moveCol = currentCol;
-        ChessPosition movePosition;
-        boolean keepLooking=true;
-
-        while(keepLooking && moveCol>1) {
-            moveCol--;
-            movePosition=new ChessPosition(moveRow,moveCol);
-            if(board.getPiece(movePosition)==null) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-            }
-            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-                validMoves.add(new ChessMove(currentPosition,movePosition,null));
-                keepLooking=false;  //stop after taking enemy piece
-            }
-            else {  //own piece blocking you
-                keepLooking=false;
-            }
-        }
+        moveSetup(0,-1);
+//        int currentRow = currentPosition.getRow();
+//        int currentCol = currentPosition.getColumn();
+//        int moveRow = currentRow;
+//        int moveCol = currentCol;
+//        ChessPosition movePosition;
+//        boolean keepLooking=true;
+//
+//        while(keepLooking && moveCol>1) {
+//            moveCol--;
+//            movePosition=new ChessPosition(moveRow,moveCol);
+//            if(board.getPiece(movePosition)==null) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//            }
+//            else if (board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+//                validMoves.add(new ChessMove(currentPosition,movePosition,null));
+//                keepLooking=false;  //stop after taking enemy piece
+//            }
+//            else {  //own piece blocking you
+//                keepLooking=false;
+//            }
+//        }
     }
 
 
