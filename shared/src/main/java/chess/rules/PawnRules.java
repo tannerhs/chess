@@ -1,6 +1,7 @@
 package chess.rules;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 
@@ -25,8 +26,55 @@ public class PawnRules extends PieceRules {
         int currentCol = currentPosition.getColumn();
         int moveRow = currentRow;
         int moveCol = currentCol;
-        ChessPosition movePosition;
+        ChessPosition movePosition=null;
 
+        allWhitePawnMoves(currentRow, currentCol,moveRow,moveCol, movePosition);
+        allBlackPawnMoves(currentRow,currentCol,moveRow,moveCol,movePosition);
+        return validMoves;
+    }
+
+    public Collection<ChessMove> getDiagnolPawnMovesWhite() {
+        int currentRow = currentPosition.getRow();
+        int currentCol = currentPosition.getColumn();
+        int moveRow = currentRow;
+        int moveCol = currentCol;
+        ChessPosition movePosition;
+        moveRow++;
+
+        moveCol--;
+        movePosition=new ChessPosition(moveRow,moveCol);
+        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+            validMoves.add(new ChessMove(currentPosition,movePosition,null));
+        }
+        moveCol+=2;
+        movePosition=new ChessPosition(moveRow,moveCol);
+        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+            validMoves.add(new ChessMove(currentPosition,movePosition,null));
+        }
+        return validMoves;
+    }
+
+    public Collection<ChessMove> getDiagnolPawnMovesBlack() {
+        int currentRow = currentPosition.getRow();
+        int currentCol = currentPosition.getColumn();
+        int moveRow = currentRow;
+        int moveCol = currentCol;
+        ChessPosition movePosition;
+        moveRow--;
+        moveCol--;
+        movePosition=new ChessPosition(moveRow,moveCol);
+        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+            validMoves.add(new ChessMove(currentPosition,movePosition,null));
+        }
+        moveCol+=2;
+        movePosition=new ChessPosition(moveRow,moveCol);
+        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
+            validMoves.add(new ChessMove(currentPosition,movePosition,null));
+        }
+        return validMoves;
+    }
+
+    public void allWhitePawnMoves(int currentRow, int currentCol,int moveRow, int moveCol, ChessPosition movePosition) {
         if(piece.getTeamColor()==WHITE) {
             if(currentRow==2) {  //first move
                 moveRow++;
@@ -81,7 +129,11 @@ public class PawnRules extends PieceRules {
                 }
             }
         }
-        else {  //if black piece
+
+    }
+
+    public void allBlackPawnMoves(int currentRow, int currentCol,int moveRow, int moveCol, ChessPosition movePosition) {
+        if(piece.getTeamColor()== ChessGame.TeamColor.BLACK) {  //if black piece
             if(currentRow==7) {  //first move
                 moveRow--;
                 movePosition = new ChessPosition(moveRow,moveCol);
@@ -133,49 +185,6 @@ public class PawnRules extends PieceRules {
                 }
             }
         }
-        return validMoves;
+
     }
-
-    public Collection<ChessMove> getDiagnolPawnMovesWhite() {
-        int currentRow = currentPosition.getRow();
-        int currentCol = currentPosition.getColumn();
-        int moveRow = currentRow;
-        int moveCol = currentCol;
-        ChessPosition movePosition;
-        moveRow++;
-
-        moveCol--;
-        movePosition=new ChessPosition(moveRow,moveCol);
-        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-            validMoves.add(new ChessMove(currentPosition,movePosition,null));
-        }
-        moveCol+=2;
-        movePosition=new ChessPosition(moveRow,moveCol);
-        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-            validMoves.add(new ChessMove(currentPosition,movePosition,null));
-        }
-        return validMoves;
-    }
-
-    public Collection<ChessMove> getDiagnolPawnMovesBlack() {
-        int currentRow = currentPosition.getRow();
-        int currentCol = currentPosition.getColumn();
-        int moveRow = currentRow;
-        int moveCol = currentCol;
-        ChessPosition movePosition;
-        moveRow--;
-        moveCol--;
-        movePosition=new ChessPosition(moveRow,moveCol);
-        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-            validMoves.add(new ChessMove(currentPosition,movePosition,null));
-        }
-        moveCol+=2;
-        movePosition=new ChessPosition(moveRow,moveCol);
-        if(movePosition.validPosition() && board.getPiece(movePosition)!=null && board.getPiece(movePosition).getTeamColor()!= piece.getTeamColor()) {
-            validMoves.add(new ChessMove(currentPosition,movePosition,null));
-        }
-        return validMoves;
-    }
-
-
 }
