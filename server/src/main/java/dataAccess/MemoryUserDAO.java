@@ -16,8 +16,29 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public void createUser(String username, String password,String email) {
-        users.add(new UserData(username,password,email));
+    public void createUser(String username, String password,String email)  {
+        UserData addedUser = new UserData(username,password,email);
+        if(users.contains(addedUser)) {
+            //throw new PlayerFieldTakenException("");
+            //return false;
+        }
+        else {
+            users.add(addedUser);
+            //return true;
+        }
+    }
+
+    @Override
+    public boolean addUser(UserData addedUser) {
+        if(users.contains(addedUser)) {
+            return false;
+        }
+        else {
+            createUser(addedUser.username(), addedUser.password(), addedUser.email());
+            //users.add(addedUser);
+            return true;
+        }
+
     }
 
     @Override
@@ -31,17 +52,7 @@ public class MemoryUserDAO implements UserDAO{
         return null;
     }
 
-    @Override
-    public boolean addUser(UserData addedUser) {
-        if(users.contains(addedUser)) {
-            return false;
-        }
-        else {
-            users.add(addedUser);
-            return true;
-        }
 
-    }
 
 
     public int getUserIndex(String username) {

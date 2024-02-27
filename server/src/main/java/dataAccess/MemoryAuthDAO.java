@@ -30,7 +30,7 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public AuthData createAuth(String username) {  //does not check that username is in users, FIXME
+    public AuthData createAuth(String username) {  //does not check that username is in users, but calling method in LoginService does
         String token = UUID.randomUUID().toString();
         AuthData addedAuth = new AuthData(token,username);
         auth.add(addedAuth);

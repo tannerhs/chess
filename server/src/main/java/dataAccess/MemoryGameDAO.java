@@ -51,9 +51,9 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void joinGame(int GameID, String username, String playerColor) throws Exception {
-        GameData currentGame = getGameByID(GameID);
-        int gameIndex = getGameIndex(GameID);
+    public void joinGame(int gameID, String username, String playerColor) throws Exception {
+        GameData currentGame = getGameByID(gameID);
+        int gameIndex = getGameIndex(gameID);
         if(gameIndex==-1) {
             System.out.println("is this reached?");
         }
@@ -61,11 +61,11 @@ public class MemoryGameDAO implements GameDAO {
             //observer
         }
         else if(playerColor.equals("WHITE")) {
-            games.set(gameIndex,new GameData(GameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
+            games.set(gameIndex,new GameData(gameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
             System.out.println("games.size(): "+games.size());
         }
         else if(playerColor.equals("BLACK")){
-            games.set(gameIndex,new GameData(GameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
+            games.set(gameIndex,new GameData(gameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
             System.out.println("games.size(): "+games.size());
         }
         else {

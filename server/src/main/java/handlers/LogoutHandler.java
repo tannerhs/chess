@@ -25,8 +25,7 @@ public class LogoutHandler extends Handler {
                 //throw invalid input
             }
 
-
-            //FIXME remove LogoutResponse class, blank when successful and exception handles message otherwise
+            //no need for LogoutResponse class, blank when successful and exception handles message otherwise
         }
         catch(UnauthorizedAccessException e) {
             message=e.getMessage();

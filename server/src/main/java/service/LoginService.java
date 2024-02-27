@@ -12,7 +12,7 @@ import spark.Response;
 import java.util.Collection;
 import java.util.List;
 
-public class LoginService {  //FIXME
+public class LoginService {
     String username;
     String password;
     UserDAO users;

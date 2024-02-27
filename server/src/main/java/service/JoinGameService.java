@@ -4,8 +4,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 import requests.JoinGameRequest;
-import responses.JoinGameResponse;
-import responses.ListGamesResponse;
+
 
 import javax.naming.AuthenticationException;
 
@@ -29,9 +28,7 @@ public class JoinGameService {
     public Object joinGame() throws Exception {
         GameData gameToJoin = games.getGameByID(gameID);
 
-        //|| users.getUser(currentAuthData.username())==null
-
-        if(gameToJoin==null || games==null ) {  //FIXME non-white/black/nonspecified color
+        if(gameToJoin==null || games==null ) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else if(auth==null) {  //authentication exists but not valid
@@ -49,10 +46,6 @@ public class JoinGameService {
         else if (gameToJoin.blackUsername()!="" && gameToJoin.blackUsername()!=null && playerColor.equals("BLACK")) {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
-//        else if (nonstandardColor(playerColor) ||(gameToJoin.whiteUsername()!="" && playerColor.equals("WHITE")) ||
-//                (gameToJoin.blackUsername()!="" && playerColor.equals("BLACK"))) {  //already taken
-//            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
-//        }
         else {
             System.out.println("playerColor");
             AuthData currentAuthData = auth.getAuth(authToken);
@@ -60,11 +53,9 @@ public class JoinGameService {
             games.joinGame(gameID,username,playerColor);
             System.out.println("m games.size(): "+games.size());
 
-            //JoinGameResponse response = new JoinGameResponse();  //does nothing
             return "";
         }
-        //return new JoinGameResponse(games);
-        //return null;
+
     }
 
     public boolean nonstandardColor(String playerColor) {
