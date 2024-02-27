@@ -17,4 +17,5 @@ public class BishopRules extends PieceRules {
         return diagnolMoves();
         //return validMoves;
     }
+
 }

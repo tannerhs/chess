@@ -17,7 +17,7 @@ public interface GameDAO {
 
     int getGameIndex(int gameID);
 
-    void joinGame(int GameID, String username, String playerColor) throws Exception;
+    void joinGame(int gameID, String username, String playerColor) throws Exception;
 
     int size();
 }

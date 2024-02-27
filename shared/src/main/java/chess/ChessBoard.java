@@ -121,7 +121,7 @@ public class ChessBoard {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        ChessBoard clone = new ChessBoard();  //FIXME MAGIC NUMBERS
+        ChessBoard clone = new ChessBoard();  //MAGIC NUMBERS ok-ish for this class
         for(int r=1; r<=8; r++) {
             for(int c=1; c<=8; c++) {
                 ChessPosition pos = new ChessPosition(r,c);

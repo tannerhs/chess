@@ -64,11 +64,7 @@ public class ChessPiece {
             return myValidMoves;
         }
 
-//        BishopRules rule5 = new BishopRules(board,myPosition);
-//        myValidMoves=rule5.getValidMoves(board, myPosition);
-//        System.out.println("piece:");
-//        System.out.println(board.getPiece(myPosition).toString());
-        //otherwise..
+
         //select proper methods
         if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
             //System.out.println("pawn piece in ChessPiecem.java");

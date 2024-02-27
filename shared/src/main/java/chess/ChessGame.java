@@ -58,7 +58,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {  //FIXME
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if(board.getPiece(startPosition)==null) {
             return null;
         }

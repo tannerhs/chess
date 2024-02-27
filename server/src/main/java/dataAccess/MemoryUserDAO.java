@@ -54,16 +54,6 @@ public class MemoryUserDAO implements UserDAO{
 
 
 
-
-    public int getUserIndex(String username) {
-        for(int i=0; i<users.size(); i++) {
-            if (username==users.get(i).username()) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     @Override
     public int size() {
         return users.size();
