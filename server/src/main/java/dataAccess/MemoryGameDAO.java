@@ -17,7 +17,11 @@ public class MemoryGameDAO implements GameDAO {
 
 
     @Override
-    public CreateGameResponse createGame(String gameName) {
+    public CreateGameResponse createGame(String gameName) throws BadRequestException {
+        System.out.println("reached createGame");
+        if(games==null) {
+            throw new BadRequestException("{ \"message\": \"Error: bad request\" }");
+        }
         gameIDCounter+=1;
         games.add(new GameData(gameIDCounter,gameName));
         return new CreateGameResponse(gameIDCounter);

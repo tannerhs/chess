@@ -3,6 +3,7 @@ package service;
 import dataAccess.AuthDAO;
 import dataAccess.BadRequestException;
 import dataAccess.GameDAO;
+import dataAccess.UnauthorizedAccessException;
 import requests.CreateGameRequest;
 import responses.CreateGameResponse;
 
@@ -20,13 +21,14 @@ public class CreateGameService {
         this.games=request.games();
     }
 
-    public CreateGameResponse createGame() throws BadRequestException,AuthenticationException {
-        int gameID=-1;
+    public CreateGameResponse createGame() throws BadRequestException,UnauthorizedAccessException {
+        System.out.println("createGame method in service class reached");
         if(auth==null || gameName.equals("")) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else if(auth.getAuth(authToken)==null) {  //authentication exists but not valid
-            throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
+            System.out.println("bad authToken");
+            throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
             CreateGameResponse response =games.createGame(gameName);

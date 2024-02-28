@@ -7,10 +7,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.*;
+import responses.CreateGameResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
 import service.*;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -351,13 +353,22 @@ public class ServiceTests {
     public void CreateGamePos() {
         String message="success";
         try{
-            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun","120","@")))).register().addedAuth().authToken();
-            assertNotNull((new CreateGameService(new CreateGameRequest(authToken,"game5",auth,games))).createGame());
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fly","120","@")))).register().addedAuth().authToken();
+            CreateGameResponse res = (new CreateGameService(new CreateGameRequest(authToken,"game5",auth,games))).createGame();
+            //System.out.println(res.gameID());
         }
-        catch(Exception e) {
-            message="failure";
+        catch(BadRequestException e) {
+            message="failure1";
         }
+        catch(UnauthorizedAccessException a) {
+            message="failure2";
+        }
+        catch(Exception b) {
+            message="failure3";
+        }
+        //assertEquals("success",message);
         assertEquals(message,"success");
+
     }
 
     @Test
@@ -370,8 +381,56 @@ public class ServiceTests {
         catch(Exception e) {
             message="failure";
         }
+
         assertEquals(message,"failure");
     }
 
+    @Test
+    public void joinGameConstructorPos() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun1","120","@")))).register().addedAuth().authToken();
+            CreateGameResponse res = (new CreateGameService(new CreateGameRequest("dunno","game1",auth,games))).createGame();
+            assertNotNull(new JoinGameService(new JoinGameRequest("WHITE",res.gameID(),authToken,users,auth,games)));
+        }
+        catch(Exception e) {
+            //
+        }
+    }
+
+    @Test
+    public void joinGameConstructorNeg() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun3","120","@")))).register().addedAuth().authToken();
+            CreateGameResponse res = (new CreateGameService(new CreateGameRequest("dunno","game5",auth,games))).createGame();
+            assertEquals(new JoinGameService(new JoinGameRequest("WHILE",res.gameID(),authToken,users,auth,games)), new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }"));
+        }
+        catch(Exception e) {
+            //
+        }
+    }
+
+
+    @Test
+    public void joinGamePos() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("funni","120","@")))).register().addedAuth().authToken();
+            CreateGameResponse res = (new CreateGameService(new CreateGameRequest("dunno","game71",auth,games))).createGame();
+            assertEquals(new JoinGameService(new JoinGameRequest("WHITE",res.gameID(),authToken,users,auth,games)).joinGame(), "");
+        }
+        catch(Exception e) {
+            //
+        }
+    }
+    @Test
+    public void joinGameNeg() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("funn","120","@")))).register().addedAuth().authToken();
+            CreateGameResponse res = (new CreateGameService(new CreateGameRequest("dunno","game7",auth,games))).createGame();
+            assertEquals(new JoinGameService(new JoinGameRequest("WHILE",res.gameID(),authToken,users,auth,games)).joinGame(), new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }"));
+        }
+        catch(Exception e) {
+            //
+        }
+    }
 
 }

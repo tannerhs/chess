@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataAccess.AuthDAO;
 import dataAccess.BadRequestException;
 import dataAccess.GameDAO;
+import dataAccess.UnauthorizedAccessException;
 import requests.CreateGameRequest;
 import responses.CreateGameResponse;
 import service.CreateGameService;
@@ -35,12 +36,14 @@ public class CreateGameHandler {
             res.status(400);
             return message;
         }
-        catch (AuthenticationException e) {
+        catch (UnauthorizedAccessException e) {
             message=e.getMessage();
             res.status(401);
             return message;
         }
         catch (Exception e) {
+            System.out.println("rando exception");
+            res.status(500);
             return e.getMessage();
         }
 
