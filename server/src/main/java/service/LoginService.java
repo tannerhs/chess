@@ -35,7 +35,7 @@ public class LoginService {
         }
         else {
             UserData user = users.getUser(username);
-            if ( user==null || password==null) {
+            if ( user==null || password==null ||auth==null) {
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
             else if (!user.password().equals(password)) {

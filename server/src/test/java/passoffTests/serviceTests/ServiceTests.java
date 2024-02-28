@@ -6,13 +6,12 @@ import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ClearAppRequest;
-import requests.LogoutRequest;
-import requests.RegisterRequest;
+import requests.*;
+import responses.LoginResponse;
 import responses.RegisterResponse;
-import service.ClearAppService;
-import service.LogoutService;
-import service.RegisterService;
+import service.*;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,9 +26,6 @@ public class ServiceTests {
         users = new MemoryUserDAO();
         auth=new MemoryAuthDAO();
         games=new MemoryGameDAO();
-        RegisterService registerService;
-        LogoutService logoutService;
-
     }
 
     @Test
@@ -246,4 +242,136 @@ public class ServiceTests {
         }
         assertEquals(message,"failure");
     }
+
+
+    @Test
+    public void loginServiceConstructorPos() {
+        assertNotNull(new LoginService(new LoginRequest("meh","mmm2",users,auth)));
+    }
+
+    @Test
+    public void loginServiceConstructorNeg() {
+        try{
+            assertEquals((new LoginService(new LoginRequest("meh","mmm2",users,null))).login(),new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}"));
+
+        }
+        catch (Exception e) {
+            //
+        }
+    }
+    @Test
+    public void loginServicePos() {
+        try {
+            RegisterResponse response = new RegisterService(new RegisterRequest(users,auth,new UserData("ham","123","i@mail.com"))).register();
+            new LogoutService(new LogoutRequest(response.addedAuth().authToken(),auth));
+            LoginResponse res = new LoginService(new LoginRequest("ham","123",users,auth)).login();
+        }
+        catch(BadRequestException e) {
+            //
+        }
+        catch(UnauthorizedAccessException e) {
+            //
+        }
+        catch (PlayerFieldTakenException e) {
+            //
+        }
+    }
+    @Test
+    public void loginServiceNeg() {
+        try{
+            assertEquals((new LoginService(new LoginRequest("meh","mmm2",users,auth))).login(),new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}"));
+
+        }
+        catch (Exception e) {
+            //
+        }
+    }
+
+    @Test
+    public void ListGamesConstructorPos() {
+        try {
+            RegisterResponse res = (new RegisterService(new RegisterRequest(users,auth,new UserData("t","tl","@")))).register();
+            assertNotNull(new ListGamesService(new ListGamesRequest("",auth,games)));
+        }
+        catch (Exception e) {
+            //
+        }
+
+    }
+    @Test
+    public void ListGamesConstructorNeg() {
+        assertNotNull(new ListGamesService(new ListGamesRequest("none",auth,games)));
+    }
+
+    @Test
+    public void listGamesPos(){
+        try {
+            assertNotNull(new ListGamesService(new ListGamesRequest("none",auth,games)).listGames());
+        }
+        catch (Exception e) {
+            //
+        }
+    }
+
+    @Test
+    public void listGamesNeg(){
+        String message="success";
+        try {
+            assertNotNull(new ListGamesService(new ListGamesRequest("none",auth,games)).listGames());
+        }
+        catch (Exception e) {
+            message="failure";
+        }
+        assertEquals(message,"failure");
+    }
+
+    @Test
+    public void CreateGameConstructorPos() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun","120","@")))).register().addedAuth().authToken();
+            assertNotNull(new CreateGameService(new CreateGameRequest(authToken,"game1",auth,games)));
+        }
+        catch(Exception e) {
+            //
+        }
+    }
+
+    @Test
+    public void CreateGameConstructorNeg() {
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun","120","@")))).register().addedAuth().authToken();
+            assertNotNull(new CreateGameService(new CreateGameRequest("nonez","game1",auth,games)));
+        }
+        catch(Exception e) {
+            //
+        }
+    }
+
+    @Test
+    public void CreateGamePos() {
+        String message="success";
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun","120","@")))).register().addedAuth().authToken();
+            assertNotNull((new CreateGameService(new CreateGameRequest(authToken,"game5",auth,games))).createGame());
+        }
+        catch(Exception e) {
+            message="failure";
+        }
+        assertEquals(message,"success");
+    }
+
+    @Test
+    public void CreateGameNeg() {
+        String message="success";
+        try{
+            String authToken = (new RegisterService(new RegisterRequest(users,auth,new UserData("fun","120","@")))).register().addedAuth().authToken();
+            assertNotNull((new CreateGameService(new CreateGameRequest("dunno","game1",auth,games))).createGame());
+        }
+        catch(Exception e) {
+            message="failure";
+        }
+        assertEquals(message,"failure");
+    }
+
+
 }
