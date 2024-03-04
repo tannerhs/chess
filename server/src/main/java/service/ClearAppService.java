@@ -14,10 +14,9 @@ public class ClearAppService {
 
     }
 
-    public ClearAppResponse clearApp()  {
+    public void clearApp()  throws DataAccessException{
         clearRequest.userDAO().clear();
         clearRequest.authDAO().clearAll();
         clearRequest.gameDAO().clear();
-        return new ClearAppResponse("database cleared");
     }
 }

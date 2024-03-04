@@ -4,6 +4,8 @@ import dataAccess.*;
 import handlers.*;
 import spark.*;
 
+import static dataAccess.DatabaseManager.*;
+
 public class Server {
 
     static UserDAO usersDAO; //pass around as needed
@@ -11,9 +13,15 @@ public class Server {
     static AuthDAO authDAO;  //pass around as needed
 
     public Server(){
-        usersDAO= new MemoryUserDAO();
-        gamesDAO = new MemoryGameDAO();
-        authDAO = new MemoryAuthDAO();
+        try {
+            usersDAO = new DatabaseUserDAO();
+            gamesDAO = new DatabaseGameDAO();
+            authDAO = new DatabaseAuthDAO();
+            DatabaseManager.createDatabase();
+        }
+        catch( Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int run(int desiredPort) {
