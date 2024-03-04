@@ -15,7 +15,7 @@ public class DatabaseManager {
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
-                if (propStream == null) throw new Exception("Unable to laod db.properties");
+                if (propStream == null) throw new Exception("Unable to loqd db.properties");
                 Properties props = new Properties();
                 props.load(propStream);
                 databaseName = props.getProperty("db.name");
@@ -35,25 +35,53 @@ public class DatabaseManager {
      * Creates the database if it does not already exist.
      */
     public static void createDatabase() throws DataAccessException {
-        try {
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, password);) {
+
             String statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-            Connection conn = DriverManager.getConnection(connectionUrl, user, password);
-            try (var preparedStatement = conn.prepareStatement(statement)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-
-            String createUsersTable = """
-                    CREATE TABLE IF NOT EXISTS users( +
-                    STRING username NOT NULL,
-                    STRING password NOT NULL
-                    STRING email NOT NULL,
-                    PRIMARY KEY (username)
-                    """;
-            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
-                createUsersTableStatement.executeUpdate();
+            catch (Exception E) {
+                System.out.println("failed to create database");
             }
-
-
+            System.out.println("database created");
+//            String createUsersTable = """
+//                    CREATE TABLE IF NOT EXISTS users(
+//                    TEXT username NOT NULL,
+//                    TEXT password NOT NULL
+//                    TEXT email NOT NULL,
+//                    PRIMARY KEY (username)
+//                    )""";
+//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
+//                createUsersTableStatement.executeUpdate();
+//            }
+//            System.out.println("users table created");
+//
+//            String createGamesTable = """
+//                    CREATE TABLE IF NOT EXISTS games(
+//                    int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game
+//                    INT gameID NOT NULL,
+//                    TEXT whiteUsername,
+//                    Text blackUsername,
+//                    Text gameName,
+//                    BLOB game
+//                    PRIMARY KEY (gameID)
+//                    )""";
+//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
+//                createUsersTableStatement.executeUpdate();
+//            }
+//            System.out.println("games table created");
+//
+//            String createAuthTable = """
+//                    CREATE TABLE IF NOT EXISTS auth(
+//                    TEXT authToken,
+//                    Text username
+//                    PRIMARY KEY (authToken)
+//                    )""";
+//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
+//                createUsersTableStatement.executeUpdate();
+//            }
+//            System.out.println("auth table created");
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }

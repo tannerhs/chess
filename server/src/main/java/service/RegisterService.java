@@ -1,9 +1,6 @@
 package service;
 
-import dataAccess.AuthDAO;
-import dataAccess.BadRequestException;
-import dataAccess.PlayerFieldTakenException;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 import requests.RegisterRequest;
@@ -26,7 +23,7 @@ public class RegisterService {
         this.email = request.addUser().email();
     }
 
-    public RegisterResponse register() throws PlayerFieldTakenException, BadRequestException {
+    public RegisterResponse register() throws PlayerFieldTakenException, BadRequestException, DataAccessException {
         int statusCode=200;  //success unless..
         AuthData addedAuth=null;
         String errorMessage=null;

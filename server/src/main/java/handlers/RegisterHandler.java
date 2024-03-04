@@ -1,10 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.BadRequestException;
-import dataAccess.PlayerFieldTakenException;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 import requests.RegisterRequest;
@@ -37,6 +34,10 @@ public class RegisterHandler extends Handler {
         }
         catch(PlayerFieldTakenException e) {
             res.status(403);
+            return e.getMessage();
+        }
+        catch(DataAccessException e) {
+            res.status(500);
             return e.getMessage();
         }
 

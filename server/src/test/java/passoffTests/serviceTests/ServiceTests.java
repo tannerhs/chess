@@ -163,6 +163,9 @@ public class ServiceTests {
         catch (PlayerFieldTakenException e) {
             message="failure3";
         }
+        catch(DataAccessException e) {
+            message="failure4";
+        }
         assertEquals(message,"success");
     }
 
@@ -190,6 +193,9 @@ public class ServiceTests {
         }
         catch (PlayerFieldTakenException e) {
             message="failure3";
+        }
+        catch(DataAccessException e) {
+            message="failure4";
         }
         assertEquals(message,"failure");
     }
@@ -263,20 +269,25 @@ public class ServiceTests {
     }
     @Test
     public void loginServicePos() {
+        String message="success";
         try {
             RegisterResponse response = new RegisterService(new RegisterRequest(users,auth,new UserData("ham","123","i@mail.com"))).register();
             new LogoutService(new LogoutRequest(response.addedAuth().authToken(),auth));
             LoginResponse res = new LoginService(new LoginRequest("ham","123",users,auth)).login();
         }
         catch(BadRequestException e) {
-            //
+            message="failure1";
         }
         catch(UnauthorizedAccessException e) {
-            //
+            message="failure2";
         }
         catch (PlayerFieldTakenException e) {
-            //
+            message="failure3";
         }
+        catch(DataAccessException e) {
+            //message="failure4";
+        }
+        assertEquals(message,"success");
     }
     @Test
     public void loginServiceNeg() {

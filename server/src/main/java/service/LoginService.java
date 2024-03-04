@@ -26,7 +26,7 @@ public class LoginService {
     }
 
     //login an existing user
-    public LoginResponse login() throws UnauthorizedAccessException {
+    public LoginResponse login() throws UnauthorizedAccessException, DataAccessException {
         int statusCode=200;
         String errorMessage="lol";
         AuthData responseAuth=null;

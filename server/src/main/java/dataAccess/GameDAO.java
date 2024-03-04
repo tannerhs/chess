@@ -3,11 +3,12 @@ package dataAccess;
 import model.GameData;
 import responses.CreateGameResponse;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface GameDAO {
 
-    public void clear();
+    public void clear() throws DataAccessException;
     public CreateGameResponse createGame(String gameName) throws BadRequestException;
 
     public List<GameData> listGames();
