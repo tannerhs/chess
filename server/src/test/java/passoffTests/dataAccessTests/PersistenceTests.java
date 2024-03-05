@@ -1,4 +1,4 @@
-package passoffTests.DataAccessTests;
+package passoffTests.dataAccessTests;
 
 import chess.ChessGame;
 import org.junit.jupiter.api.*;
