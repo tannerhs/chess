@@ -3,7 +3,6 @@ package dataAccess;
 import model.AuthData;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -11,7 +10,7 @@ import java.util.UUID;
 public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public void clearAll() throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = CustomDatabaseManager.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE users");
             preparedStatement.executeUpdate();
         }
@@ -27,7 +26,7 @@ public class DatabaseAuthDAO implements AuthDAO{
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {  //since username is primary key.. I dunno
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = CustomDatabaseManager.getConnection()) {
             String token = UUID.randomUUID().toString();
             AuthData addedAuth = new AuthData(token,username);
             String statement = "CREATE DATABASE IF NOT EXISTS " + token;
@@ -65,5 +64,24 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public int size() {
         return 0;
+    }
+
+    @Override
+    public void configureDatabase() throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()){
+            String createAuthTable = """
+                    CREATE TABLE IF NOT EXISTS auth(
+                    authToken VARCHAR(255) NOT NULL,
+                    username MEDIUMTEXT NOT NULL,
+                    PRIMARY KEY (authToken)
+                    )""";
+            try (PreparedStatement createAuthTableStatement = conn.prepareStatement(createAuthTable)) {
+                createAuthTableStatement.executeUpdate();
+            }
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }

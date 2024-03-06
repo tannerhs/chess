@@ -13,4 +13,5 @@ public interface AuthDAO {
 
     int size();
 
+    void configureDatabase() throws DataAccessException;
 }

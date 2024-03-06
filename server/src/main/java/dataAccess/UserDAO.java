@@ -10,4 +10,6 @@ public interface UserDAO {
     public boolean addUser(UserData addedUser);
 
     int size();
+
+    public void configureDatabase() throws DataAccessException;
 }

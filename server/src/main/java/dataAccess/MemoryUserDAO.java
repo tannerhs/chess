@@ -56,4 +56,9 @@ public class MemoryUserDAO implements UserDAO{
     public int size() {
         return users.size();
     }
+
+    @Override
+    public void configureDatabase() throws DataAccessException {
+
+    }
 }

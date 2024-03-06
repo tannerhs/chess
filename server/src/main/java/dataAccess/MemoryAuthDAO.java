@@ -61,5 +61,10 @@ public class MemoryAuthDAO implements AuthDAO{
         return auth.size();
     }
 
+    @Override
+    public void configureDatabase() throws DataAccessException {
+
+    }
+
 
 }

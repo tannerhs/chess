@@ -2,19 +2,35 @@ package dataAccess;
 
 import model.UserData;
 import java.sql.*;
-import java.util.Properties;
-
-import static dataAccess.DatabaseManager.*;
 
 public class DatabaseUserDAO implements UserDAO {
 
-    //public void configureDatabase() {
-    //
-    //}
+    @Override
+    public void configureDatabase() throws DataAccessException {
+        try {
+            DatabaseManager.createDatabase();
+            try(Connection conn = DatabaseManager.getConnection()) {
+                String createUsersTable = """
+                    CREATE TABLE IF NOT EXISTS users(
+                    username VARCHAR(255) NOT NULL,
+                    password MEDIUMTEXT NOT NULL,
+                    email MEDIUMTEXT NOT NULL,
+                    PRIMARY KEY (username)
+                    )""";
+                try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
+                    createUsersTableStatement.executeUpdate();
+                }
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+    }
 
     @Override
     public void clear() throws DataAccessException {
-            try (Connection conn = DatabaseManager.getConnection()) {
+            try (Connection conn = CustomDatabaseManager.getConnection()) {
                 PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE users");
                 preparedStatement.executeUpdate();
             }

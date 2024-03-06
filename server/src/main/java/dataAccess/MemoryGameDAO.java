@@ -87,4 +87,9 @@ public class MemoryGameDAO implements GameDAO {
         }
         return games.size();
     }
+
+    @Override
+    public void configureDatabae() throws DataAccessException {
+
+    }
 }

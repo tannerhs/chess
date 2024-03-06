@@ -4,7 +4,10 @@ import dataAccess.*;
 import handlers.*;
 import spark.*;
 
-import static dataAccess.DatabaseManager.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
 
 public class Server {
 
@@ -14,10 +17,12 @@ public class Server {
 
     public Server(){
         try {
-            usersDAO = new DatabaseUserDAO();
+            usersDAO = new DatabaseUserDAO();  //must be called first since creates database as well
+            usersDAO.configureDatabase();
             gamesDAO = new DatabaseGameDAO();
+            gamesDAO.configureDatabae();
             authDAO = new DatabaseAuthDAO();
-            DatabaseManager.createDatabase();
+            authDAO.configureDatabase();
         }
         catch( Exception e) {
             e.printStackTrace();
@@ -51,9 +56,6 @@ public class Server {
         Spark.get("/game", (req,res) -> new ListGamesHandler().handleRequest(req,res, authDAO, gamesDAO));
         Spark.put("/game", (req,res) -> new JoinGameHandler().handleRequest(req,res,usersDAO,authDAO,gamesDAO));
     }
-
-
-
 
 
 

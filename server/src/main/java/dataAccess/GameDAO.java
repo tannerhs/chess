@@ -21,4 +21,6 @@ public interface GameDAO {
     void joinGame(int gameID, String username, String playerColor) throws Exception;
 
     int size();
+
+    void configureDatabae() throws DataAccessException;
 }
