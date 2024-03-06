@@ -34,13 +34,13 @@ public class LoginService {
             throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
-            UserData user = users.getUser(username);
-            if ( user==null || password==null ||auth==null) {
+            String hashed_password = users.getPassword(username);
+            if (hashed_password==null) {
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
-            else if (!user.password().equals(password)) {
+            else if (!hashed_password.equals(password)) {
                 System.out.println("password: "+ password);
-                System.out.println("user.password(): "+user.password());
+                System.out.println("user.password(): "+hashed_password);
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
             else {

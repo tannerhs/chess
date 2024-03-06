@@ -4,10 +4,13 @@ import model.*;
 
 public interface UserDAO {
     public void clear() throws DataAccessException;
-    public void createUser(String username, String password, String email);
-    public UserData getUser(String username);
+    public void createUser(String username, String password, String email) throws DataAccessException;
 
-    public boolean addUser(UserData addedUser);
+    String getPassword(String username) throws DataAccessException;
+
+    public UserData getUser(String username) throws DataAccessException;
+
+    public boolean addUser(UserData addedUser) throws DataAccessException;
 
     int size();
 

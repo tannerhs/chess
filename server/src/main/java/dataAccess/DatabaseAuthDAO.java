@@ -29,7 +29,8 @@ public class DatabaseAuthDAO implements AuthDAO{
         try (Connection conn = CustomDatabaseManager.getConnection()) {
             String token = UUID.randomUUID().toString();
             AuthData addedAuth = new AuthData(token,username);
-            String statement = "CREATE DATABASE IF NOT EXISTS " + token;
+            //String statement = "CREATE DATABASE IF NOT EXISTS " + token;
+            System.out.println("createAuth reached");
 
             try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
                 preparedStatement.setString(1, token);
@@ -37,12 +38,12 @@ public class DatabaseAuthDAO implements AuthDAO{
 
                 preparedStatement.executeUpdate();
 
-                var resultSet = preparedStatement.getGeneratedKeys();
-                var ID = 0;
-                if (resultSet.next()) {
-                    ID = resultSet.getInt(1);
-                }
-                System.out.println("ID: "+ ID);
+//                var resultSet = preparedStatement.getGeneratedKeys();
+//                var ID = 0;
+//                if (resultSet.next()) {
+//                    ID = resultSet.getInt(1);
+//                }
+//                System.out.println("ID: "+ ID);
             }
             return addedAuth;
         } catch (SQLException e) {

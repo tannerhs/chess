@@ -17,6 +17,7 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public void createUser(String username, String password,String email)  {
+
         UserData addedUser = new UserData(username,password,email);
         if(users.contains(addedUser)) {
             //throw new PlayerFieldTakenException("");
@@ -26,6 +27,11 @@ public class MemoryUserDAO implements UserDAO{
             users.add(addedUser);
             //return true;
         }
+    }
+
+    @Override
+    public String getPassword(String username) throws DataAccessException {
+        return null;
     }
 
     @Override
