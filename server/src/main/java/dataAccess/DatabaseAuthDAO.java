@@ -2,9 +2,7 @@ package dataAccess;
 
 import model.AuthData;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.UUID;
 
 public class DatabaseAuthDAO implements AuthDAO{
@@ -20,8 +18,18 @@ public class DatabaseAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void deleteAuth(String authToken) throws UnauthorizedAccessException {
-
+    public void deleteAuth(String authToken) throws UnauthorizedAccessException, DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()) {
+            PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken='"+authToken+"'", Statement.RETURN_GENERATED_KEYS);
+            int rows_deleted= deleteStatement.executeUpdate();
+            ResultSet rs = deleteStatement.getGeneratedKeys();
+            if(rows_deleted==0) {
+                throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -53,8 +61,22 @@ public class DatabaseAuthDAO implements AuthDAO{
     }
 
     @Override
-    public AuthData getAuth(String token) {
+    public AuthData getAuth(String token) throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()) {
+            PreparedStatement query = conn.prepareStatement("SELECT authToken, username FROM auth WHERE authToken='"+token+"'");
+            ResultSet rs=query.executeQuery();
+            if(rs.next()) {
+                String username = rs.getString("username");
+                AuthData addedAuth = new AuthData(token,username);
+                return addedAuth;
+            }
+            throw new DataAccessException("no valid token");
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return null;
+
     }
 
     @Override

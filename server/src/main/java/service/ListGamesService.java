@@ -1,10 +1,7 @@
 package service;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.BadRequestException;
-import dataAccess.GameDAO;
-import dataAccess.UnauthorizedAccessException;
+import dataAccess.*;
 import requests.ListGamesRequest;
 import javax.naming.AuthenticationException;
 import java.util.HashSet;
@@ -21,7 +18,7 @@ public class ListGamesService {
         this.games= request.games();
     }
 
-    public String listGames() throws BadRequestException, AuthenticationException, UnauthorizedAccessException {
+    public String listGames() throws BadRequestException, AuthenticationException, UnauthorizedAccessException, DataAccessException {
         if(auth==null) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }

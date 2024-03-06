@@ -1,9 +1,6 @@
 package service;
 
-import dataAccess.AuthDAO;
-import dataAccess.BadRequestException;
-import dataAccess.GameDAO;
-import dataAccess.UnauthorizedAccessException;
+import dataAccess.*;
 import requests.CreateGameRequest;
 import responses.CreateGameResponse;
 
@@ -21,7 +18,7 @@ public class CreateGameService {
         this.games=request.games();
     }
 
-    public CreateGameResponse createGame() throws BadRequestException,UnauthorizedAccessException {
+    public CreateGameResponse createGame() throws BadRequestException, UnauthorizedAccessException, DataAccessException {
         System.out.println("createGame method in service class reached");
         if(auth==null || gameName.equals("")) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
