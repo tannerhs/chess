@@ -35,7 +35,7 @@ public class DatabaseManager {
      * Creates the database if it does not already exist.
      */
     public static void createDatabase() throws DataAccessException {
-        try (Connection conn = DriverManager.getConnection(connectionUrl, user, password);) {
+        try (Connection conn = DriverManager.getConnection(connectionUrl, user, password)) {
 
             String statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
