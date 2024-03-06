@@ -45,43 +45,44 @@ public class DatabaseManager {
                 System.out.println("failed to create database");
             }
             System.out.println("database created");
-//            String createUsersTable = """
-//                    CREATE TABLE IF NOT EXISTS users(
-//                    TEXT username NOT NULL,
-//                    TEXT password NOT NULL
-//                    TEXT email NOT NULL,
-//                    PRIMARY KEY (username)
-//                    )""";
-//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
-//                createUsersTableStatement.executeUpdate();
-//            }
-//            System.out.println("users table created");
-//
-//            String createGamesTable = """
-//                    CREATE TABLE IF NOT EXISTS games(
-//                    int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game
-//                    INT gameID NOT NULL,
-//                    TEXT whiteUsername,
-//                    Text blackUsername,
-//                    Text gameName,
-//                    BLOB game
-//                    PRIMARY KEY (gameID)
-//                    )""";
-//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
-//                createUsersTableStatement.executeUpdate();
-//            }
-//            System.out.println("games table created");
-//
-//            String createAuthTable = """
-//                    CREATE TABLE IF NOT EXISTS auth(
-//                    TEXT authToken,
-//                    Text username
-//                    PRIMARY KEY (authToken)
-//                    )""";
-//            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
-//                createUsersTableStatement.executeUpdate();
-//            }
-//            System.out.println("auth table created");
+
+            conn.setCatalog("chess");
+            String createUsersTable = """
+                    CREATE TABLE IF NOT EXISTS users(
+                    username VARCHAR(255) NOT NULL,
+                    password MEDIUMTEXT NOT NULL,
+                    email MEDIUMTEXT NOT NULL,
+                    PRIMARY KEY (username)
+                    )""";
+            try (PreparedStatement createUsersTableStatement = conn.prepareStatement(createUsersTable)) {
+                createUsersTableStatement.executeUpdate();
+            }
+            System.out.println("users table created");
+
+            String createGamesTable = """
+                    CREATE TABLE IF NOT EXISTS games(
+                    gameID INT NOT NULL,
+                    whiteUsername MEDIUMTEXT,
+                    blackUsername MEDIUMTEXT,
+                    gameName MEDIUMTEXT NOT NULL,
+                    game MEDIUMBLOB NOT NULL,
+                    PRIMARY KEY (gameID)
+                    )""";
+            try (PreparedStatement createGamesTableStatement = conn.prepareStatement(createGamesTable)) {
+                createGamesTableStatement.executeUpdate();
+            }
+            System.out.println("games table created");
+
+            String createAuthTable = """
+                    CREATE TABLE IF NOT EXISTS auth(
+                    authToken VARCHAR(255) NOT NULL,
+                    username MEDIUMTEXT NOT NULL,
+                    PRIMARY KEY (authToken)
+                    )""";
+            try (PreparedStatement createAuthTableStatement = conn.prepareStatement(createAuthTable)) {
+                createAuthTableStatement.executeUpdate();
+            }
+            System.out.println("auth table created");
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
