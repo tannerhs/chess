@@ -42,7 +42,7 @@ public class DatabaseAuthDAO implements AuthDAO{
 
             try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
                 preparedStatement.setString(1, token);
-                preparedStatement.setString(2, username);  //FIXME correct username?
+                preparedStatement.setString(2, username);
 
                 preparedStatement.executeUpdate();
 
@@ -82,7 +82,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     }
 
     @Override
-    public int getAuthIndex(String token) {  //FIXME remove usage or replace with sql equivalent
+    public int getAuthIndex(String token) {  //never used now
 
         return 0;
     }
