@@ -1,10 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.BadRequestException;
-import dataAccess.GameDAO;
-import dataAccess.UnauthorizedAccessException;
+import dataAccess.*;
 import requests.CreateGameRequest;
 import responses.CreateGameResponse;
 import service.CreateGameService;
@@ -36,7 +33,7 @@ public class CreateGameHandler {
             res.status(400);
             return message;
         }
-        catch (UnauthorizedAccessException e) {
+        catch (UnauthorizedAccessException |DataAccessException e) {
             message=e.getMessage();
             res.status(401);
             return message;

@@ -11,7 +11,7 @@ public interface GameDAO {
     public void clear() throws DataAccessException;
     public CreateGameResponse createGame(String gameName) throws BadRequestException, DataAccessException;
 
-    public List<GameData> listGames();
+    public List<GameData> listGames() throws DataAccessException;
 
     GameData getGameByID(int i);
 

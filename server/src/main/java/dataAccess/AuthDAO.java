@@ -7,7 +7,7 @@ public interface AuthDAO {
     public void deleteAuth(String authToken) throws UnauthorizedAccessException, DataAccessException;
     public AuthData createAuth(String username) throws DataAccessException;  //token is string
 
-    public AuthData getAuth(String token) throws DataAccessException;
+    public AuthData getAuth(String token) throws DataAccessException, UnauthorizedAccessException;
 
     int getAuthIndex(String token);
 
