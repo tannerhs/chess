@@ -55,7 +55,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void joinGame(int gameID, String username, String playerColor) throws Exception {
+    public void joinGame(int gameID, String username, String playerColor) throws PlayerFieldTakenException {
         GameData currentGame = getGameByID(gameID);
         int gameIndex = getGameIndex(gameID);
         if(gameIndex==-1) {
@@ -73,7 +73,7 @@ public class MemoryGameDAO implements GameDAO {
             System.out.println("games.size(): "+games.size());
         }
         else {
-            throw new Exception("{\"message\": \"Error: already taken\" }");
+            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
             //observer
         }
 

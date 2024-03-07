@@ -28,7 +28,7 @@ public class JoinGameHandler {
             message = e.getMessage();
             res.status(400);
         }
-        catch(AuthenticationException e) {
+        catch(AuthenticationException | DataAccessException e) {
             message=e.getMessage();
             res.status(401);
         }
@@ -37,6 +37,7 @@ public class JoinGameHandler {
             res.status(403);
         }
         catch(Exception e) {
+            System.out.println("join game handler 500 exception reached");
             message=e.getMessage();
             res.status(500);
         }

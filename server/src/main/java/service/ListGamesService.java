@@ -26,7 +26,7 @@ public class ListGamesService {
             System.out.println("bad authentication");
             throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
-        else if(auth.getAuthIndex(authToken)==-1) {  //authentication exists but not valid
+        else if(auth.getAuth(authToken)==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
         else {

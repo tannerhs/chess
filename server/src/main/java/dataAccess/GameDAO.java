@@ -18,9 +18,9 @@ public interface GameDAO {
 
     int getGameIndex(int gameID);
 
-    void joinGame(int gameID, String username, String playerColor) throws Exception;
+    void joinGame(int gameID, String username, String playerColor) throws PlayerFieldTakenException, DataAccessException;
 
-    int size();
+    int size() throws DataAccessException;
 
     void configureDatabae() throws DataAccessException;
 }

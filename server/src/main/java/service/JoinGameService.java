@@ -25,7 +25,7 @@ public class JoinGameService {
         this.games= request.games();
     }
 
-    public Object joinGame() throws Exception {
+    public Object joinGame() throws BadRequestException, AuthenticationException, DataAccessException, PlayerFieldTakenException, UnauthorizedAccessException {
         GameData gameToJoin = games.getGameByID(gameID);
 
         if(gameToJoin==null || games==null ) {
@@ -34,7 +34,7 @@ public class JoinGameService {
         else if(auth==null) {  //authentication exists but not valid
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
-        else if(auth.getAuthIndex(authToken)==-1) {
+        else if(auth.getAuth(authToken)==null) {
             throw new AuthenticationException("{\"message\": \"Error: unauthorized\"}");
         }
         else if(nonstandardColor(playerColor)) {

@@ -138,7 +138,7 @@ public class DatabaseGameDAO implements GameDAO {
     }
 
     @Override
-    public void joinGame(int gameID, String username, String playerColor) throws Exception {
+    public void joinGame(int gameID, String username, String playerColor) throws PlayerFieldTakenException, DataAccessException {
         GameData currentGame = getGameByID(gameID);
 //        int gameIndex = getGameIndex(gameID);
 //        if(gameIndex==-1) {
@@ -172,15 +172,26 @@ public class DatabaseGameDAO implements GameDAO {
             //System.out.println("games.size(): "+games.size());
         }
         else {
-            throw new Exception("{\"message\": \"Error: already taken\" }");
+            throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
             //observer
         }
     }
 
     @Override
-    public int size() {
-        //FIXME
-        return 0;
+    public int size() throws DataAccessException {
+        int size=0;
+        try(Connection conn = DatabaseManager.getConnection()) {
+            try(PreparedStatement getNumGames = conn.prepareStatement("SELECT gameID FROM games")) {
+               ResultSet rs = getNumGames.executeQuery();
+                while(rs.next()) {
+                    size++;
+                }
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return size;
     }
 
     @Override

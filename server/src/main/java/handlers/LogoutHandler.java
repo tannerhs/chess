@@ -1,6 +1,7 @@
 package handlers;
 
 import dataAccess.AuthDAO;
+import dataAccess.DataAccessException;
 import dataAccess.UnauthorizedAccessException;
 import requests.LogoutRequest;
 import service.LogoutService;
@@ -27,7 +28,7 @@ public class LogoutHandler extends Handler {
 
             //no need for LogoutResponse class, blank when successful and exception handles message otherwise
         }
-        catch(UnauthorizedAccessException e) {
+        catch(UnauthorizedAccessException | DataAccessException e) {
             message=e.getMessage();
             res.status(401);
         }

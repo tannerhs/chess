@@ -36,11 +36,11 @@ public class LoginHandler extends Handler {
             res.body(response);
             return response;
         }
-        catch(UnauthorizedAccessException e){
+        catch(UnauthorizedAccessException |DataAccessException e){
             res.status(401);
             return e.getMessage();
         }
-        catch (DataAccessException e) {
+        catch (Exception e) {
             res.status(500);
             return e.getMessage();
         }

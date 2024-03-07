@@ -70,7 +70,8 @@ public class DatabaseAuthDAO implements AuthDAO{
                 AuthData addedAuth = new AuthData(token,username);
                 return addedAuth;
             }
-            throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
+            return null;
+            //throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             //throw new DataAccessException("no valid token");
         }
         catch(SQLException e) {
@@ -82,6 +83,7 @@ public class DatabaseAuthDAO implements AuthDAO{
 
     @Override
     public int getAuthIndex(String token) {  //FIXME remove usage or replace with sql equivalent
+
         return 0;
     }
 

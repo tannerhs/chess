@@ -25,6 +25,7 @@ public class ClearHandler {
             return "{}";
         }
         catch (Exception e) {
+            System.out.println("clear exception should never happen");
             res.status(500);
             return e.getMessage();
         }

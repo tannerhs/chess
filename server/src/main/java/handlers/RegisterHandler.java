@@ -37,6 +37,7 @@ public class RegisterHandler extends Handler {
             return e.getMessage();
         }
         catch(DataAccessException e) {
+            System.out.println("register data access exception should never occur");
             res.status(500);
             return e.getMessage();
         }
