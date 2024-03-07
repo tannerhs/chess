@@ -80,7 +80,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     }
 
     @Override
-    public int getAuthIndex(String token) {
+    public int getAuthIndex(String token) {  //FIXME remove usage or replace with sql equivalent
         return 0;
     }
 

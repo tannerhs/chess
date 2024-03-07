@@ -9,7 +9,7 @@ import java.util.List;
 public interface GameDAO {
 
     public void clear() throws DataAccessException;
-    public CreateGameResponse createGame(String gameName) throws BadRequestException;
+    public CreateGameResponse createGame(String gameName) throws BadRequestException, DataAccessException;
 
     public List<GameData> listGames();
 
