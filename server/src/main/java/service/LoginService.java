@@ -4,6 +4,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.util.log.Log;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requests.LoginRequest;
 import responses.LoginResponse;
 import spark.Request;
@@ -20,7 +21,7 @@ public class LoginService {
 
     public LoginService(LoginRequest request) {
         this.username=request.username();
-        this.password=request.password();
+        this.password= request.password();
         this.users = request.users();
         this.auth= request.auth();
     }
@@ -35,6 +36,7 @@ public class LoginService {
             throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
             String hashed_password = users.getPassword(username);
             System.out.println("hashed_password: '"+(hashed_password==null)+"'");
@@ -44,7 +46,7 @@ public class LoginService {
                 System.out.println("no password");
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
-            else if (!hashed_password.equals(password)) {
+            else if (!encoder.matches(password,hashed_password)) {
                 System.out.println("password: "+ password);
                 System.out.println("user.password(): "+hashed_password);
                 System.out.println("password doesn't match");

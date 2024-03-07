@@ -3,6 +3,7 @@ package service;
 import dataAccess.*;
 import model.AuthData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requests.RegisterRequest;
 import responses.RegisterResponse;
 
@@ -32,7 +33,8 @@ public class RegisterService {
         }
         else {
             //add user to database
-            UserData addedUser = new UserData(username, password,email);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            UserData addedUser = new UserData(username,encoder.encode(password),email);
             if (users.addUser(addedUser)==true) {
                 //create and add new auth token
                 addedAuth = auth.createAuth(username);

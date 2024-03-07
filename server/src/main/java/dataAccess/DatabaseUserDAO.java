@@ -1,6 +1,7 @@
 package dataAccess;
 
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.*;
 
@@ -48,6 +49,7 @@ public class DatabaseUserDAO implements UserDAO {
             //String statement = "CREATE DATABASE IF NOT EXISTS " + token;
             System.out.println("createUser reached");
 
+
             try (var preparedStatement = conn.prepareStatement("INSERT INTO users (username, password, email) VALUES(?, ?,?)")) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
@@ -73,9 +75,9 @@ public class DatabaseUserDAO implements UserDAO {
                     ResultSet resultSet= preparedStatement.executeQuery();
                     if (resultSet.next()) {
                         String name = resultSet.getString("username");
-                        String hashed_password=resultSet.getString("password");
+                        String password=resultSet.getString("password");
                         System.out.println("returning password");
-                        return hashed_password;
+                        return password;
                     }
                     System.out.println("returned null password");
                     return null;  //if user doesn't exist
