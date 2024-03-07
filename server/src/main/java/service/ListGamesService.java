@@ -19,7 +19,10 @@ public class ListGamesService {
     }
 
     public String listGames() throws BadRequestException, AuthenticationException, UnauthorizedAccessException, DataAccessException {
-        if(auth==null) {
+        System.out.println("listGames service reached");
+        System.out.println("auth: "+auth);
+
+        if(auth==null || authToken==null) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else if(auth.getAuth(authToken)==null) {  //authentication exists but not valid

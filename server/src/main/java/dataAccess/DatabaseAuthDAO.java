@@ -9,7 +9,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public void clearAll() throws DataAccessException {
         try (Connection conn = CustomDatabaseManager.getConnection()) {
-            PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE users");
+            PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE auth");
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
