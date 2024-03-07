@@ -18,7 +18,7 @@ public class DatabaseGameDAO implements GameDAO {
     @Override
     public void clear() throws DataAccessException {
         try (Connection conn = CustomDatabaseManager.getConnection()) {
-            PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE users");
+            PreparedStatement preparedStatement = conn.prepareStatement("TRUNCATE TABLE games");
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {

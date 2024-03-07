@@ -63,6 +63,7 @@ public class MemoryGameDAO implements GameDAO {
         }
         else if(playerColor == null || playerColor.isEmpty()){  //needs to be ==null, not .equals()
             //observer
+
         }
         else if(playerColor.equals("WHITE")) {
             games.set(gameIndex,new GameData(gameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
