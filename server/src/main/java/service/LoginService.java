@@ -31,16 +31,23 @@ public class LoginService {
         String errorMessage="lol";
         AuthData responseAuth=null;
         if(users==null) {
+            System.out.println("users null");
             throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
         }
         else {
+
             String hashed_password = users.getPassword(username);
+            System.out.println("hashed_password: '"+(hashed_password==null)+"'");
+            System.out.println("user entered password: '"+password+"'");
+
             if (hashed_password==null) {
+                System.out.println("no password");
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
             else if (!hashed_password.equals(password)) {
                 System.out.println("password: "+ password);
                 System.out.println("user.password(): "+hashed_password);
+                System.out.println("password doesn't match");
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
             else {

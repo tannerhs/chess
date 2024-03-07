@@ -67,15 +67,17 @@ public class DatabaseUserDAO implements UserDAO {
             try (Connection conn = CustomDatabaseManager.getConnection()) {
                 //UserData addedUser = new UserData(username,password,email);
                 //String statement = "CREATE DATABASE IF NOT EXISTS " + token;
-                System.out.println("createUser reached");
+                System.out.println("getPassword reached");
 
                 try (var preparedStatement = conn.prepareStatement("SELECT username, password FROM users WHERE username='"+username+"'")) {
                     ResultSet resultSet= preparedStatement.executeQuery();
                     if (resultSet.next()) {
                         String name = resultSet.getString("username");
                         String hashed_password=resultSet.getString("password");
+                        System.out.println("returning password");
                         return hashed_password;
                     }
+                    System.out.println("returned null password");
                     return null;  //if user doesn't exist
                     //System.out.println("Hashed password: "+ hashed_password);
                 }

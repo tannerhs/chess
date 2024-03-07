@@ -21,9 +21,9 @@ public class dataAccessTests {
 
     @BeforeEach
     public void setup() {
-        users = new MemoryUserDAO();
-        auth = new MemoryAuthDAO();
-        games = new MemoryGameDAO();
+        users = new DatabaseUserDAO();
+        auth = new DatabaseAuthDAO();
+        games = new DatabaseGameDAO();
     }
 
     @Test
@@ -246,7 +246,8 @@ public class dataAccessTests {
         String message = "success";
         try {
             RegisterResponse response = new RegisterService(new RegisterRequest(users, auth, new UserData("ham", "123", "i@mail.com"))).register();
-            new LogoutService(new LogoutRequest(response.addedAuth().authToken(), auth));
+            new LogoutService(new LogoutRequest(response.addedAuth().authToken(), auth)).logout();
+            System.out.println("----");
             LoginResponse res = new LoginService(new LoginRequest("ham", "123", users, auth)).login();
         } catch (BadRequestException e) {
             message = "failure1";
@@ -338,6 +339,7 @@ public class dataAccessTests {
         } catch (UnauthorizedAccessException a) {
             message = "failure2";
         } catch (Exception b) {
+            System.out.println(b.getMessage());
             message = "failure3";
         }
         //assertEquals("success",message);

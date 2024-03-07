@@ -20,7 +20,7 @@ public class CreateGameService {
 
     public CreateGameResponse createGame() throws BadRequestException, UnauthorizedAccessException, DataAccessException {
         System.out.println("createGame method in service class reached");
-        if(auth==null || gameName.equals("")) {
+        if(auth==null || gameName==null || gameName.equals("")) {
             System.out.println("bad create game request");
             System.out.println("gameName:"+ gameName);
             System.out.println("auth: "+auth);

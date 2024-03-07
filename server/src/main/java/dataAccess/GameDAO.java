@@ -13,7 +13,7 @@ public interface GameDAO {
 
     public List<GameData> listGames() throws DataAccessException;
 
-    GameData getGameByID(int i) throws DataAccessException;
+    GameData getGameByID(int gameID) throws DataAccessException;
 
 
     int getGameIndex(int gameID);

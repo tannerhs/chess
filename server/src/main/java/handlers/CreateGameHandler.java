@@ -2,7 +2,9 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataAccess.*;
+import model.GameData;
 import requests.CreateGameRequest;
+import requests.GameNameIn;
 import responses.CreateGameResponse;
 import service.CreateGameService;
 import spark.Request;
@@ -18,7 +20,13 @@ public class CreateGameHandler {
     public Object handleRequest(Request req, Response res, AuthDAO auth, GameDAO games) {
         System.out.println("create game");
         String authToken = req.headers("Authorization");
-        String gameName = req.body();
+        String json =  req.body();
+        GameNameIn gameNameIn = new Gson().fromJson(json, GameNameIn.class);
+        String gameName=null;
+        if(gameNameIn!=null) {
+            gameName = gameNameIn.gameName();
+        }
+        System.out.println("gameName in handler: "+gameName);
         String message;
         CreateGameRequest request = new CreateGameRequest(authToken,gameName,auth, games);
         try{
