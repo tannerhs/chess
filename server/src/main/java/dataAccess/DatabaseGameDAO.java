@@ -86,7 +86,7 @@ public class DatabaseGameDAO implements GameDAO {
                 ChessGame gameObj = new Gson().fromJson(game, ChessGame.class);
                 GameData addGameData = new GameData(gameID,whiteUsername,blackUsername,gameName,gameObj);
                 listedGames.add(addGameData);
-                System.out.println("listOGames: "+listedGames.toString());
+                System.out.println("listOGames: "+addGameData.toString());
             }
         }
         catch (SQLException e) {
@@ -149,8 +149,7 @@ public class DatabaseGameDAO implements GameDAO {
         }
         else if(playerColor.equals("WHITE")) {
             try(Connection conn = DatabaseManager.getConnection()) {
-                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET whiteUsername="+username+" WHERE gameID="+gameID)) {
-                    addPlayerStatement.setString(1,username);
+                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET whiteUsername='"+username+"' WHERE gameID="+gameID)) {
                     addPlayerStatement.executeUpdate();
                 }
             }
@@ -162,8 +161,7 @@ public class DatabaseGameDAO implements GameDAO {
         }
         else if(playerColor.equals("BLACK")){
             try(Connection conn = DatabaseManager.getConnection()) {
-                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET blackUsername="+username+" WHERE gameID="+gameID)) {
-                    addPlayerStatement.setString(1,username);
+                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET blackUsername='"+username+"' WHERE gameID="+gameID)) {
                     addPlayerStatement.executeUpdate();
                 }
             }
@@ -181,6 +179,7 @@ public class DatabaseGameDAO implements GameDAO {
 
     @Override
     public int size() {
+        //FIXME
         return 0;
     }
 
