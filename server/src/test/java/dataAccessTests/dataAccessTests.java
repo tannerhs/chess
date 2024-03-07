@@ -10,8 +10,7 @@ import responses.LoginResponse;
 import responses.RegisterResponse;
 import service.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class dataAccessTests {
     UserDAO users;
@@ -39,6 +38,15 @@ public class dataAccessTests {
 
     }
 
+    @Test
+    public void testNonstandardColorPos() {
+        assertFalse(new JoinGameService(new JoinGameRequest("WHITE", 2, "authdummy", users, auth, games)).nonstandardColor("WHITE"));
+    }
+
+    @Test
+    public void testNonstandardColorNeg() {
+        assertTrue(new JoinGameService(new JoinGameRequest("WHiTE", 2, "authdummy", users, auth, games)).nonstandardColor("WHiTE"));
+    }
     @Test
     public void RegisterServiceConstructorNegTest() {
         String message = "success";
