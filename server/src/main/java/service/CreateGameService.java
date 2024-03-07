@@ -21,6 +21,9 @@ public class CreateGameService {
     public CreateGameResponse createGame() throws BadRequestException, UnauthorizedAccessException, DataAccessException {
         System.out.println("createGame method in service class reached");
         if(auth==null || gameName.equals("")) {
+            System.out.println("bad create game request");
+            System.out.println("gameName:"+ gameName);
+            System.out.println("auth: "+auth);
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
         }
         else if(auth.getAuth(authToken)==null) {  //authentication exists but not valid

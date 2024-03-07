@@ -78,12 +78,13 @@ public class DatabaseGameDAO implements GameDAO {
                 int gameID = rs.getInt("gameID");
                 String whiteUsername = rs.getString("whiteUsername");
                 String blackUsername = rs.getString("blackUsername");
-                Blob blob = rs.getBlob("gameName");
+                String gameName = rs.getString("gameName");
+                Blob blob = rs.getBlob("game");
                 byte[] bdata = blob.getBytes(1,(int) blob.length());
-                String gameName = new String(bdata);
+                String game = new String(bdata);
                 // Deserialize from json and store the game.
-                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class) ;
-                GameData addGameData = new GameData(gameID,whiteUsername,blackUsername,gameName,game);
+                ChessGame gameObj = new Gson().fromJson(game, ChessGame.class);
+                GameData addGameData = new GameData(gameID,whiteUsername,blackUsername,gameName,gameObj);
                 listedGames.add(addGameData);
                 System.out.println("listOGames: "+listedGames.toString());
             }
@@ -95,7 +96,39 @@ public class DatabaseGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGameByID(int i) {
+    public GameData getGameByID(int gameID) throws DataAccessException {
+        int count=0;
+        String whiteUsername;
+        String blackUsername;
+        String gameName;
+        try(Connection conn = DatabaseManager.getConnection()) {
+            try(PreparedStatement getGameStatement = conn.prepareStatement("SELECT whiteUsername, blackUsername, gameName, game FROM games WHERE gameID="+gameID)) {
+                ResultSet rs =getGameStatement.executeQuery();
+                if(!rs.next()) {
+                    return null;
+                }
+                else {
+                    whiteUsername =rs.getString("whiteUsername");
+                    blackUsername =rs.getString("blackUsername");
+                    gameName =rs.getString("gameName");
+                    Blob blob = rs.getBlob("game");
+                    byte[] bdata = blob.getBytes(1,(int) blob.length());
+                    String game = new String(bdata);
+                    // Deserialize from json and store the game.
+                    ChessGame gameObj = new Gson().fromJson(game, ChessGame.class);
+                    GameData getGame = new GameData(gameID,whiteUsername,blackUsername,gameName,gameObj);
+                    return getGame;
+
+                }
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+
+
+        System.out.println("null statement reached in getGameByID");
         return null;
     }
 
@@ -106,7 +139,44 @@ public class DatabaseGameDAO implements GameDAO {
 
     @Override
     public void joinGame(int gameID, String username, String playerColor) throws Exception {
-
+        GameData currentGame = getGameByID(gameID);
+//        int gameIndex = getGameIndex(gameID);
+//        if(gameIndex==-1) {
+//            System.out.println("is this reached?");
+//        }
+        if(playerColor == null || playerColor.isEmpty()){  //needs to be ==null, not .equals()
+            //observer
+        }
+        else if(playerColor.equals("WHITE")) {
+            try(Connection conn = DatabaseManager.getConnection()) {
+                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET whiteUsername="+username+" WHERE gameID="+gameID)) {
+                    addPlayerStatement.setString(1,username);
+                    addPlayerStatement.executeUpdate();
+                }
+            }
+            catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            //games.set(gameIndex,new GameData(gameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
+            //System.out.println("games.size(): "+games.size());
+        }
+        else if(playerColor.equals("BLACK")){
+            try(Connection conn = DatabaseManager.getConnection()) {
+                try(PreparedStatement addPlayerStatement =conn.prepareStatement("UPDATE games SET blackUsername="+username+" WHERE gameID="+gameID)) {
+                    addPlayerStatement.setString(1,username);
+                    addPlayerStatement.executeUpdate();
+                }
+            }
+            catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            //games.set(gameIndex,new GameData(gameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
+            //System.out.println("games.size(): "+games.size());
+        }
+        else {
+            throw new Exception("{\"message\": \"Error: already taken\" }");
+            //observer
+        }
     }
 
     @Override

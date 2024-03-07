@@ -12,6 +12,7 @@ import javax.naming.AuthenticationException;
 public class JoinGameHandler {
 
     public Object handleRequest(Request req, Response res, UserDAO users, AuthDAO auth, GameDAO games) {
+        System.out.println("Join game handler reached");
         String message="";
         Gson deserializer = new Gson();
         JoinGameSparkRequestBody bodyVars = deserializer.fromJson(req.body(),JoinGameSparkRequestBody.class);
