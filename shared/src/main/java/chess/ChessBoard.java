@@ -130,4 +130,8 @@ public class ChessBoard {
         }
         return clone;
     }
+
+    public ChessPiece[][] getBoardArray() {
+        return board;
+    }
 }
