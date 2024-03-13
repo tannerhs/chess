@@ -6,7 +6,6 @@ import chess.ChessPiece;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toUpperCase;
@@ -133,6 +132,15 @@ public class Client {
                             out.print(EMPTY.repeat(suffixLength));
 
                         }
+
+                        if(boardCol==7) {
+                            //print side column labels
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print(" ");
+                            out.print(boardRow+1);
+                            out.print(" ");
+                        }
                     }
                     else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //FIXME
                         if(((boardRow+1)%2)==1 && ((boardCol+1)%2)==0) {
@@ -196,10 +204,6 @@ public class Client {
         out.print(SET_TEXT_COLOR_RED);
     }
 
-    private static void setBlack(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
-    }
 
     private static void printPlayerLightBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
