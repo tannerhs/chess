@@ -83,7 +83,7 @@ public class TicTacToe {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 setWhite(out);
 
-                if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
+                if (squareRow == SQUARE_SIZE_IN_CHARS % 2) {
                     int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 

@@ -16,9 +16,6 @@ public class Client {
     private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final int LINE_WIDTH_IN_CHARS = 1;
     private static final String EMPTY = "   ";
-    private static final String P = " P ";
-    private static final String p = " p ";
-    private static Random rand = new Random();
 
     private static ChessGame game;
     private static ChessPiece[][] board;
@@ -29,6 +26,7 @@ public class Client {
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();
         board=boardObj.getBoardArray();
+        System.out.println(board[2][2]);
 
 
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -39,18 +37,18 @@ public class Client {
 
         drawChessBoard(out);
 
-        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
     }
     public static void drawChessBoard(PrintStream out) {
 
-        for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
+        for (int boardRow = BOARD_SIZE_IN_SQUARES-1; boardRow >= 0; boardRow--) {
 
-            drawRowOfSquares(out);
+            drawRowOfSquares(out, boardRow);
 
-            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+            if (boardRow >0 ) {
                 drawVerticalLine(out);
-                setBlack(out);
+                out.print(SET_BG_COLOR_DARK_GREY);
             }
         }
     }
@@ -83,26 +81,28 @@ public class Client {
     }
 
     private static void printHeaderText(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_GREEN);
 
         out.print(player);
-
-        setBlack(out);
+        out.print(SET_BG_COLOR_DARK_GREY);
     }
 
-    private static void drawRowOfSquares(PrintStream out) {
+    private static void drawRowOfSquares(PrintStream out, int boardRow) {
 
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-                setWhite(out);
+                out.print(SET_BG_COLOR_WHITE);
 
                 if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
                     int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
                     out.print(EMPTY.repeat(prefixLength));
-                    printPlayer(out, board[1][1].toCharString());
+
+                    String player = (board[boardRow][boardCol]==null)? "   " : board[boardRow][boardCol].toCharString();
+                    printPlayerLightBackground(out, player);
+                    //out.println(squareRow+", "+boardCol);
                     out.print(EMPTY.repeat(suffixLength));
                 }
                 else {
@@ -115,7 +115,8 @@ public class Client {
                     out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
                 }
 
-                setBlack(out);
+                out.print(SET_BG_COLOR_DARK_GREY);
+
             }
 
             out.println();
@@ -131,7 +132,7 @@ public class Client {
             setRed(out);
             out.print(EMPTY.repeat(boardSizeInSpaces));
 
-            setBlack(out);
+            out.print(SET_BG_COLOR_DARK_GREY);
             out.println();
         }
     }
@@ -151,13 +152,22 @@ public class Client {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void printPlayer(PrintStream out, String player) {
+    private static void printPlayerLightBackground(PrintStream out, String player) {
         out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_BLUE);
 
         out.print(player);
 
-        setWhite(out);
+        //setWhite(out);
+    }
+
+    private static void printPlayerDarkBackground(PrintStream out, String player) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_BLUE);
+
+        out.print(player);
+
+        //setWhite(out);
     }
 
 }

@@ -116,7 +116,7 @@ public class ChessPiece {
     public String toCharString() {
         if(team== ChessGame.TeamColor.WHITE) {
             if(type==PieceType.PAWN) {
-                return " P ";
+                return "-P ";
             }
             else if(type== PieceType.BISHOP) {
                 return " B ";
@@ -148,10 +148,10 @@ public class ChessPiece {
                 return " r ";
             }
             else if (type==PieceType.KING) {
-                return "k";
+                return " k ";
             }
             else if (type==PieceType.QUEEN) {
-                return "q";
+                return " q ";
             }
         }
         return "no valid piece found";
