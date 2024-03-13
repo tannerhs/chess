@@ -92,20 +92,49 @@ public class Client {
 
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+                //
                 out.print(SET_BG_COLOR_WHITE);
 
                 if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
                     int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
-                    out.print(EMPTY.repeat(prefixLength));
 
                     String player = (board[boardRow][boardCol]==null)? "   " : board[boardRow][boardCol].toCharString();
-                    printPlayerLightBackground(out, player);
-                    //out.println(squareRow+", "+boardCol);
-                    out.print(EMPTY.repeat(suffixLength));
+                    if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        if(((boardRow+1)%2)!=((boardCol+1)%2)) {
+                            out.print(SET_BG_COLOR_WHITE);
+                            out.print(EMPTY.repeat(prefixLength));
+                            printPlayerLightBackground(out, player);
+                            out.print(EMPTY.repeat(suffixLength));
+                        }
+                        else {
+                            out.print(SET_BG_COLOR_BLACK);
+                            out.print(EMPTY.repeat(prefixLength));
+                            printPlayerDarkBackground(out, player);
+                            out.print(EMPTY.repeat(suffixLength));
+
+                        }
+                    }
+                    else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //FIXME
+                        if(((boardRow+1)%2)==1 && ((boardCol+1)%2)==0) {
+                            printPlayerLightBackground(out, player);
+
+                        }
+                        else {
+                            printPlayerDarkBackground(out, player);
+                        }
+                    }
                 }
                 else {
+                    if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
+                            out.print(SET_BG_COLOR_WHITE);
+                        }
+                        else {
+                            out.print(SET_BG_COLOR_BLACK);
+                        }
+                    }
                     out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
                 }
 
