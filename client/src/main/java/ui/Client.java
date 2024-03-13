@@ -9,13 +9,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import static java.lang.Character.isUpperCase;
+import static java.lang.Character.toUpperCase;
 import static ui.EscapeSequences.*;
 
 public class Client {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
-    private static final int LINE_WIDTH_IN_CHARS = 1;
+    private static final int LINE_WIDTH_IN_CHARS = 0;
     private static final String EMPTY = "   ";
 
     private static ChessGame game;
@@ -34,9 +35,10 @@ public class Client {
 
         out.print(ERASE_SCREEN);
 
-        drawHeaders(out);
-
+        drawHeaders(out);  //top header
         drawChessBoard(out);
+        drawHeaders(out);  //bottom header
+
 
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
@@ -56,11 +58,15 @@ public class Client {
 
     private static void drawHeaders(PrintStream out) {
 
-        setBlack(out);
+        out.print(SET_BG_COLOR_DARK_GREY);
         String[] whiteHeaders = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
         String[] blackHeaders = {" h ", " g ", " e ", " f ", " e ", " d ", " c ", " b ", " a "};
         String[] headers = (game.getTeamTurn()== ChessGame.TeamColor.WHITE)? whiteHeaders:blackHeaders;
+        out.print("   ");  //offset for side column
+
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+            out.print(SET_TEXT_COLOR_BLACK);
+
             drawHeader(out, headers[boardCol]);
 
             if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
@@ -83,7 +89,8 @@ public class Client {
 
     private static void printHeaderText(PrintStream out, String player) {
         out.print(SET_BG_COLOR_DARK_GREY);
-        out.print(SET_TEXT_COLOR_GREEN);
+        out.print(SET_TEXT_COLOR_BLACK);
+        //out.print(SET_TEXT_COLOR_GREEN);
 
         out.print(player);
         out.print(SET_BG_COLOR_DARK_GREY);
@@ -94,7 +101,7 @@ public class Client {
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 //
-                out.print(SET_BG_COLOR_WHITE);
+
 
                 if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
                     int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
@@ -103,8 +110,18 @@ public class Client {
 
                     char player = (board[boardRow][boardCol]==null)? ' ' : board[boardRow][boardCol].toChar();
                     if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        if(boardCol==0) {
+                            //print side column labels
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print(" ");
+                            out.print(boardRow+1);
+                            out.print(" ");
+                        }
+
+
                         if(((boardRow+1)%2)!=((boardCol+1)%2)) {
-                            out.print(SET_BG_COLOR_WHITE);
+                            out.print(SET_BG_COLOR_LIGHT_GREY);
                             out.print(EMPTY.repeat(prefixLength));
                             printPlayerLightBackground(out, player);
                             out.print(EMPTY.repeat(suffixLength));
@@ -129,8 +146,14 @@ public class Client {
                 }
                 else {
                     if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        if(boardCol==0) {
+                            //print side column line
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print("   ");
+                        }
                         if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
-                            out.print(SET_BG_COLOR_WHITE);
+                            out.print(SET_BG_COLOR_LIGHT_GREY);
                         }
                         else {
                             out.print(SET_BG_COLOR_BLACK);
@@ -167,10 +190,6 @@ public class Client {
         }
     }
 
-    private static void setWhite(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_WHITE);
-    }
 
     private static void setRed(PrintStream out) {
         out.print(SET_BG_COLOR_RED);
@@ -185,26 +204,26 @@ public class Client {
     private static void printPlayerLightBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        else {  //black team color
             out.print(SET_TEXT_COLOR_RED);
         }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
         out.print(" ");
-        out.print(player);
+        out.print(toUpperCase(player));
         out.print(" ");
     }
 
     private static void printPlayerDarkBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_BLACK);
         if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        else {  //black team color
             out.print(SET_TEXT_COLOR_RED);
         }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
         out.print(" ");
-        out.print(player);
+        out.print(toUpperCase(player));
         out.print(" ");
     }
 
