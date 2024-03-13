@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
+import static java.lang.Character.isUpperCase;
 import static ui.EscapeSequences.*;
 
 public class Client {
@@ -100,7 +101,7 @@ public class Client {
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
 
-                    String player = (board[boardRow][boardCol]==null)? "   " : board[boardRow][boardCol].toCharString();
+                    char player = (board[boardRow][boardCol]==null)? ' ' : board[boardRow][boardCol].toChar();
                     if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
                         if(((boardRow+1)%2)!=((boardCol+1)%2)) {
                             out.print(SET_BG_COLOR_WHITE);
@@ -181,22 +182,30 @@ public class Client {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void printPlayerLightBackground(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLUE);
-
+    private static void printPlayerLightBackground(PrintStream out, char player) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        out.print(" ");
         out.print(player);
-
-        //setWhite(out);
+        out.print(" ");
     }
 
-    private static void printPlayerDarkBackground(PrintStream out, String player) {
+    private static void printPlayerDarkBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLUE);
-
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        out.print(" ");
         out.print(player);
-
-        //setWhite(out);
+        out.print(" ");
     }
 
 }

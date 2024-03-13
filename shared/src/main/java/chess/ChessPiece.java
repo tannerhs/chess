@@ -113,48 +113,48 @@ public class ChessPiece {
         return Objects.hash(team, type);
     }
 
-    public String toCharString() {
+    public char toChar() {
         if(team== ChessGame.TeamColor.WHITE) {
             if(type==PieceType.PAWN) {
-                return "-P ";
+                return 'P';
             }
             else if(type== PieceType.BISHOP) {
-                return " B ";
+                return 'B';
             }
             else if (type==PieceType.KNIGHT) {
-                return " N ";
+                return 'N';
             }
             else if (type==PieceType.ROOK) {
-                return " R ";
+                return 'R';
             }
             else if (type==PieceType.KING) {
-                return " K ";
+                return 'K';
             }
             else if (type==PieceType.QUEEN) {
-                return " Q ";
+                return 'Q';
             }
         }
         else if (team== ChessGame.TeamColor.BLACK) {
             if(type==PieceType.PAWN) {
-                return " p ";
+                return 'p';
             }
             else if(type== PieceType.BISHOP) {
-                return " b ";
+                return 'b';
             }
             else if (type==PieceType.KNIGHT) {
-                return " n ";
+                return 'n';
             }
             else if (type==PieceType.ROOK) {
-                return " r ";
+                return 'r';
             }
             else if (type==PieceType.KING) {
-                return " k ";
+                return 'k';
             }
             else if (type==PieceType.QUEEN) {
-                return " q ";
+                return 'q';
             }
         }
-        return "no valid piece found";
+        return 'x';
     }
 
     @Override
