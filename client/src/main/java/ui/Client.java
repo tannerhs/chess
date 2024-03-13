@@ -21,8 +21,9 @@ public class Client {
     private static ChessGame game;
     private static ChessPiece[][] board;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {  //pass in... game? team color?
         game=new ChessGame();
+        game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();
@@ -143,17 +144,56 @@ public class Client {
                         }
                     }
                     else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //FIXME
-                        if(((boardRow+1)%2)==1 && ((boardCol+1)%2)==0) {
-                            printPlayerLightBackground(out, player);
+                        if(boardCol==0) {
+                            //print side column labels
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print(" ");
+                            out.print(boardRow+1);
+                            out.print(" ");
+                        }
 
+
+                        if(((boardRow+1)%2)!=((boardCol+1)%2)) {
+                            out.print(SET_BG_COLOR_LIGHT_GREY);
+                            out.print(EMPTY.repeat(prefixLength));
+                            printPlayerLightBackground(out, player);
+                            out.print(EMPTY.repeat(suffixLength));
                         }
                         else {
+                            out.print(SET_BG_COLOR_BLACK);
+                            out.print(EMPTY.repeat(prefixLength));
                             printPlayerDarkBackground(out, player);
+                            out.print(EMPTY.repeat(suffixLength));
+
+                        }
+
+                        if(boardCol==7) {
+                            //print side column labels
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print(" ");
+                            out.print(boardRow+1);
+                            out.print(" ");
                         }
                     }
                 }
                 else {
                     if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        if(boardCol==0) {
+                            //print side column line
+                            out.print(SET_BG_COLOR_DARK_GREY);
+                            out.print(SET_TEXT_COLOR_BLACK);
+                            out.print("   ");
+                        }
+                        if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
+                            out.print(SET_BG_COLOR_LIGHT_GREY);
+                        }
+                        else {
+                            out.print(SET_BG_COLOR_BLACK);
+                        }
+                    }
+                    else {
                         if(boardCol==0) {
                             //print side column line
                             out.print(SET_BG_COLOR_DARK_GREY);
