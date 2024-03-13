@@ -22,28 +22,29 @@ public class Client {
     private static ChessPiece[][] board;
 
     public static void main(String[] args) {  //pass in... game? team color?
+
+
+
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        drawChessBoard(out);
+
+    }
+    public static void drawChessBoard(PrintStream out) {
         game=new ChessGame();
-        game.setTeamTurn(ChessGame.TeamColor.BLACK);
+        //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();
         board=boardObj.getBoardArray();
         System.out.println(board[2][2]);
 
-
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
         out.print(ERASE_SCREEN);
 
         drawHeaders(out);  //top header
-        drawChessBoard(out);
-        drawHeaders(out);  //bottom header
 
 
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
-    }
-    public static void drawChessBoard(PrintStream out) {
 
         for (int boardRow = BOARD_SIZE_IN_SQUARES-1; boardRow >= 0; boardRow--) {
 
@@ -54,6 +55,7 @@ public class Client {
                 out.print(SET_BG_COLOR_DARK_GREY);
             }
         }
+        drawHeaders(out);  //bottom header
     }
 
     private static void drawHeaders(PrintStream out) {
