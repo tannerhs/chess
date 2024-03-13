@@ -95,7 +95,7 @@ public class ChessBoard {
             this.addPiece(new ChessPosition(row,c),new ChessPiece(BLACK,PAWN));
         }
 
-        System.out.println(toString());
+        //System.out.println(toString());
 
     }
 

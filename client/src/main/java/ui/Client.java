@@ -25,12 +25,12 @@ public class Client {
     public static void main(String[] args) {  //pass in... game? team color?
 
         Boolean invalidInput=true;
-        while (invalidInput) {
-            System.out.printf("Please select one of the below options:%n" +
-                    "1. %n" +
-                    "2. %n" +
-                    "3. %n" +
-                    "4. %n"
+        while (invalidInput) {  //prelogin page
+            System.out.printf("Please select one of the below options by typing its number:%n" +
+                    "1. Help%n" +
+                    "2. Quit%n" +
+                    "3. Login%n" +
+                    "4. Register%n"
                     +"%n>>> ");
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
@@ -41,20 +41,24 @@ public class Client {
             System.out.printf("Choice = %d%n", selection);
 
             switch (selection) {
-                case 1:
+                case 1:  //Help
                     invalidInput=false;
                     break;
-                case 2:
+                case 2: //Quit
+                    invalidInput=false;
+                     //quit early
+                    break;
+                case 3:  //Login
                     invalidInput=false;
                     break;
-                case 3:
-                    invalidInput=false;
-                    break;
-                case 4:
+                case 4: //Register
+                    registerRepl();
                     invalidInput=false;
                     break;
                 default:
                     //ask for more input
+                    System.out.printf("Invalid input%n");
+                    break;
             }
         }
 
@@ -62,15 +66,84 @@ public class Client {
         drawChessBoard(out, new ChessGame());
 
     }
+
+    private static void registerRepl() {
+        Boolean validInput=false;
+        String username="";
+        String password="";
+        String email="";
+        while(validInput==false) {
+            System.out.printf("Register%n");
+
+            Boolean validUsername=false;
+            while(validUsername==false) {
+                System.out.printf("username:%n>>>");
+                Scanner scanner = new Scanner(System.in);
+                String line = scanner.nextLine();
+                String[]  words = line.split(" ");
+                if(words[0].length()>0) {
+                    username=words[0];
+                    validUsername=true;
+                }
+                else {  //invalid input (empty string)
+                    System.out.printf("invalid username%n");
+                    continue;
+                }
+            }
+
+            Boolean validPassword=false;
+            while(validPassword==false) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.printf("password:%n>>>");
+                String line = scanner.nextLine();
+                String[] words = line.split(" ");
+                password=words[0];
+                if(words[0].length()>0) {
+                    username=words[0];
+                    validPassword=true;
+                }
+                else {  //invalid input (empty string)
+                    System.out.printf("invalid password%n");
+                    continue;
+                }
+            }
+
+            Boolean validEmail=false;
+            while(validEmail==false) {
+                System.out.printf("email:%n>>>");
+                Scanner scanner = new Scanner(System.in);
+                String line = scanner.nextLine();
+                String[] words = line.split(" ");
+                email=words[0];
+                System.out.printf("Registered %s with password \"%s\" and email %s%n", username,password,email);
+                if(words[0].length()>0) {
+                    username=words[0];
+                    validEmail=true;
+                }
+                else {  //invalid input (empty string)
+                    System.out.printf("invalid email%n");
+                    continue;
+                }
+            }
+            validInput=true;
+
+
+        }
+    }
+
     public static void drawChessBoard(PrintStream out, ChessGame gameIn) {
         game=gameIn;
         //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
-        boardObj.setStartBoard();
+        boardObj.setStartBoard();  //can print out board for debugging if you want
         board=boardObj.getBoardArray();
 
+
+
         out.print(ERASE_SCREEN);
+
+
 
         drawHeaders(out);  //top header
 
@@ -91,7 +164,6 @@ public class Client {
     }
 
     private static void drawHeaders(PrintStream out) {
-
         out.print(SET_BG_COLOR_DARK_GREY);
         String[] whiteHeaders = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
         String[] blackHeaders = {" h ", " g ", " f ", " e ", " d ", " c ", " b ", " a "};
