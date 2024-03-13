@@ -6,6 +6,7 @@ import chess.ChessPiece;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toUpperCase;
@@ -23,20 +24,51 @@ public class Client {
 
     public static void main(String[] args) {  //pass in... game? team color?
 
+        Boolean invalidInput=true;
+        while (invalidInput) {
+            System.out.printf("Please select one of the below options:%n" +
+                    "1. %n" +
+                    "2. %n" +
+                    "3. %n" +
+                    "4. %n"
+                    +"%n>>> ");
+            Scanner scanner = new Scanner(System.in);
+            String line = scanner.nextLine();
+            String[]  numbers = line.split(" ");
 
+            int selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
+            var equation = String.join(" + ", numbers);
+            System.out.printf("Choice = %d%n", selection);
+
+            switch (selection) {
+                case 1:
+                    invalidInput=false;
+                    break;
+                case 2:
+                    invalidInput=false;
+                    break;
+                case 3:
+                    invalidInput=false;
+                    break;
+                case 4:
+                    invalidInput=false;
+                    break;
+                default:
+                    //ask for more input
+            }
+        }
 
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        drawChessBoard(out);
+        drawChessBoard(out, new ChessGame());
 
     }
-    public static void drawChessBoard(PrintStream out) {
-        game=new ChessGame();
+    public static void drawChessBoard(PrintStream out, ChessGame gameIn) {
+        game=gameIn;
         //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();
         board=boardObj.getBoardArray();
-        System.out.println(board[2][2]);
 
         out.print(ERASE_SCREEN);
 
