@@ -60,7 +60,7 @@ public class Client {
 
         out.print(SET_BG_COLOR_DARK_GREY);
         String[] whiteHeaders = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
-        String[] blackHeaders = {" h ", " g ", " e ", " f ", " e ", " d ", " c ", " b ", " a "};
+        String[] blackHeaders = {" h ", " g ", " f ", " e ", " d ", " c ", " b ", " a "};
         String[] headers = (game.getTeamTurn()== ChessGame.TeamColor.WHITE)? whiteHeaders:blackHeaders;
         out.print("   ");  //offset for side column
 
@@ -108,8 +108,8 @@ public class Client {
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
 
-                    char player = (board[boardRow][boardCol]==null)? ' ' : board[boardRow][boardCol].toChar();
                     if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                        char player = (board[boardRow][boardCol]==null)? ' ' : board[boardRow][boardCol].toChar();
                         if(boardCol==0) {
                             //print side column labels
                             out.print(SET_BG_COLOR_DARK_GREY);
@@ -143,13 +143,14 @@ public class Client {
                             out.print(" ");
                         }
                     }
-                    else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //FIXME
+                    else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //flip board with 7-x operations
+                        char player = (board[7-boardRow][7-boardCol]==null)? ' ' : board[7-boardRow][7-boardCol].toChar();
                         if(boardCol==0) {
                             //print side column labels
                             out.print(SET_BG_COLOR_DARK_GREY);
                             out.print(SET_TEXT_COLOR_BLACK);
                             out.print(" ");
-                            out.print(boardRow+1);
+                            out.print(8-boardRow);
                             out.print(" ");
                         }
 
@@ -173,7 +174,7 @@ public class Client {
                             out.print(SET_BG_COLOR_DARK_GREY);
                             out.print(SET_TEXT_COLOR_BLACK);
                             out.print(" ");
-                            out.print(boardRow+1);
+                            out.print(8-boardRow);
                             out.print(" ");
                         }
                     }
