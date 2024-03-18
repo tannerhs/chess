@@ -3,6 +3,9 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import model.UserData;
+import requests.LoginRequest;
+import requests.RegisterRequest;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +24,7 @@ public class Client {
 
     private static ChessGame game;
     private static ChessPiece[][] board;
-    private static ServerFacade facade;
+    private static ServerFacade facade = new ServerFacade();
 
     private static Boolean quitProgram=false;
 
@@ -41,43 +44,41 @@ public class Client {
     private static void preloginMenu(PrintStream out) {
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
-        Boolean validInput=true;
         Boolean loggedIn=false;
+        Boolean quit = false;
         int selection=8;  //default
         out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.");
-        while (!validInput || !loggedIn) {  //prelogin page
+        while (!loggedIn & !quit) {  //prelogin page
 
             selection = readInputNumber();
 
             switch (selection) {
                 case 1:  //Help
-                    validInput=true;
                     preloginHelpMenu(out);
                     break;
                 case 2: //Quit
                     //quit early
                     quitProgram=true;  //global variable for quitting in main
-                    validInput=true;
-                    loggedIn=true;  //only way to make it quit
-                    out.printf("Exiting program...%n");
+                    quit=true;
+                    out.print("Exiting program...\n");
                     break;
                 case 3:  //Login
-                    loginRepl();
+                    LoginRequest loginRequest = loginRepl();
                     loggedIn=true;
-                    validInput=true;
+                    facade.login(loginRequest);
                     break;
                 case 4: //Register
-                    registerRepl();
-                    validInput=true;
+                    RegisterRequest registerRequest = registerRepl();
+                    facade.register(registerRequest);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
                     loggedIn=true;
                     break;
                 default:
                     //ask for more input
-                    out.printf("Invalid input%n");
+                    out.print("Invalid input\n");
                     break;
             }
         }
-        out.print("Exited while loop%n");
+        out.print("Exited while loop\n");
     }
 
 
@@ -99,12 +100,12 @@ public class Client {
 
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
-        Boolean validInput=false;
+//        Boolean validInput=false;
         Boolean loggedOut=false;
         int selection = 8;
         out.println("Welcome to the postlogin menu! Press 1 to see the options.");
-        while (!validInput || !loggedOut) {  //prelogin page
-
+        while (!loggedOut) {  //prelogin page
+            loggedOut=false;
             selection = readInputNumber();
 
             switch (selection) {
@@ -112,6 +113,9 @@ public class Client {
                     postloginHelpMenu(out);
                     break;
                 case 2: //Logout
+                    loggedOut=true;
+                    //LogoutRequest logoutRequest = logoutRepl(Stringstream out);
+                    //facade.logout();  //
                     break;
                 case 3:  //Create Game
                     break;
@@ -127,7 +131,7 @@ public class Client {
                     break;
                 default:
                     //ask for more input
-                    out.printf("Invalid input%n");
+                    out.printf("Invalid input, returning to postlogin menu\n");
                     break;
             }
         }
@@ -163,7 +167,7 @@ public class Client {
                 "%n>>> ");
     }
 
-    private static void registerRepl() {
+    private static RegisterRequest registerRepl() {
         Boolean validInput=false;
         String username="";
         String password="";
@@ -225,9 +229,15 @@ public class Client {
 
 
         }
+        return new RegisterRequest(new UserData(username,password,email));
     }
 
-    private static void loginRepl() {
+    private static LoginRequest loginRepl() {
+        String username="x";
+        String password="x";
+        //
+
+        return new LoginRequest(username,password);
 
     }
 

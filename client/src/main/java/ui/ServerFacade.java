@@ -13,11 +13,12 @@ public class ServerFacade {  //represents your server to the client, provides si
         //2-3 lines of code in each since calls client communicator
 
     public LoginResponse login(LoginRequest request) {
-
+        System.out.print("server facade login method reached\n");
         return null;
     }
 
     public RegisterRequest register(RegisterRequest request) {
+        System.out.print("server facade register method reached\n");
         return null;
     }
 }
