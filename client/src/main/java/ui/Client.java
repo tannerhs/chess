@@ -6,6 +6,7 @@ import chess.ChessPiece;
 import model.UserData;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.RegisterResponse;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +32,11 @@ public class Client {
     public static void main(String[] args) {  //pass in... game? team color?
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         while(!quitProgram) {
-            preloginMenu(out);  //stays here until successfully registers, logs in, or quits
+            try {
+                preloginMenu(out);  //stays here until successfully registers, logs in, or quits
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             if(quitProgram) {  //if prelogin causes program to quit, then leave
                 continue;
             }
@@ -41,13 +46,13 @@ public class Client {
 
     }
 
-    private static void preloginMenu(PrintStream out) {
+    private static void preloginMenu(PrintStream out) throws Exception {
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
         Boolean loggedIn=false;
         Boolean quit = false;
         int selection=8;  //default
-        out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.");
+        out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n>>>");
         while (!loggedIn & !quit) {  //prelogin page
 
             selection = readInputNumber();
@@ -63,14 +68,25 @@ public class Client {
                     out.print("Exiting program...\n");
                     break;
                 case 3:  //Login
-                    LoginRequest loginRequest = loginRepl();
-                    loggedIn=true;
-                    facade.login(loginRequest);
+                    try {
+                        LoginRequest loginRequest = loginRepl();
+                        loggedIn=true;
+                        facade.login(loginRequest);
+                    }
+                    catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
+                        out.print(e.getMessage());
+                    }
                     break;
                 case 4: //Register
                     RegisterRequest registerRequest = registerRepl();
-                    facade.register(registerRequest);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
-                    loggedIn=true;
+                    try {
+                        RegisterResponse registerResponse=  facade.register(registerRequest);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
+                        loggedIn=true;
+                    }
+                    catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
+                        out.print(e.getMessage());
+                    }
+                    //
                     break;
                 default:
                     //ask for more input
@@ -103,7 +119,7 @@ public class Client {
 //        Boolean validInput=false;
         Boolean loggedOut=false;
         int selection = 8;
-        out.println("Welcome to the postlogin menu! Press 1 to see the options.");
+        out.println("Welcome to the postlogin menu! Press 1 to see the options.\n>>>");
         while (!loggedOut) {  //prelogin page
             loggedOut=false;
             selection = readInputNumber();
@@ -115,7 +131,7 @@ public class Client {
                 case 2: //Logout
                     loggedOut=true;
                     //LogoutRequest logoutRequest = logoutRepl(Stringstream out);
-                    //facade.logout();  //
+                    //LogoutResponse= facade.logout();  //
                     break;
                 case 3:  //Create Game
                     break;
