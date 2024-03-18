@@ -21,12 +21,28 @@ public class Client {
 
     private static ChessGame game;
     private static ChessPiece[][] board;
+    private static ServerFacade facade;
+
+    private static Boolean quitProgram=false;
 
     public static void main(String[] args) {  //pass in... game? team color?
+        PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        while(quitProgram==false) {
+            preloginMenu(out);  //stays here until successfully registers, logs in, or quits
+            postloginMenu(out);  //stays here until you log out, upon which you return to the prelogin menu
+        }
 
+
+    }
+
+    private static void preloginMenu(PrintStream out) {
+        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(SET_BG_COLOR_BLACK);
         Boolean invalidInput=true;
-        while (invalidInput) {  //prelogin page
-            System.out.printf("Please select one of the below options by typing its number:%n" +
+        Boolean loggedIn=false;
+        while (invalidInput || !loggedIn) {  //prelogin page
+
+            out.printf("Please select one of the below options by typing its number:%n" +
                     "1. Help%n" +
                     "2. Quit%n" +
                     "3. Login%n" +
@@ -38,33 +54,53 @@ public class Client {
 
             int selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
             var equation = String.join(" + ", numbers);
-            System.out.printf("Choice = %d%n", selection);
+            out.printf("Choice = %d%n", selection);
 
             switch (selection) {
                 case 1:  //Help
                     invalidInput=false;
+                    helpMenu();
                     break;
                 case 2: //Quit
+                    //quit early
+                    quitProgram=true;  //global variable for quitting in main
                     invalidInput=false;
-                     //quit early
                     break;
                 case 3:  //Login
+                    loginRepl();
+                    loggedIn=true;
                     invalidInput=false;
                     break;
                 case 4: //Register
                     registerRepl();
                     invalidInput=false;
+                    loggedIn=true;
                     break;
                 default:
                     //ask for more input
-                    System.out.printf("Invalid input%n");
+                    out.printf("Invalid input%n");
                     break;
             }
         }
+    }
 
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+
+
+    private static void postloginMenu(PrintStream out) {
+
         drawChessBoard(out, new ChessGame());
 
+        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(SET_BG_COLOR_BLACK);
+        out.print("testing");
+
+    }
+
+    private static void helpMenu() {
+        System.out.println("Help Menu:");
+        System.out.println("If you have not created an account, register.  Otherwise, login to see more options.");
+        System.out.println("When you are finished playing, please select quit by typing in its number.");
+        System.out.println("------------");
     }
 
     private static void registerRepl() {
@@ -72,16 +108,16 @@ public class Client {
         String username="";
         String password="";
         String email="";
-        while(validInput==false) {
+        while(!validInput) {
             System.out.printf("Register%n");
 
             Boolean validUsername=false;
-            while(validUsername==false) {
+            while(!validUsername) {
                 System.out.printf("username:%n>>>");
                 Scanner scanner = new Scanner(System.in);
                 String line = scanner.nextLine();
                 String[]  words = line.split(" ");
-                if(words[0].length()>0) {
+                if(!words[0].isEmpty()) {
                     username=words[0];
                     validUsername=true;
                 }
@@ -92,13 +128,13 @@ public class Client {
             }
 
             Boolean validPassword=false;
-            while(validPassword==false) {
+            while(!validPassword) {
                 Scanner scanner = new Scanner(System.in);
                 System.out.printf("password:%n>>>");
                 String line = scanner.nextLine();
                 String[] words = line.split(" ");
                 password=words[0];
-                if(words[0].length()>0) {
+                if(!words[0].isEmpty()) {
                     username=words[0];
                     validPassword=true;
                 }
@@ -109,14 +145,14 @@ public class Client {
             }
 
             Boolean validEmail=false;
-            while(validEmail==false) {
+            while(!validEmail) {
                 System.out.printf("email:%n>>>");
                 Scanner scanner = new Scanner(System.in);
                 String line = scanner.nextLine();
                 String[] words = line.split(" ");
                 email=words[0];
                 System.out.printf("Registered %s with password \"%s\" and email %s%n", username,password,email);
-                if(words[0].length()>0) {
+                if(!words[0].isEmpty()) {
                     username=words[0];
                     validEmail=true;
                 }
@@ -131,7 +167,11 @@ public class Client {
         }
     }
 
-    public static void drawChessBoard(PrintStream out, ChessGame gameIn) {
+    private static void loginRepl() {
+
+    }
+
+    public static void drawChessBoard(PrintStream out, ChessGame gameIn) {  //call when you join or observe a gameC
         game=gameIn;
         //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
