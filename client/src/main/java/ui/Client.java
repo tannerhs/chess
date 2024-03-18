@@ -40,26 +40,16 @@ public class Client {
         out.print(SET_BG_COLOR_BLACK);
         Boolean invalidInput=true;
         Boolean loggedIn=false;
+        int selection=8;  //default
+        out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.");
         while (invalidInput || !loggedIn) {  //prelogin page
 
-            out.printf("Please select one of the below options by typing its number:%n" +
-                    "1. Help%n" +
-                    "2. Quit%n" +
-                    "3. Login%n" +
-                    "4. Register%n"
-                    +"%n>>> ");
-            Scanner scanner = new Scanner(System.in);
-            String line = scanner.nextLine();
-            String[]  numbers = line.split(" ");
-
-            int selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
-            var equation = String.join(" + ", numbers);
-            out.printf("Choice = %d%n", selection);
+            selection = readInputNumber();
 
             switch (selection) {
                 case 1:  //Help
                     invalidInput=false;
-                    helpMenu();
+                    preloginHelpMenu(out);
                     break;
                 case 2: //Quit
                     //quit early
@@ -85,10 +75,60 @@ public class Client {
     }
 
 
+    private static int readInputNumber() {
+        int selection = 8;
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        String[]  numbers = line.split(" ");
+        if(numbers.length==0) {
+            selection=8;  //default
+        }
+        else {
+            selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
+        }
+        return selection;
+    }
 
     private static void postloginMenu(PrintStream out) {
 
-        drawChessBoard(out, new ChessGame());
+        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(SET_BG_COLOR_BLACK);
+        Boolean validInput=false;
+        Boolean loggedOut=false;
+        out.println("Welcome to the postlogin menu! Press 1 to see the options.");
+        while (!validInput || !loggedOut) {  //prelogin page
+
+            Scanner scanner = new Scanner(System.in);
+            String line = scanner.nextLine();
+            String[]  numbers = line.split(" ");
+
+            int selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
+
+            switch (selection) {
+                case 1:  //Help
+                    postloginHelpMenu(out);
+                    break;
+                case 2: //Logout
+                    break;
+                case 3:  //Create Game
+                    break;
+                case 4: //List Games
+                    break;
+                case 5: //Join Game
+                    //get game indicated, then print it out
+                    drawChessBoard(out, new ChessGame());
+                    break;
+                case 6:  //Join Observer
+                    //get game indicated, then print it out
+                    drawChessBoard(out, new ChessGame());
+                    break;
+                default:
+                    //ask for more input
+                    out.printf("Invalid input%n");
+                    break;
+            }
+        }
+
 
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
@@ -96,11 +136,28 @@ public class Client {
 
     }
 
-    private static void helpMenu() {
-        System.out.println("Help Menu:");
-        System.out.println("If you have not created an account, register.  Otherwise, login to see more options.");
-        System.out.println("When you are finished playing, please select quit by typing in its number.");
-        System.out.println("------------");
+    private static void preloginHelpMenu(PrintStream out) {
+        out.printf("Please select one of the below options by typing its number:%n" +
+                "1. Help%n" +
+                "2. Quit%n" +
+                "3. Login%n" +
+                "4. Register%n"
+                +"%n>>> ");
+//        out.println("Help Menu:");
+//        out.println("If you have not created an account, register.  Otherwise, login to see more options.");
+//        out.println("When you are finished playing, please select quit by typing in its number.");
+//        out.println("------------");
+    }
+
+    private static void postloginHelpMenu(PrintStream out) {
+        out.printf("Please select one of the below options by typing its number:%n" +
+                "1. Help%n" +
+                "2. Logout%n" +
+                "3. Create Game%n" +
+                "4. List Games%n"+
+                "5. Join Game%n" +
+                "6. Join Observer%n" +
+                "%n>>> ");
     }
 
     private static void registerRepl() {
