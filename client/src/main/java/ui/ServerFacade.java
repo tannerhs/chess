@@ -1,7 +1,10 @@
 package ui;
 
 import com.google.gson.Gson;
+import model.AuthData;
+import model.UserData;
 import requests.LoginRequest;
+import requests.LogoutRequest;
 import requests.RegisterRequest;
 import responses.LoginResponse;
 import responses.RegisterResponse;
@@ -27,7 +30,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         return null;
     }
 
-    public RegisterResponse register(RegisterRequest request) throws Exception {
+    public String register(UserData addUser) throws Exception {
         System.out.print("server facade register method reached\n");
 
         // Specify the desired endpoint
@@ -41,12 +44,9 @@ public class ServerFacade {  //represents your server to the client, provides si
         // Write out a header
         http.addRequestProperty("Content-Type", "application/json");
 
-        String authString = "as you wish";
-        http.addRequestProperty("Authorization",authString);
-
         // Write out the body
         try (OutputStream outputStream = http.getOutputStream()) {
-            var jsonBody = new Gson().toJson(request);  //maybe var or some json thing
+            var jsonBody = new Gson().toJson(addUser);  //maybe var or some json thing
             outputStream.write(jsonBody.getBytes());
         }
 
@@ -54,14 +54,26 @@ public class ServerFacade {  //represents your server to the client, provides si
         // Make the request
         http.connect();
 
-        // Output the response body
+        System.out.print("finished connecting\n");
+
+        //Receive the response body
+        var statusCode = http.getResponseCode();
+        var statusMessage = http.getResponseMessage();
+
+
+
+        // Read the response body
+        AuthData resp=null;
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            return new Gson().fromJson(inputStreamReader, RegisterResponse.class);
+            System.out.printf("respBody for register: %s\n",respBody);
+            resp = new Gson().fromJson(inputStreamReader, AuthData.class);
+            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, resp);
+            return resp.authToken();
         }
     }
 
-    public void logout(LoginRequest logoutRequest) throws Exception {
+    public void logout(LogoutRequest logoutRequest) throws Exception {
         System.out.print("server facade logout method reached\n");
 
         // Specify the desired endpoint
@@ -73,7 +85,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         http.setDoOutput(true);
 
         // Write out a header
-        String authString = "as you wish";  //FIXME change to actual auth token
+        String authString = logoutRequest.authToken();
         http.addRequestProperty("Authorization",authString);
 
         // Write out the body

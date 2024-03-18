@@ -5,7 +5,9 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import model.UserData;
 import requests.LoginRequest;
+import requests.LogoutRequest;
 import requests.RegisterRequest;
+import responses.LoginResponse;
 import responses.RegisterResponse;
 
 import java.io.PrintStream;
@@ -28,8 +30,12 @@ public class Client {
     private static ServerFacade facade = new ServerFacade();
 
     private static Boolean quitProgram=false;
+    private static String currentUserAuthToken;
 
     public static void main(String[] args) {  //pass in... game? team color?
+
+        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        System.out.println("♕ 240 Chess Server: " + piece);
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         while(!quitProgram) {
             try {
@@ -53,7 +59,7 @@ public class Client {
         Boolean quit = false;
         int selection=8;  //default
         out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n>>>");
-        while (!loggedIn & !quit) {  //prelogin page
+        while (!loggedIn && !quit) {  //prelogin page
 
             selection = readInputNumber();
 
@@ -71,17 +77,26 @@ public class Client {
                     try {
                         LoginRequest loginRequest = loginRepl();
                         loggedIn=true;
-                        facade.login(loginRequest);
+                        LoginResponse loginResponse= facade.login(loginRequest);
+                        currentUserAuthToken=loginResponse.addedAuth().authToken();
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
                     }
                     break;
                 case 4: //Register
-                    RegisterRequest registerRequest = registerRepl();
+                    String registerResponse;
                     try {
-                        RegisterResponse registerResponse=  facade.register(registerRequest);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
+                        UserData addUser = registerRepl();
+                        registerResponse=  facade.register(addUser);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
                         loggedIn=true;
+//                        if(registerResponse==null || registerResponse.addedAuth()==null){
+//                            out.println("null register response");
+//                            //out.println(registerResponse.errorMessage());
+//                            out.println(registerResponse.statusCode());
+//                        }
+                        currentUserAuthToken=registerResponse;
+                        out.print("Successfully registered");
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
@@ -106,6 +121,9 @@ public class Client {
         if(numbers.length==0) {
             selection=8;  //default
         }
+        else if(numbers[0].length()==0) {
+            selection=9;
+        }
         else {
             selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
         }
@@ -113,7 +131,6 @@ public class Client {
     }
 
     private static void postloginMenu(PrintStream out) {
-
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
 //        Boolean validInput=false;
@@ -129,9 +146,15 @@ public class Client {
                     postloginHelpMenu(out);
                     break;
                 case 2: //Logout
-                    loggedOut=true;
-                    //LogoutRequest logoutRequest = logoutRepl(Stringstream out);
-                    //LogoutResponse= facade.logout();  //
+                    try {
+                        loggedOut=true;
+                        LogoutRequest logoutRequest = new LogoutRequest(currentUserAuthToken);
+                        facade.logout(logoutRequest);  //no logout response
+                        currentUserAuthToken=null;
+                    }
+                    catch(Exception e) {
+                        out.print(e.getMessage());
+                    }
                     break;
                 case 3:  //Create Game
                     break;
@@ -159,6 +182,7 @@ public class Client {
 
     }
 
+
     private static void preloginHelpMenu(PrintStream out) {
         out.printf("Please select one of the below options by typing its number:%n" +
                 "1. Help%n" +
@@ -183,7 +207,7 @@ public class Client {
                 "%n>>> ");
     }
 
-    private static RegisterRequest registerRepl() {
+    private static UserData registerRepl() {
         Boolean validInput=false;
         String username="";
         String password="";
@@ -215,7 +239,7 @@ public class Client {
                 String[] words = line.split(" ");
                 password=words[0];
                 if(!words[0].isEmpty()) {
-                    username=words[0];
+                    password=words[0];
                     validPassword=true;
                 }
                 else {  //invalid input (empty string)
@@ -231,9 +255,8 @@ public class Client {
                 String line = scanner.nextLine();
                 String[] words = line.split(" ");
                 email=words[0];
-                System.out.printf("Registered %s with password \"%s\" and email %s%n", username,password,email);
                 if(!words[0].isEmpty()) {
-                    username=words[0];
+                    email=words[0];
                     validEmail=true;
                 }
                 else {  //invalid input (empty string)
@@ -241,11 +264,12 @@ public class Client {
                     continue;
                 }
             }
+            System.out.printf("Registered %s with password \"%s\" and email %s%n", username,password,email);
             validInput=true;
 
 
         }
-        return new RegisterRequest(new UserData(username,password,email));
+        return new UserData(username,password,email);
     }
 
     private static LoginRequest loginRepl() {
