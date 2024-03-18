@@ -27,8 +27,11 @@ public class Client {
 
     public static void main(String[] args) {  //pass in... game? team color?
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        while(quitProgram==false) {
+        while(!quitProgram) {
             preloginMenu(out);  //stays here until successfully registers, logs in, or quits
+            if(quitProgram) {  //if prelogin causes program to quit, then leave
+                continue;
+            }
             postloginMenu(out);  //stays here until you log out, upon which you return to the prelogin menu
         }
 
@@ -38,32 +41,34 @@ public class Client {
     private static void preloginMenu(PrintStream out) {
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
-        Boolean invalidInput=true;
+        Boolean validInput=true;
         Boolean loggedIn=false;
         int selection=8;  //default
         out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.");
-        while (invalidInput || !loggedIn) {  //prelogin page
+        while (!validInput || !loggedIn) {  //prelogin page
 
             selection = readInputNumber();
 
             switch (selection) {
                 case 1:  //Help
-                    invalidInput=false;
+                    validInput=true;
                     preloginHelpMenu(out);
                     break;
                 case 2: //Quit
                     //quit early
                     quitProgram=true;  //global variable for quitting in main
-                    invalidInput=false;
+                    validInput=true;
+                    loggedIn=true;  //only way to make it quit
+                    out.printf("Exiting program...%n");
                     break;
                 case 3:  //Login
                     loginRepl();
                     loggedIn=true;
-                    invalidInput=false;
+                    validInput=true;
                     break;
                 case 4: //Register
                     registerRepl();
-                    invalidInput=false;
+                    validInput=true;
                     loggedIn=true;
                     break;
                 default:
@@ -72,6 +77,7 @@ public class Client {
                     break;
             }
         }
+        out.print("Exited while loop%n");
     }
 
 
@@ -95,14 +101,11 @@ public class Client {
         out.print(SET_BG_COLOR_BLACK);
         Boolean validInput=false;
         Boolean loggedOut=false;
+        int selection = 8;
         out.println("Welcome to the postlogin menu! Press 1 to see the options.");
         while (!validInput || !loggedOut) {  //prelogin page
 
-            Scanner scanner = new Scanner(System.in);
-            String line = scanner.nextLine();
-            String[]  numbers = line.split(" ");
-
-            int selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
+            selection = readInputNumber();
 
             switch (selection) {
                 case 1:  //Help
