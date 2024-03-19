@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import model.UserData;
+import requests.ListGamesRequest;
 import requests.LoginRequest;
 import requests.LogoutRequest;
 import requests.RegisterRequest;
@@ -82,6 +83,7 @@ public class Client {
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
+                        loggedIn=false;
                     }
                     break;
                 case 4: //Register
@@ -100,6 +102,7 @@ public class Client {
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
+                        loggedIn=false;
                     }
                     //
                     break;
@@ -109,7 +112,6 @@ public class Client {
                     break;
             }
         }
-        out.print("Exited while loop\n");
     }
 
 
@@ -151,6 +153,7 @@ public class Client {
                         LogoutRequest logoutRequest = new LogoutRequest(currentUserAuthToken);
                         facade.logout(logoutRequest);  //no logout response
                         currentUserAuthToken=null;
+                        //out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
@@ -159,6 +162,12 @@ public class Client {
                 case 3:  //Create Game
                     break;
                 case 4: //List Games
+                    try {
+                        facade.listGames(new ListGamesRequest(currentUserAuthToken));
+                    }
+                    catch(Exception e) {
+                        out.print(e.getMessage());
+                    }
                     break;
                 case 5: //Join Game
                     //get game indicated, then print it out
@@ -273,10 +282,44 @@ public class Client {
     }
 
     private static LoginRequest loginRepl() {
-        String username="x";
-        String password="x";
-        //
+        String username="";
+        String password="";
+        Boolean validInput=false;
+        while(!validInput) {
+            System.out.printf("Login%n");
 
+            Boolean validUsername = false;
+            while (!validUsername) {
+                System.out.printf("username:%n>>>");
+                Scanner scanner = new Scanner(System.in);
+                String line = scanner.nextLine();
+                String[] words = line.split(" ");
+                if (!words[0].isEmpty()) {
+                    username = words[0];
+                    validUsername = true;
+                } else {  //invalid input (empty string)
+                    System.out.printf("invalid username%n");
+                    continue;
+                }
+            }
+
+            Boolean validPassword = false;  //valid in the sense of valid input, not valid as in it is correct
+            while (!validPassword) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.printf("password:%n>>>");
+                String line = scanner.nextLine();
+                String[] words = line.split(" ");
+                password = words[0];
+                if (!words[0].isEmpty()) {
+                    password = words[0];
+                    validPassword = true;
+                    validInput=true;  //username and password both in valid format
+                } else {  //invalid input (empty string)
+                    System.out.printf("invalid password%n");
+                    continue;
+                }
+            }
+        }
         return new LoginRequest(username,password);
 
     }
