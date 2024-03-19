@@ -164,11 +164,11 @@ public class ServerFacade {  //represents your server to the client, provides si
         String authString = listGamesRequest.authToken();
         http.addRequestProperty("Authorization",authString);
 
-        // Write out the body
-        try (OutputStream outputStream = http.getOutputStream()) {
-            var jsonBody = new Gson().toJson(listGamesRequest);  //maybe var or some json thing
-            outputStream.write(jsonBody.getBytes());
-        }
+//        // Write out the body
+//        try (OutputStream outputStream = http.getOutputStream()) {
+//            var jsonBody = new Gson().toJson(listGamesRequest);  //maybe var or some json thing
+//            outputStream.write(jsonBody.getBytes());
+//        }
 
         // Make the request
         http.connect();

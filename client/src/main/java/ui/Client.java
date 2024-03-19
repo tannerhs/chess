@@ -8,6 +8,7 @@ import requests.ListGamesRequest;
 import requests.LoginRequest;
 import requests.LogoutRequest;
 import requests.RegisterRequest;
+import responses.ListGamesResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
 
@@ -163,7 +164,8 @@ public class Client {
                     break;
                 case 4: //List Games
                     try {
-                        facade.listGames(new ListGamesRequest(currentUserAuthToken));
+                        System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
+                        ListGamesResponse listGamesResponse= facade.listGames(new ListGamesRequest(currentUserAuthToken));
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
