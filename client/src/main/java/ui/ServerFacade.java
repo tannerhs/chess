@@ -73,7 +73,7 @@ public class ServerFacade {  //represents your server to the client, provides si
             }
     }
 
-    public String register(UserData addUser) throws Exception {
+    public RegisterResponse register(UserData addUser) throws Exception {
         System.out.print("server facade register method reached\n");
 
         // Specify the desired endpoint
@@ -103,16 +103,19 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-
-
-        // Read the response body
-        AuthData resp=null;
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            System.out.printf("respBody for register: %s\n",respBody);
-            resp = new Gson().fromJson(inputStreamReader, AuthData.class);
-            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, resp);
-            return resp.authToken();
+        if(statusCode!=200) {
+            return new RegisterResponse(null,statusCode,statusMessage);
+        }
+        else {
+            // Read the response body
+            AuthData resp=null;
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                System.out.printf("respBody for register: %s\n",respBody);
+                resp = new Gson().fromJson(inputStreamReader, AuthData.class);
+                System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, resp);
+                return new RegisterResponse(resp,statusCode,statusMessage) ;
+            }
         }
     }
 

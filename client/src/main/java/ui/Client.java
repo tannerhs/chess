@@ -96,19 +96,21 @@ public class Client {
 
                     break;
                 case 4: //Register
-                    String registerResponse;
+                    RegisterResponse registerResponse;
                     try {
                         UserData addUser = registerRepl();
                         registerResponse=  facade.register(addUser);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
-                        loggedIn=true;
-//                        if(registerResponse==null || registerResponse.addedAuth()==null){
-//                            out.println("null register response");
-//                            //out.println(registerResponse.errorMessage());
-//                            out.println(registerResponse.statusCode());
-//                        }
-                        currentUserAuthToken=registerResponse;
-                        out.printf("authToken added with register: %s\n", currentUserAuthToken);
-                        out.print("Successfully registered");
+                        if(registerResponse.statusCode()!=200) {
+                            printErrorMessage(out,registerResponse.statusCode());
+                            loggedIn=false;
+                        }
+                        else {
+                            loggedIn=true;
+                            currentUserAuthToken=registerResponse.addedAuth().authToken();
+                            //out.printf("authToken added with register: %s\n", currentUserAuthToken);
+                            System.out.printf("Successfully registered");
+                        }
+
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
@@ -209,7 +211,6 @@ public class Client {
 
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
-        out.print("testing");
 
     }
 
@@ -312,7 +313,6 @@ public class Client {
                     continue;
                 }
             }
-            System.out.printf("Registered %s with password \"%s\" and email %s%n", username,password,email);
             validInput=true;
 
 
