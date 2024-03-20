@@ -209,6 +209,16 @@ public class Client {
                     }
                     break;
                 case 5: //Join Game
+
+                    //list out games to choose from (by ID)
+                    //out.printf("Please type in the gameID of the game you would like to join:\n");
+                    try {
+                        ListGamesResponse listGamesResponse= facade.listGames(currentUserAuthToken);
+                    }
+                    catch(Exception e) {  //should never be reached
+                        out.printf(e.getMessage());
+                    }
+
                     //get game indicated, then print it out; currently just makes new game
                     joinGameLogic(out, false);
                     break;
@@ -230,7 +240,15 @@ public class Client {
     }
 
     private static JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
-        out.printf("Please enter the number for one of the following games:\n");
+        out.printf("Please enter the gameID for one of the following games:\n");
+        try {
+            String listGames = facade.listGames(currentUserAuthToken).response();
+            out.printf("\t%s\n",listGames);
+        }
+        catch (Exception e) {
+            out.printf(e.getMessage());
+        }
+
         out.printf(">>>");
         int gameID=readInputNumber();
         int colorSelection=0;
@@ -455,9 +473,6 @@ public class Client {
         }
         catch (Exception e) {
             out.println(e.getMessage());
-//            if(joinGameResponse!=null) {
-//                out.println(joinGameResponse.statusCode());
-//            }
             return;  //don't print out board if unhandled error encountered
         }
 
