@@ -239,16 +239,25 @@ public class ServerFacade {  //represents your server to the client, provides si
         // Make the request
         http.connect();
 
+        System.out.println("exception not before http.connect\n");
+
         //Receive the response body
         var statusCode = http.getResponseCode();
-        var statusMessage = http.getResponseMessage();
+        var statusMessage = http.getResponseMessage();  //http message not very descriptive, we want exception message returned:
+
 
         CreateGameBodyResponse response=null;
-        // Output the response body
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+        if(statusCode!=200) {  //return before http exception can be thrown
+            return new JoinGameResponse(statusCode,statusMessage);
         }
-        return new JoinGameResponse(statusCode,statusMessage);
+        else {
+
+            // Output the response body
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+            }
+            return new JoinGameResponse(statusCode,statusMessage);
+        }
     }
 }

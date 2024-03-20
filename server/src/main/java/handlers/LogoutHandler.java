@@ -30,10 +30,12 @@ public class LogoutHandler extends Handler {
         }
         catch(UnauthorizedAccessException | DataAccessException e) {
             message=e.getMessage();
+            res.body(e.getMessage());
             res.status(401);
         }
         catch (Exception e) {  //catch DataAccessExceptions etc.
             message=e.getMessage();
+            res.body(e.getMessage());
             res.status(500);
         }
 

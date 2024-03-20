@@ -30,15 +30,18 @@ public class RegisterHandler extends Handler {
         }
         catch(BadRequestException e) {
             res.status(400);
+//            res.body(e.getMessage());
             return e.getMessage();
         }
         catch(PlayerFieldTakenException e) {
             res.status(403);
+            res.body(e.getMessage());
             return e.getMessage();
         }
         catch(DataAccessException e) {
             System.out.println("register data access exception should never occur");
             res.status(500);
+            res.body(e.getMessage());
             return e.getMessage();
         }
 

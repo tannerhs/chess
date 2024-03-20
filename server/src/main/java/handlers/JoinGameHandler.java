@@ -26,19 +26,23 @@ public class JoinGameHandler {
         }
         catch (BadRequestException e) {
             message = e.getMessage();
+            res.body(e.getMessage());
             res.status(400);
         }
         catch(AuthenticationException | DataAccessException e) {
             message=e.getMessage();
+            res.body(e.getMessage());
             res.status(401);
         }
         catch(PlayerFieldTakenException e) {
             message=e.getMessage();
+            res.body(e.getMessage());
             res.status(403);
         }
         catch(Exception e) {
             System.out.println("join game handler 500 exception reached");
             message=e.getMessage();
+            res.body(e.getMessage());
             res.status(500);
         }
 

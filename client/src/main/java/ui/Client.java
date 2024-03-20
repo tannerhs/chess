@@ -29,6 +29,13 @@ public class Client {
     private static Boolean quitProgram=false;
     private static String currentUserAuthToken;
 
+    //error messages
+    static final String ERROR_MESSAGE_403="Error: already taken\n";
+    static final String ERROR_MESSAGE_400="Error: bad request\n";
+    static final String ERROR_MESSAGE_401="Error: unauthorized\n";
+    static final String ERROR_MESSAGE_500="Error: bad request\n";
+    static final String UNKOWN_ERROR_MESSAGE="Error: unknown error";
+
     public static void main(String[] args) {  //pass in... game? team color?
 
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
@@ -55,7 +62,7 @@ public class Client {
         Boolean loggedIn=false;
         Boolean quit = false;
         int selection=8;  //default
-        out.println("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n>>>");
+        out.printf("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n>>>");
         while (!loggedIn && !quit) {  //prelogin page
 
             selection = readInputNumber();
@@ -136,7 +143,7 @@ public class Client {
 //        Boolean validInput=false;
         Boolean loggedOut=false;
         int selection = 8;
-        out.println("Welcome to the postlogin menu! Press 1 to see the options.\n>>>");
+        out.printf("Welcome to the postlogin menu! Press 1 to see the options.\n>>>");
         while (!loggedOut) {  //prelogin page
             loggedOut=false;
             selection = readInputNumber();
@@ -181,24 +188,11 @@ public class Client {
                     break;
                 case 5: //Join Game
                     //get game indicated, then print it out
-                    try{
-                        JoinGameRequest joinGameRequest= joinGameRepl(out,false);  //asks for color
-                        JoinGameResponse joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
-                    }
-                    catch (Exception e) {
-                        out.println(e.getMessage());
-                    }
-                    ChessGame game = new ChessGame();  //
-                    game.setTeamTurn(ChessGame.TeamColor.BLACK);
-                    drawChessBoard(out, game);
-                    //draw line
-                    //draw in other
-                    game.setTeamTurn(ChessGame.TeamColor.WHITE);
-                    drawChessBoard(out,game);
+                    joinGameLogic(out, false);
                     break;
                 case 6:  //Join Observer
                     //get game indicated, then print it out
-                    drawChessBoard(out, new ChessGame());
+                    joinGameLogic(out, true);
                     break;
                 default:
                     //ask for more input
@@ -221,7 +215,7 @@ public class Client {
         int colorSelection=0;
         String color=null;
         if(!onlyObserve) {  //if playing, get desired player color (if available)
-            out.printf("Please select a color by typing in the corresponding number:\n\t1) WHITE\n\t2)BLACK");
+            out.printf("Please select a color by typing in the corresponding number:\n\t1) WHITE\n\t2) BLACK\n>>>");
             while(colorSelection!=1 && colorSelection!=2) {
                 colorSelection=readInputNumber();
             }
@@ -237,8 +231,8 @@ public class Client {
                 "1. Help%n" +
                 "2. Quit%n" +
                 "3. Login%n" +
-                "4. Register%n"
-                +"%n>>> ");
+                "4. Register\n\n"
+                +">>>");
 //        out.println("Help Menu:");
 //        out.println("If you have not created an account, register.  Otherwise, login to see more options.");
 //        out.println("When you are finished playing, please select quit by typing in its number.");
@@ -252,8 +246,8 @@ public class Client {
                 "3. Create Game%n" +
                 "4. List Games%n"+
                 "5. Join Game%n" +
-                "6. Join Observer%n" +
-                "%n>>> ");
+                "6. Join Observer\n\n" +
+                ">>>");
     }
 
     private static UserData registerRepl() {
@@ -613,6 +607,21 @@ public class Client {
         }
     }
 
+    private static void drawVerticalLine(PrintStream out, int lineWidthInChars) {
+
+        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
+                (BOARD_SIZE_IN_SQUARES - 1) * lineWidthInChars;
+
+        for (int lineRow = 0; lineRow < lineWidthInChars; ++lineRow) {
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_BLACK);
+            out.print(EMPTY.repeat(boardSizeInSpaces));
+
+            //out.print(SET_BG_COLOR_DARK_GREY);
+            out.println();
+        }
+    }
+
 
     private static void setRed(PrintStream out) {
         out.print(SET_BG_COLOR_RED);
@@ -644,6 +653,57 @@ public class Client {
         out.print(" ");
         out.print(toUpperCase(player));
         out.print(" ");
+    }
+
+
+
+    private static void printErrorMessage(PrintStream out, int statusCode) {
+        if(statusCode==400) {
+            out.printf(ERROR_MESSAGE_400);
+        }
+        else if(statusCode==401) {
+            out.printf(ERROR_MESSAGE_401);
+        }
+        else if(statusCode==403) {
+            out.printf(ERROR_MESSAGE_403);
+        }
+        else if(statusCode==500) {
+            out.printf(ERROR_MESSAGE_500);
+        }
+        else {
+            out.printf("%s with status code %i",UNKOWN_ERROR_MESSAGE,statusCode);
+        }
+    }
+
+    private static void joinGameLogic(PrintStream out, Boolean onlyObserve) {
+        JoinGameResponse joinGameResponse=null;
+        try{
+            JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
+            joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
+        }
+        catch (Exception e) {
+            out.println(e.getMessage());
+            if(joinGameResponse!=null) {
+                out.println(joinGameResponse.statusCode());
+            }
+            return;  //don't print out board if unhandled error encountered
+        }
+
+        printErrorMessage(out, joinGameResponse.statusCode());
+        //if exception was one I accounted for, it should never be thrown to the user, so joinGameResponse should have the correct statusCode (returned before exception can be thrown to user)
+        if(joinGameResponse.statusCode()!=200) {
+            printErrorMessage(out,joinGameResponse.statusCode());
+        }
+        else {
+            ChessGame game = new ChessGame();  //
+            game.setTeamTurn(ChessGame.TeamColor.BLACK);
+            drawChessBoard(out, game);
+            //draw line
+            drawVerticalLine(out,2);  //line width of 2 characters
+            //draw in other
+            game.setTeamTurn(ChessGame.TeamColor.WHITE);
+            drawChessBoard(out,game);
+        }
     }
 
 }
