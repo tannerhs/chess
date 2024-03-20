@@ -4,10 +4,8 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import model.UserData;
-import requests.ListGamesRequest;
-import requests.LoginRequest;
-import requests.LogoutRequest;
-import requests.RegisterRequest;
+import requests.*;
+import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
@@ -80,7 +78,11 @@ public class Client {
                         LoginRequest loginRequest = loginRepl();
                         loggedIn=true;
                         LoginResponse loginResponse= facade.login(loginRequest);
+                        out.printf("login addedAuth: %s \n",loginResponse.addedAuth());
+                        out.printf("login addedAuth authToken: %s \n",loginResponse.addedAuth().authToken());
+                        out.printf("login addedAuth username: %s \n",loginResponse.addedAuth().username());
                         currentUserAuthToken=loginResponse.addedAuth().authToken();
+                        out.printf("authToken added with login: %s\n",currentUserAuthToken);
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
@@ -99,6 +101,7 @@ public class Client {
 //                            out.println(registerResponse.statusCode());
 //                        }
                         currentUserAuthToken=registerResponse;
+                        out.printf("authToken added with register: %s\n", currentUserAuthToken);
                         out.print("Successfully registered");
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
@@ -161,11 +164,21 @@ public class Client {
                     }
                     break;
                 case 3:  //Create Game
+                    try {
+                        //String gameName = createGameRepl();
+                        CreateGameRequest createGameRequest = createGameRepl();
+                               // new CreateGameRequest(currentUserAuthToken,gameName);
+                        CreateGameResponse createGameResponse= facade.creatGame(currentUserAuthToken,createGameRequest);
+                        out.printf("gameID of newly created game: %s\n",createGameResponse.gameID());
+                    }
+                    catch(Exception e) {
+                        out.print(e.getMessage());
+                    }
                     break;
                 case 4: //List Games
                     try {
                         System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
-                        ListGamesResponse listGamesResponse= facade.listGames(new ListGamesRequest(currentUserAuthToken));
+                        ListGamesResponse listGamesResponse= facade.listGames(currentUserAuthToken);
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
@@ -325,6 +338,41 @@ public class Client {
         return new LoginRequest(username,password);
 
     }
+
+
+    private static CreateGameRequest createGameRepl() {
+        String[] inputLabels = new String[1];
+        inputLabels[0]="gameName";
+        String[] input= generalRepl(inputLabels);
+        return new CreateGameRequest(input[0]);
+    }
+
+
+
+
+    //generalRepl, returns list of Strings, takes as input parameter names to request
+    private static String[] generalRepl(String[] inputLabels) {
+            String[] inputParams=new String[inputLabels.length];
+            Boolean validInput=false;
+            for(int i=0; i<inputLabels.length;i++) {
+                Boolean validUsername = false;
+                while (!validInput) {
+                    System.out.printf("%s:%n>>>",inputLabels[i]);
+                    Scanner scanner = new Scanner(System.in);
+                    String line = scanner.nextLine();
+                    String[] words = line.split(" ");
+                    if (!words[0].isEmpty()) {
+                        inputParams[i] = words[0];
+                        validInput = true;
+                    } else {  //invalid input (empty string)
+                        System.out.printf("invalid %s%n",inputLabels[i]);
+                        continue;
+                    }
+                }
+            }
+            return inputParams;
+    }
+
 
     public static void drawChessBoard(PrintStream out, ChessGame gameIn) {  //call when you join or observe a gameC
         game=gameIn;

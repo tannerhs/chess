@@ -1,14 +1,13 @@
 package ui;
 
+import bodyResponses.CreateGameBodyResponse;
 import bodyResponses.ListGamesBodyResponse;
 import bodyResponses.LoginBodyResponse;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
-import requests.ListGamesRequest;
-import requests.LoginRequest;
-import requests.LogoutRequest;
-import requests.RegisterRequest;
+import requests.*;
+import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
@@ -66,7 +65,11 @@ public class ServerFacade {  //represents your server to the client, provides si
                 System.out.printf("respBody for register: %s\n",respBody);
                 body = new Gson().fromJson(inputStreamReader, LoginBodyResponse.class);
                 System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, body);
-                return new LoginResponse(new AuthData(body.username(),body.authToken()),statusCode,statusMessage);
+                System.out.printf("body response username: %s\nbody response authToken: %s\n",body.username(),body.authToken());
+                AuthData addedAuth = new AuthData(body.authToken(),body.username());
+                System.out.printf("login addedAuth (before return): %s \n",addedAuth);
+                LoginResponse loginResponse =new LoginResponse(addedAuth,statusCode,statusMessage);
+                return loginResponse;
             }
     }
 
@@ -128,11 +131,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         String authString = logoutRequest.authToken();
         http.addRequestProperty("Authorization",authString);
 
-        // Write out the body
-        try (OutputStream outputStream = http.getOutputStream()) {
-            var jsonBody = new Gson().toJson(logoutRequest);  //maybe var or some json thing
-            outputStream.write(jsonBody.getBytes());
-        }
+        // no body
 
         // Make the request
         http.connect();
@@ -149,7 +148,7 @@ public class ServerFacade {  //represents your server to the client, provides si
     }
 
 
-    public ListGamesResponse listGames(ListGamesRequest listGamesRequest) throws Exception {
+    public ListGamesResponse listGames(String authToken) throws Exception {
         System.out.print("server facade listGames method reached\n");
 
         // Specify the desired endpoint
@@ -161,14 +160,9 @@ public class ServerFacade {  //represents your server to the client, provides si
         http.setDoOutput(true);
 
         // Write out a header
-        String authString = listGamesRequest.authToken();
-        http.addRequestProperty("Authorization",authString);
+        http.addRequestProperty("Authorization",authToken);
 
-//        // Write out the body
-//        try (OutputStream outputStream = http.getOutputStream()) {
-//            var jsonBody = new Gson().toJson(listGamesRequest);  //maybe var or some json thing
-//            outputStream.write(jsonBody.getBytes());
-//        }
+        //no body in this http request, only header
 
         // Make the request
         http.connect();
@@ -185,4 +179,44 @@ public class ServerFacade {  //represents your server to the client, provides si
         }
         return new ListGamesResponse(response, statusCode,statusMessage);
     }
+
+    public CreateGameResponse creatGame(String authToken, CreateGameRequest createGameRequest) throws Exception {
+        System.out.print("server facade listGames method reached\n");
+
+        // Specify the desired endpoint
+        URI uri = new URI("http://localhost:8080/game");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("POST");
+
+        // Specify that we are going to write out data
+        http.setDoOutput(true);
+
+        // Write out a header
+        http.addRequestProperty("Authorization",authToken);
+
+        // Write out the body for http request
+        try (OutputStream outputStream = http.getOutputStream()) {
+            String jsonBody = new Gson().toJson(createGameRequest);  //maybe var or some json thing
+            outputStream.write(jsonBody.getBytes());
+        }
+
+        // Make the request
+        http.connect();
+
+        //Receive the response body
+        var statusCode = http.getResponseCode();
+        var statusMessage = http.getResponseMessage();
+
+        CreateGameBodyResponse response=null;
+        // Output the response body
+        try (InputStream respBody = http.getInputStream()) {
+            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+            response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+        }
+        return new CreateGameResponse(response.gameID(),statusCode,statusMessage);
+    }
+
+//    public joinGame throws Exception {
+//        //
+//    }
 }
