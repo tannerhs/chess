@@ -119,7 +119,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         }
     }
 
-    public void logout(LogoutRequest logoutRequest) throws Exception {
+    public LogoutResponse logout(LogoutRequest logoutRequest) throws Exception {
         System.out.print("server facade logout method reached\n");
 
         // Specify the desired endpoint
@@ -143,11 +143,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-        // Output the response body
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            new Gson().fromJson(inputStreamReader, RegisterResponse.class);  //should be nothing
-        }
+        return new LogoutResponse(statusCode,statusMessage);
     }
 
 
@@ -174,20 +170,25 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-        String response=null;
-        // Output the response body
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            System.out.printf("string respBody for listGames: %s\n",inputStreamReader);
-            System.out.printf("respBody for listGames: %s\n",respBody);
-            // Creating a character array
-            response = new String(respBody.readAllBytes());
-            System.out.printf("= Response =========\n[%d] %s\n\n", statusCode, statusMessage);
+        if(statusCode!=200) {
+            return new ListGamesResponse(null,statusCode,statusMessage);
         }
-        return new ListGamesResponse(response, statusCode,statusMessage);
+        else {
+            String response=null;
+            // Output the response body
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                System.out.printf("string respBody for listGames: %s\n",inputStreamReader);
+                System.out.printf("respBody for listGames: %s\n",respBody);
+                // Creating a character array
+                response = new String(respBody.readAllBytes());
+                System.out.printf("= Response =========\n[%d] %s\n\n", statusCode, statusMessage);
+            }
+            return new ListGamesResponse(response, statusCode,statusMessage);
+        }
     }
 
-    public CreateGameResponse creatGame(String authToken, CreateGameRequest createGameRequest) throws Exception {
+    public CreateGameResponse createGame(String authToken, CreateGameRequest createGameRequest) throws Exception {
         System.out.print("server facade listGames method reached\n");
 
         // Specify the desired endpoint
@@ -214,13 +215,18 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-        CreateGameBodyResponse response=null;
-        // Output the response body
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+        if(statusCode!=200) {
+            return new CreateGameResponse(-1,statusCode,statusMessage);
         }
-        return new CreateGameResponse(response.gameID(),statusCode,statusMessage);
+        else {
+            CreateGameBodyResponse response=null;
+            // Output the response body
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+            }
+            return new CreateGameResponse(response.gameID(),statusCode,statusMessage);
+        }
     }
 
     public JoinGameResponse joinGame(String authToken,JoinGameRequest joinGameRequest) throws Exception {

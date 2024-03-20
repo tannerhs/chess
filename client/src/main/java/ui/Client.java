@@ -163,21 +163,31 @@ public class Client {
                     try {
                         loggedOut=true;
                         LogoutRequest logoutRequest = new LogoutRequest(currentUserAuthToken);
-                        facade.logout(logoutRequest);  //no logout response
-                        currentUserAuthToken=null;
+                        LogoutResponse logoutResponse= facade.logout(logoutRequest);  //no logout response
+                        if(logoutResponse.statusCode()!=200) {
+                            printErrorMessage(out,logoutResponse.statusCode());
+                        }
+                        else{
+                            currentUserAuthToken=null;
+                        }
                         //out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
                     }
                     break;
-                case 3:  //Create Game
+                case 3:  //Create Game  //FIXME enforce unique game name
                     try {
                         //String gameName = createGameRepl();
                         CreateGameRequest createGameRequest = createGameRepl();
                                // new CreateGameRequest(currentUserAuthToken,gameName);
-                        CreateGameResponse createGameResponse= facade.creatGame(currentUserAuthToken,createGameRequest);
-                        out.printf("gameID of newly created game: %s\n",createGameResponse.gameID());
+                        CreateGameResponse createGameResponse= facade.createGame(currentUserAuthToken,createGameRequest);
+                        if(createGameResponse.statusCode()!=200) {
+                            printErrorMessage(out,createGameResponse.statusCode());
+                        }
+                        else {
+                            out.printf("gameID of newly created game: %s\n",createGameResponse.gameID());
+                        }
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
@@ -187,7 +197,12 @@ public class Client {
                     try {
 //                        System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                         ListGamesResponse listGamesResponse= facade.listGames(currentUserAuthToken);
-                        out.printf("%s\n",listGamesResponse.response());
+                        if(listGamesResponse.statusCode()!=200){
+                            printErrorMessage(out,listGamesResponse.statusCode());
+                        }
+                        else {
+                            out.printf("%s\n",listGamesResponse.response());
+                        }
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
