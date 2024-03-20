@@ -49,23 +49,27 @@ public class ServerFacade {  //represents your server to the client, provides si
             // Make the request
             http.connect();
 
-            System.out.print("finished connecting\n");
+//            System.out.print("finished connecting\n");
 
             //Receive the response body
             var statusCode = http.getResponseCode();
             var statusMessage = http.getResponseMessage();
 
-
-            // Read the response body
-            LoginBodyResponse body=null;
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-                System.out.printf("respBody for register: %s\n",respBody);
-                body = new Gson().fromJson(inputStreamReader, LoginBodyResponse.class);
-                System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, body);
-                AuthData addedAuth = new AuthData(body.authToken(),body.username());
-                LoginResponse loginResponse =new LoginResponse(addedAuth,statusCode,statusMessage);
-                return loginResponse;
+            if(statusCode!=200) {  //return before http exception can be thrown
+                return new LoginResponse(null,statusCode,statusMessage);
+            }
+            else {
+                // Read the response body
+                LoginBodyResponse body=null;
+                try (InputStream respBody = http.getInputStream()) {
+                    InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                    System.out.printf("respBody for register: %s\n",respBody);
+                    body = new Gson().fromJson(inputStreamReader, LoginBodyResponse.class);
+                    System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, body);
+                    AuthData addedAuth = new AuthData(body.authToken(),body.username());
+                    LoginResponse loginResponse =new LoginResponse(addedAuth,statusCode,statusMessage);
+                    return loginResponse;
+                }
             }
     }
 

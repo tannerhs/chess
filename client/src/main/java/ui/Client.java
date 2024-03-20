@@ -22,8 +22,6 @@ public class Client {
     private static final int LINE_WIDTH_IN_CHARS = 0;
     private static final String EMPTY = "   ";
 
-    private static ChessGame game;
-    private static ChessPiece[][] board;
     private static ServerFacade facade = new ServerFacade();
 
     private static Boolean quitProgram=false;
@@ -82,13 +80,20 @@ public class Client {
                         LoginRequest loginRequest = loginRepl();
                         loggedIn=true;
                         LoginResponse loginResponse= facade.login(loginRequest);
-                        currentUserAuthToken=loginResponse.addedAuth().authToken();
-                        //out.printf("authToken added with login: %s\n",currentUserAuthToken);
+                        if(loginResponse.statusCode()!=200) {
+                            printErrorMessage(out,loginResponse.statusCode());
+                            loggedIn=false;
+                        }
+                        else {
+                            currentUserAuthToken=loginResponse.addedAuth().authToken();
+                            out.printf("Login success!\n");
+                        }
                     }
-                    catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
+                    catch(Exception e) {  //this should never be called...all exceptions should be handled
                         out.print(e.getMessage());
                         loggedIn=false;
                     }
+
                     break;
                 case 4: //Register
                     String registerResponse;
@@ -178,7 +183,7 @@ public class Client {
                     break;
                 case 4: //List Games
                     try {
-                        System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
+//                        System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                         ListGamesResponse listGamesResponse= facade.listGames(currentUserAuthToken);
                         out.printf("%s\n",listGamesResponse.response());
                     }
@@ -187,7 +192,7 @@ public class Client {
                     }
                     break;
                 case 5: //Join Game
-                    //get game indicated, then print it out
+                    //get game indicated, then print it out; currently just makes new game
                     joinGameLogic(out, false);
                     break;
                 case 6:  //Join Observer
@@ -435,9 +440,9 @@ public class Client {
         }
         catch (Exception e) {
             out.println(e.getMessage());
-            if(joinGameResponse!=null) {
-                out.println(joinGameResponse.statusCode());
-            }
+//            if(joinGameResponse!=null) {
+//                out.println(joinGameResponse.statusCode());
+//            }
             return;  //don't print out board if unhandled error encountered
         }
 
