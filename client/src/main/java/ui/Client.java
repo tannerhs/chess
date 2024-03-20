@@ -11,15 +11,12 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import static java.lang.Character.isUpperCase;
-import static java.lang.Character.toUpperCase;
 import static ui.EscapeSequences.*;
 
 public class Client {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
-    private static final int LINE_WIDTH_IN_CHARS = 0;
     private static final String EMPTY = "   ";
 
     private static ServerFacade facade = new ServerFacade();
@@ -107,8 +104,7 @@ public class Client {
                         else {
                             loggedIn=true;
                             currentUserAuthToken=registerResponse.addedAuth().authToken();
-                            //out.printf("authToken added with register: %s\n", currentUserAuthToken);
-                            System.out.printf("Successfully registered");
+                            System.out.printf("Successfully registered\n");
                         }
 
                     }
@@ -170,7 +166,6 @@ public class Client {
                         else{
                             currentUserAuthToken=null;
                         }
-                        //out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
@@ -178,9 +173,7 @@ public class Client {
                     break;
                 case 3:  //Create Game  //FIXME enforce unique game name
                     try {
-                        //String gameName = createGameRepl();
                         CreateGameRequest createGameRequest = createGameRepl();
-                               // new CreateGameRequest(currentUserAuthToken,gameName);
                         CreateGameResponse createGameResponse= facade.createGame(currentUserAuthToken,createGameRequest);
                         if(createGameResponse.statusCode()!=200) {
                             printErrorMessage(out,createGameResponse.statusCode());
@@ -272,10 +265,6 @@ public class Client {
                 "3. Login%n" +
                 "4. Register\n\n"
                 +">>>");
-//        out.println("Help Menu:");
-//        out.println("If you have not created an account, register.  Otherwise, login to see more options.");
-//        out.println("When you are finished playing, please select quit by typing in its number.");
-//        out.println("------------");
     }
 
     private static void postloginHelpMenu(PrintStream out) {
@@ -309,7 +298,6 @@ public class Client {
                 }
                 else {  //invalid input (empty string)
                     System.out.printf("invalid username%n");
-                    continue;
                 }
             }
 
@@ -326,7 +314,6 @@ public class Client {
                 }
                 else {  //invalid input (empty string)
                     System.out.printf("invalid password%n");
-                    continue;
                 }
             }
 
@@ -343,12 +330,9 @@ public class Client {
                 }
                 else {  //invalid input (empty string)
                     System.out.printf("invalid email%n");
-                    continue;
                 }
             }
             validInput=true;
-
-
         }
         return new UserData(username,password,email);
     }
@@ -371,7 +355,6 @@ public class Client {
                     validUsername = true;
                 } else {  //invalid input (empty string)
                     System.out.printf("invalid username%n");
-                    continue;
                 }
             }
 
@@ -388,7 +371,6 @@ public class Client {
                     validInput=true;  //username and password both in valid format
                 } else {  //invalid input (empty string)
                     System.out.printf("invalid password%n");
-                    continue;
                 }
             }
         }
@@ -423,7 +405,6 @@ public class Client {
                         validInput = true;
                     } else {  //invalid input (empty string)
                         System.out.printf("invalid %s%n",inputLabels[i]);
-                        continue;
                     }
                 }
             }
@@ -439,8 +420,6 @@ public class Client {
             out.print(SET_BG_COLOR_BLACK);
             out.print(SET_TEXT_COLOR_BLACK);
             out.print(EMPTY.repeat(boardSizeInSpaces));
-
-            //out.print(SET_BG_COLOR_DARK_GREY);
             out.println();
         }
     }
@@ -461,7 +440,7 @@ public class Client {
             out.printf(ERROR_MESSAGE_500);
         }
         else {
-            out.printf("%s with status code %i",UNKOWN_ERROR_MESSAGE,statusCode);
+            out.printf("%s with status code %d",UNKOWN_ERROR_MESSAGE,statusCode);
         }
     }
 

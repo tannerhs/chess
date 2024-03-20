@@ -27,8 +27,6 @@ public class ServerFacade {  //represents your server to the client, provides si
         //2-3 lines of code in each since calls client communicator
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
-//            System.out.print("server facade login method reached\n");
-
             // Specify the desired endpoint
             URI uri = new URI("http://localhost:8080/session");
             HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -49,8 +47,6 @@ public class ServerFacade {  //represents your server to the client, provides si
             // Make the request
             http.connect();
 
-//            System.out.print("finished connecting\n");
-
             //Receive the response body
             var statusCode = http.getResponseCode();
             var statusMessage = http.getResponseMessage();
@@ -63,9 +59,7 @@ public class ServerFacade {  //represents your server to the client, provides si
                 LoginBodyResponse body=null;
                 try (InputStream respBody = http.getInputStream()) {
                     InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-//                    System.out.printf("respBody for register: %s\n",respBody);
                     body = new Gson().fromJson(inputStreamReader, LoginBodyResponse.class);
-//                    System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, body);
                     AuthData addedAuth = new AuthData(body.authToken(),body.username());
                     LoginResponse loginResponse =new LoginResponse(addedAuth,statusCode,statusMessage);
                     return loginResponse;
@@ -74,8 +68,6 @@ public class ServerFacade {  //represents your server to the client, provides si
     }
 
     public RegisterResponse register(UserData addUser) throws Exception {
-//        System.out.print("server facade register method reached\n");
-
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:8080/user");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -93,11 +85,8 @@ public class ServerFacade {  //represents your server to the client, provides si
             outputStream.write(jsonBody.getBytes());
         }
 
-
         // Make the request
         http.connect();
-
-        //System.out.print("finished connecting\n");
 
         //Receive the response body
         var statusCode = http.getResponseCode();
@@ -111,17 +100,13 @@ public class ServerFacade {  //represents your server to the client, provides si
             AuthData resp=null;
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-//                System.out.printf("respBody for register: %s\n",respBody);
                 resp = new Gson().fromJson(inputStreamReader, AuthData.class);
-//                System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, resp);
                 return new RegisterResponse(resp,statusCode,statusMessage) ;
             }
         }
     }
 
     public LogoutResponse logout(LogoutRequest logoutRequest) throws Exception {
-//        System.out.print("server facade logout method reached\n");
-
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:8080/session");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -148,8 +133,6 @@ public class ServerFacade {  //represents your server to the client, provides si
 
 
     public ListGamesResponse listGames(String authToken) throws Exception {
-//        System.out.print("server facade listGames method reached\n");
-
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:8080/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -178,19 +161,13 @@ public class ServerFacade {  //represents your server to the client, provides si
             // Output the response body
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-//                System.out.printf("string respBody for listGames: %s\n",inputStreamReader);
-//                System.out.printf("respBody for listGames: %s\n",respBody);
-                // Creating a character array
                 response = new String(respBody.readAllBytes());
-//                System.out.printf("= Response =========\n[%d] %s\n\n", statusCode, statusMessage);
             }
             return new ListGamesResponse(response, statusCode,statusMessage);
         }
     }
 
     public CreateGameResponse createGame(String authToken, CreateGameRequest createGameRequest) throws Exception {
-//        System.out.print("server facade listGames method reached\n");
-
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:8080/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -230,8 +207,6 @@ public class ServerFacade {  //represents your server to the client, provides si
     }
 
     public JoinGameResponse joinGame(String authToken,JoinGameRequest joinGameRequest) throws Exception {
-//        System.out.print("server facade joinGame method reached\n");
-
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:8080/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -251,8 +226,6 @@ public class ServerFacade {  //represents your server to the client, provides si
 
         // Make the request
         http.connect();
-
-//        System.out.println("exception not before http.connect\n");
 
         //Receive the response body
         var statusCode = http.getResponseCode();
