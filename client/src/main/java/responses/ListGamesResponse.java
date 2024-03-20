@@ -3,5 +3,5 @@ package responses;
 
 import bodyResponses.ListGamesBodyResponse;
 
-public record ListGamesResponse(ListGamesBodyResponse response, int statusCode, String statusMessage) {
+public record ListGamesResponse(String response, int statusCode, String statusMessage) {
 }

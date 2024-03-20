@@ -65,9 +65,7 @@ public class ServerFacade {  //represents your server to the client, provides si
                 System.out.printf("respBody for register: %s\n",respBody);
                 body = new Gson().fromJson(inputStreamReader, LoginBodyResponse.class);
                 System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, body);
-                System.out.printf("body response username: %s\nbody response authToken: %s\n",body.username(),body.authToken());
                 AuthData addedAuth = new AuthData(body.authToken(),body.username());
-                System.out.printf("login addedAuth (before return): %s \n",addedAuth);
                 LoginResponse loginResponse =new LoginResponse(addedAuth,statusCode,statusMessage);
                 return loginResponse;
             }
@@ -171,11 +169,16 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-        ListGamesBodyResponse response=null;
+        String response=null;
         // Output the response body
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            response = new Gson().fromJson(inputStreamReader, ListGamesBodyResponse.class);
+            System.out.printf("string respBody for listGames: %s\n",inputStreamReader);
+            System.out.printf("respBody for listGames: %s\n",respBody);
+            // Creating a character array
+            response = new String(respBody.readAllBytes());
+            System.out.println(response);
+            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, response);
         }
         return new ListGamesResponse(response, statusCode,statusMessage);
     }

@@ -78,11 +78,8 @@ public class Client {
                         LoginRequest loginRequest = loginRepl();
                         loggedIn=true;
                         LoginResponse loginResponse= facade.login(loginRequest);
-                        out.printf("login addedAuth: %s \n",loginResponse.addedAuth());
-                        out.printf("login addedAuth authToken: %s \n",loginResponse.addedAuth().authToken());
-                        out.printf("login addedAuth username: %s \n",loginResponse.addedAuth().username());
                         currentUserAuthToken=loginResponse.addedAuth().authToken();
-                        out.printf("authToken added with login: %s\n",currentUserAuthToken);
+                        //out.printf("authToken added with login: %s\n",currentUserAuthToken);
                     }
                     catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
@@ -179,6 +176,7 @@ public class Client {
                     try {
                         System.out.printf("currentUserAuthToken: %s",currentUserAuthToken);
                         ListGamesResponse listGamesResponse= facade.listGames(currentUserAuthToken);
+                        out.printf("%s\n",listGamesResponse.response());
                     }
                     catch(Exception e) {
                         out.print(e.getMessage());
