@@ -239,7 +239,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         // Make the request
         http.connect();
 
-        System.out.println("exception not before http.connect\n");
+//        System.out.println("exception not before http.connect\n");
 
         //Receive the response body
         var statusCode = http.getResponseCode();
