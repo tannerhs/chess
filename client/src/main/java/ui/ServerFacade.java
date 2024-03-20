@@ -3,14 +3,12 @@ package ui;
 import bodyResponses.CreateGameBodyResponse;
 import bodyResponses.ListGamesBodyResponse;
 import bodyResponses.LoginBodyResponse;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
 import requests.*;
-import responses.CreateGameResponse;
-import responses.ListGamesResponse;
-import responses.LoginResponse;
-import responses.RegisterResponse;
+import responses.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -177,8 +175,7 @@ public class ServerFacade {  //represents your server to the client, provides si
             System.out.printf("respBody for listGames: %s\n",respBody);
             // Creating a character array
             response = new String(respBody.readAllBytes());
-            System.out.println(response);
-            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, response);
+            System.out.printf("= Response =========\n[%d] %s\n\n", statusCode, statusMessage);
         }
         return new ListGamesResponse(response, statusCode,statusMessage);
     }
@@ -219,7 +216,39 @@ public class ServerFacade {  //represents your server to the client, provides si
         return new CreateGameResponse(response.gameID(),statusCode,statusMessage);
     }
 
-//    public joinGame throws Exception {
-//        //
-//    }
+    public JoinGameResponse joinGame(String authToken,JoinGameRequest joinGameRequest) throws Exception {
+        System.out.print("server facade joinGame method reached\n");
+
+        // Specify the desired endpoint
+        URI uri = new URI("http://localhost:8080/game");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("PUT");
+
+        // Specify that we are going to write out data
+        http.setDoOutput(true);
+
+        // Write out a header
+        http.addRequestProperty("Authorization",authToken);
+
+        // Write out the body for http request
+        try (OutputStream outputStream = http.getOutputStream()) {
+            String jsonBody = new Gson().toJson(joinGameRequest);  //maybe var or some json thing
+            outputStream.write(jsonBody.getBytes());
+        }
+
+        // Make the request
+        http.connect();
+
+        //Receive the response body
+        var statusCode = http.getResponseCode();
+        var statusMessage = http.getResponseMessage();
+
+        CreateGameBodyResponse response=null;
+        // Output the response body
+        try (InputStream respBody = http.getInputStream()) {
+            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+            response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
+        }
+        return new JoinGameResponse(statusCode,statusMessage);
+    }
 }

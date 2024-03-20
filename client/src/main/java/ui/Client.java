@@ -5,10 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import model.UserData;
 import requests.*;
-import responses.CreateGameResponse;
-import responses.ListGamesResponse;
-import responses.LoginResponse;
-import responses.RegisterResponse;
+import responses.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -184,7 +181,20 @@ public class Client {
                     break;
                 case 5: //Join Game
                     //get game indicated, then print it out
-                    drawChessBoard(out, new ChessGame());
+                    try{
+                        JoinGameRequest joinGameRequest= joinGameRepl(out,false);  //asks for color
+                        JoinGameResponse joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
+                    }
+                    catch (Exception e) {
+                        out.println(e.getMessage());
+                    }
+                    ChessGame game = new ChessGame();  //
+                    game.setTeamTurn(ChessGame.TeamColor.BLACK);
+                    drawChessBoard(out, game);
+                    //draw line
+                    //draw in other
+                    game.setTeamTurn(ChessGame.TeamColor.WHITE);
+                    drawChessBoard(out,game);
                     break;
                 case 6:  //Join Observer
                     //get game indicated, then print it out
@@ -202,6 +212,23 @@ public class Client {
         out.print(SET_BG_COLOR_BLACK);
         out.print("testing");
 
+    }
+
+    private static JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
+        out.printf("Please enter the number for one of the following games:\n");
+        out.printf(">>>");
+        int gameID=readInputNumber();
+        int colorSelection=0;
+        String color=null;
+        if(!onlyObserve) {  //if playing, get desired player color (if available)
+            out.printf("Please select a color by typing in the corresponding number:\n\t1) WHITE\n\t2)BLACK");
+            while(colorSelection!=1 && colorSelection!=2) {
+                colorSelection=readInputNumber();
+            }
+            color=(colorSelection==1)?"WHITE":"BLACK";
+
+        }
+        return new JoinGameRequest(color,gameID);
     }
 
 
