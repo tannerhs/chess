@@ -1,9 +1,8 @@
 package clientTests;
 
+import client_requests.*;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import client_requests.LoginRequest;
-import client_requests.LogoutRequest;
 import client_responses.RegisterResponse;
 import server.Server;
 import ui.ServerFacade;
@@ -50,7 +49,6 @@ public class ServerFacadeTests {
     void registerNeg() throws Exception {
         UserData addedUser = new UserData("player11", "password", "p1@email.com");
         RegisterResponse res = facade.register(addedUser);
-        testUserAuthToken=res.addedAuth().authToken();
         res = facade.register(new UserData("player11", "password", "p1@email.com") );
         Assertions.assertEquals(res.addedAuth() ,null);
     }
@@ -86,6 +84,61 @@ public class ServerFacadeTests {
         var res = facade.login(new LoginRequest("loginNeg","login"));
         Assertions.assertNotEquals(res.statusCode(),200);
     }
+
+    @Test void clearApp() throws Exception {
+        var res = facade.register(new UserData("newLogin","login","login"));
+        var res2=facade.ClearApp(res.addedAuth().authToken());
+        Assertions.assertEquals(res2.statusCode(),200);
+    }
+
+    @Test void createGamesPos() throws Exception {
+        var res = facade.register(new UserData("lugin","ok","ok"));
+        var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName1"));
+        Assertions.assertEquals(res2.statusCode(),200);
+    }
+
+    @Test void createGamesNeg() throws Exception {
+        var res2=facade.createGame("bad-auth",new CreateGameRequest("gameName1"));
+        Assertions.assertNotEquals(res2.statusCode(),200);
+    }
+
+    @Test void listGamesPos() throws Exception {
+        var res = facade.register(new UserData("lucaa","ok","ok"));
+        var res2=facade.listGames(res.addedAuth().authToken());
+        Assertions.assertEquals(res2.statusCode(),200);
+    }
+
+    @Test void listGamesNeg() throws Exception {
+        var res = facade.register(new UserData("lucaa","ok","ok"));
+        var res2=facade.listGames("no-existy-auth-token");
+        Assertions.assertNotEquals(res2.statusCode(),200);
+    }
+
+    @Test void joinGamePos() throws Exception {
+        var res = facade.register(new UserData("lucas","ok","ok"));
+        var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName1"));
+        var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("WHITE",res2.gameID()));
+        Assertions.assertEquals(res3.statusCode(),200);
+    }
+
+    @Test void joinGameNeg() throws Exception {
+        var res3=facade.joinGame("nope",new JoinGameRequest("WHITE",-1));
+        Assertions.assertNotEquals(res3.statusCode(),200);
+    }
+
+    @Test void joinGameObserverPos() throws Exception {
+        var res = facade.register(new UserData("lucaso","ok","ok"));
+        var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName2"));
+        var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("red",res2.gameID()));
+        Assertions.assertEquals(res3.statusCode(),200);
+        facade.ClearApp(res.addedAuth().authToken());
+    }
+
+    @Test void joinGameObserverNeg() throws Exception {
+        var res3=facade.joinGame("nah bro",new JoinGameRequest("red",-1));
+        Assertions.assertNotEquals(res3.statusCode(),200);
+    }
+
 
 
 
