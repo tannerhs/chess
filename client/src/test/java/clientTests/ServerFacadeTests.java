@@ -128,8 +128,8 @@ public class ServerFacadeTests {
 
     @Test void joinGameObserverPos() throws Exception {
         var res = facade.register(new UserData("luciano","ok","ok"));
-        var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName2"));
-        var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("red",res2.gameID()));
+        var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName3-1"));
+        var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("",res2.gameID()));  //expects only to receive blank string, WHITE or BLACK
         Assertions.assertEquals(res3.statusCode(),200);
         facade.ClearApp(res.addedAuth().authToken());
     }
