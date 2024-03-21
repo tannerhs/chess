@@ -197,9 +197,9 @@ public class ServerFacade {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
                 String responseText = new String(respBody.readAllBytes());
-                System.out.printf("responseText: %s\n",responseText);
+//                System.out.printf("responseText: %s\n",responseText);
                 response = new Gson().fromJson(responseText, ListGamesObjects.class);
-                System.out.printf("ListGamesObjects thing: %s\n",response);
+//                System.out.printf("ListGamesObjects thing: %s\n",response);
                 gameList = response.games();
                         //.iterator().next();  //get first item, list of Games
                 //gameList= new HashSet<GameData>();

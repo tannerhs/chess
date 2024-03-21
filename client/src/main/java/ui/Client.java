@@ -66,9 +66,9 @@ public class Client {
         Boolean loggedIn=false;
         Boolean quit = false;
         int selection=8;  //default
-        out.printf("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n>>>");
+        out.printf("Welcome to the CS 240 prelogin menu!  Press 1 to get help.\n");
         while (!loggedIn && !quit) {  //prelogin page
-
+            out.printf(">>>");
             selection = readInputNumber();
 
             switch (selection) {
@@ -155,9 +155,10 @@ public class Client {
 //        Boolean validInput=false;
         Boolean loggedOut=false;
         int selection = 8;
-        out.printf("Welcome to the postlogin menu! Press 1 to see the options.\n>>>");
+        out.printf("Welcome to the postlogin menu! Press 1 to see the options.\n");
         while (!loggedOut) {  //prelogin page
             loggedOut=false;
+            out.printf(">>>");
             selection = readInputNumber();
 
             switch (selection) {
@@ -187,8 +188,8 @@ public class Client {
                         if(createGameResponse.statusCode()!=200) {
                             printErrorMessage(out,createGameResponse.statusCode());
                         }
-                        else {
-                            out.printf("gameID of newly created game: %s\n",createGameResponse.gameID());
+                        else {  //we want to keep the gameID private
+                            out.printf("Game successfully added!\n");
                         }
                     }
                     catch(Exception e) {
@@ -208,7 +209,7 @@ public class Client {
                             List<GameData> gameList=listGamesResponse.games();
                             for(int i=0; i<gameList.size();i++) {
                                 GameData game = gameList.get(i);
-                                out.printf("%d) Name:%s\tWhite username:%s\t,Black username:%s\t) ",i, game.gameName(),game.whiteUsername(),game.blackUsername());
+                                out.printf("%d) Name:%s\t\tWhite username:%s\t\tBlack username:%s\n",i+1, game.gameName(),game.whiteUsername(),game.blackUsername());
                             }
                         }
                     }
@@ -248,33 +249,32 @@ public class Client {
     }
 
     private static JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
-        out.printf("Please enter the gameID for one of the following games:\n");
+        out.printf("Please enter the number for one of the following games:\n");
         ListGamesResponse listGamesResponse;
-        List<GameData> listGames=null;
+        List<GameData> gameList=null;
         try {
-            listGamesResponse = facade.listGames(currentUserAuthToken);  //FIXME
+            listGamesResponse = facade.listGames(currentUserAuthToken);
+
             if(listGamesResponse.statusCode()!=200) {
                 printErrorMessage(out, listGamesResponse.statusCode());
                 System.out.println("This should never be reached");
-                //return;
             }
-            listGames = listGamesResponse.games();
-            /*
-            case(index)
-            *
-            *
-            * */
-            out.printf("\t%s\n",listGames);
+            gameList = listGamesResponse.games();
+            for(int i=0; i<gameList.size();i++) {
+                GameData game = gameList.get(i);
+                out.printf("%d) Name:%s\t\tWhite username:%s\t\tBlack username:%s\n",i+1, game.gameName(),game.whiteUsername(),game.blackUsername());
+            }
+
         }
         catch (Exception e) {
             out.printf(e.getMessage());
         }
 
-        out.printf(">>>");
-        int index=readInputNumber();
+        //out.printf(">>>");
+        int index=readInputNumber()-1 ;//array is 0-indexed
 
         //take index and get corresponding gameID
-        int gameID=(listGames==null || index<0 || index>=listGames.size())?-1:listGames.get(index).gameID();
+        int gameID=(gameList==null || index<0 || index>=gameList.size())?-1:gameList.get(index).gameID();
 
         int colorSelection=0;
         String color="";
@@ -295,8 +295,7 @@ public class Client {
                 "1. Help%n" +
                 "2. Quit%n" +
                 "3. Login%n" +
-                "4. Register\n\n"
-                +">>>");
+                "4. Register\n\n");
     }
 
     private static void postloginHelpMenu(PrintStream out) {
@@ -306,8 +305,7 @@ public class Client {
                 "3. Create Game%n" +
                 "4. List Games%n"+
                 "5. Join Game%n" +
-                "6. Join Observer\n\n" +
-                ">>>");
+                "6. Join Observer\n\n");
     }
 
     private static UserData registerRepl() {
