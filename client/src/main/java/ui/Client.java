@@ -1,11 +1,13 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import client_requests.JoinGameRequest;
+import client_requests.LoginRequest;
+import client_responses.*;
 import model.UserData;
-import requests.*;
-import responses.*;
+import client_requests.*;
+import client_responses.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +21,8 @@ public class Client {
     private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final String EMPTY = "   ";
 
-    private static ServerFacade facade = new ServerFacade();
+    private static int port=8080;  //client/serverFacade port
+    private static ServerFacade facade = new ServerFacade(port);
 
     private static Boolean quitProgram=false;
     private static String currentUserAuthToken;
@@ -31,10 +34,14 @@ public class Client {
     static final String ERROR_MESSAGE_500="Error: bad request\n";
     static final String UNKOWN_ERROR_MESSAGE="Error: unknown error";
 
+    public ServerFacade clientSetup() {
+        return facade;
+    }
+
     public static void main(String[] args) {  //pass in... game? team color?
 
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Server: " + piece);
+        System.out.println("♕ 240 Chess Client: " + piece);
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         while(!quitProgram) {
             try {

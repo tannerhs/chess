@@ -1,34 +1,61 @@
 package ui;
 
 import bodyResponses.CreateGameBodyResponse;
-import bodyResponses.ListGamesBodyResponse;
 import bodyResponses.LoginBodyResponse;
-import chess.ChessGame;
+import client_responses.*;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
-import requests.*;
-import responses.*;
+import client_requests.*;
+import client_responses.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
 
 //7 methods for 7 endpoints
 //take in Request object and return Response object
 
 //also create ClientCommunicator class called by server facade, do get, post, delete update etc.. http
 
-public class ServerFacade {  //represents your server to the client, provides simple way to do it
+public class ServerFacade {
+    int port=8080;
+
+    public ServerFacade(int port) {
+        this.port=port;
+    }
+    //represents your server to the client, provides simple way to do it
         //2-3 lines of code in each since calls client communicator
+
+    public ClearAppResponse ClearApp(String authToken) throws Exception {
+        // Specify the desired endpoint
+        URI uri = new URI("http://localhost:"+port+"/db");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("DELETE");
+
+        // Specify that we are going to write out data
+        http.setDoOutput(true);
+
+        // Write out a header
+        http.addRequestProperty("Authorization",authToken);
+
+        // no body
+
+        // Make the request
+        http.connect();
+
+        //Receive the response body
+        var statusCode = http.getResponseCode();
+        var statusMessage = http.getResponseMessage();
+
+        return new ClearAppResponse(statusCode,statusMessage);
+    }
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
             // Specify the desired endpoint
-            URI uri = new URI("http://localhost:8080/session");
+            URI uri = new URI("http://localhost:"+port+"/session");
             HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
             http.setRequestMethod("POST");
 
@@ -69,7 +96,7 @@ public class ServerFacade {  //represents your server to the client, provides si
 
     public RegisterResponse register(UserData addUser) throws Exception {
         // Specify the desired endpoint
-        URI uri = new URI("http://localhost:8080/user");
+        URI uri = new URI("http://localhost:"+port+"/user");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
 
@@ -77,7 +104,7 @@ public class ServerFacade {  //represents your server to the client, provides si
         http.setDoOutput(true);
 
         // Write out a header
-        http.addRequestProperty("Content-Type", "application/json");
+        //http.addRequestProperty("Content-Type", "application/json");
 
         // Write out the body
         try (OutputStream outputStream = http.getOutputStream()) {
@@ -93,11 +120,13 @@ public class ServerFacade {  //represents your server to the client, provides si
         var statusMessage = http.getResponseMessage();
 
         if(statusCode!=200) {
+            System.out.println("no bueno");
+            System.out.println(statusMessage);
             return new RegisterResponse(null,statusCode,statusMessage);
         }
         else {
             // Read the response body
-            AuthData resp=null;
+            AuthData resp;
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
                 resp = new Gson().fromJson(inputStreamReader, AuthData.class);
@@ -108,7 +137,7 @@ public class ServerFacade {  //represents your server to the client, provides si
 
     public LogoutResponse logout(LogoutRequest logoutRequest) throws Exception {
         // Specify the desired endpoint
-        URI uri = new URI("http://localhost:8080/session");
+        URI uri = new URI("http://localhost:"+port+"/session");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("DELETE");
 
@@ -134,7 +163,7 @@ public class ServerFacade {  //represents your server to the client, provides si
 
     public ListGamesResponse listGames(String authToken) throws Exception {
         // Specify the desired endpoint
-        URI uri = new URI("http://localhost:8080/game");
+        URI uri = new URI("http://localhost:"+port+"/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("GET");
 
@@ -169,7 +198,7 @@ public class ServerFacade {  //represents your server to the client, provides si
 
     public CreateGameResponse createGame(String authToken, CreateGameRequest createGameRequest) throws Exception {
         // Specify the desired endpoint
-        URI uri = new URI("http://localhost:8080/game");
+        URI uri = new URI("http://localhost:"+port+"/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
 
@@ -196,7 +225,7 @@ public class ServerFacade {  //represents your server to the client, provides si
             return new CreateGameResponse(-1,statusCode,statusMessage);
         }
         else {
-            CreateGameBodyResponse response=null;
+            CreateGameBodyResponse response;
             // Output the response body
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
@@ -208,7 +237,7 @@ public class ServerFacade {  //represents your server to the client, provides si
 
     public JoinGameResponse joinGame(String authToken,JoinGameRequest joinGameRequest) throws Exception {
         // Specify the desired endpoint
-        URI uri = new URI("http://localhost:8080/game");
+        URI uri = new URI("http://localhost:"+port+"/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("PUT");
 

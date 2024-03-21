@@ -2,6 +2,8 @@ package dataAccessTests;
 
 import dataAccess.*;
 import model.UserData;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.*;
@@ -13,10 +15,10 @@ import service.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class dataAccessTests {
-    UserDAO users;
-    AuthDAO auth;
-    GameDAO games;
-    String authToken;
+    static UserDAO users;
+    static AuthDAO auth;
+    static GameDAO games;
+    static String authToken;
 
     @BeforeEach
     public void setup() {
@@ -24,6 +26,16 @@ public class dataAccessTests {
         auth = new DatabaseAuthDAO();
         games = new DatabaseGameDAO();
     }
+
+//    @BeforeAll
+//    public static void init() throws Exception {
+//        new ClearAppService(new ClearAppRequest(users,games,auth));
+//    }
+
+//    @AfterAll
+//    public static void takedown() throws Exception {
+//        new ClearAppService(new ClearAppRequest(users,games,auth));
+//    }
 
     @Test
     public void RegisterServiceConstructorPosTest() {

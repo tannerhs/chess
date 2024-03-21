@@ -1,4 +1,4 @@
-package responses;
+package client_responses;
 
 
 import bodyResponses.ListGamesBodyResponse;
