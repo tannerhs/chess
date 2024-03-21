@@ -109,13 +109,13 @@ public class ServerFacadeTests {
     }
 
     @Test void listGamesNeg() throws Exception {
-        var res = facade.register(new UserData("lucaa","ok","ok"));
+        var res = facade.register(new UserData("luck","ok","ok"));
         var res2=facade.listGames("no-existy-auth-token");
         Assertions.assertNotEquals(res2.statusCode(),200);
     }
 
     @Test void joinGamePos() throws Exception {
-        var res = facade.register(new UserData("lucas","ok","ok"));
+        var res = facade.register(new UserData("lucas","ok","ok"));  //joinGameNeg needs to have a different username
         var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName1"));
         var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("WHITE",res2.gameID()));
         Assertions.assertEquals(res3.statusCode(),200);
@@ -127,7 +127,7 @@ public class ServerFacadeTests {
     }
 
     @Test void joinGameObserverPos() throws Exception {
-        var res = facade.register(new UserData("lucaso","ok","ok"));
+        var res = facade.register(new UserData("luciano","ok","ok"));
         var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName2"));
         var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("red",res2.gameID()));
         Assertions.assertEquals(res3.statusCode(),200);
