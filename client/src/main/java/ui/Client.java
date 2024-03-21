@@ -5,12 +5,14 @@ import chess.ChessPiece;
 import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
 import client_responses.*;
+import model.GameData;
 import model.UserData;
 import client_requests.*;
 import client_responses.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -201,7 +203,13 @@ public class Client {
                             printErrorMessage(out,listGamesResponse.statusCode());
                         }
                         else {
-                            out.printf("%s\n",listGamesResponse.response());
+                            //FIXME
+                            //out.printf("%s\n",listGamesResponse.response());
+                            List<GameData> gameList=listGamesResponse.games();
+                            for(int i=0; i<gameList.size();i++) {
+                                GameData game = gameList.get(i);
+                                out.printf("%d) Name:%s\tWhite username:%s\t,Black username:%s\t) ",i, game.gameName(),game.whiteUsername(),game.blackUsername());
+                            }
                         }
                     }
                     catch(Exception e) {
@@ -241,8 +249,21 @@ public class Client {
 
     private static JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
         out.printf("Please enter the gameID for one of the following games:\n");
+        ListGamesResponse listGamesResponse;
+        List<GameData> listGames=null;
         try {
-            String listGames = facade.listGames(currentUserAuthToken).response();
+            listGamesResponse = facade.listGames(currentUserAuthToken);  //FIXME
+            if(listGamesResponse.statusCode()!=200) {
+                printErrorMessage(out, listGamesResponse.statusCode());
+                System.out.println("This should never be reached");
+                //return;
+            }
+            listGames = listGamesResponse.games();
+            /*
+            case(index)
+            *
+            *
+            * */
             out.printf("\t%s\n",listGames);
         }
         catch (Exception e) {
@@ -250,7 +271,11 @@ public class Client {
         }
 
         out.printf(">>>");
-        int gameID=readInputNumber();
+        int index=readInputNumber();
+
+        //take index and get corresponding gameID
+        int gameID=(listGames==null || index<0 || index>=listGames.size())?-1:listGames.get(index).gameID();
+
         int colorSelection=0;
         String color="";
         if(!onlyObserve) {  //if playing, get desired player color (if available)

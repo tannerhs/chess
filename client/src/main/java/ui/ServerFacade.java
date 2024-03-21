@@ -5,6 +5,7 @@ import bodyResponses.LoginBodyResponse;
 import client_responses.*;
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import client_requests.*;
 import client_responses.*;
@@ -14,9 +15,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
 
 //7 methods for 7 endpoints
 //take in Request object and return Response object
+
+//add makeMove method
 
 //also create ClientCommunicator class called by server facade, do get, post, delete update etc.. http
 
@@ -186,13 +191,20 @@ public class ServerFacade {
             return new ListGamesResponse(null,statusCode,statusMessage);
         }
         else {
-            String response=null;
+            ListGamesObjects response=null;
+            List<GameData> gameList;
             // Output the response body
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-                response = new String(respBody.readAllBytes());
+                String responseText = new String(respBody.readAllBytes());
+                System.out.printf("responseText: %s\n",responseText);
+                response = new Gson().fromJson(responseText, ListGamesObjects.class);
+                System.out.printf("ListGamesObjects thing: %s\n",response);
+                gameList = response.games();
+                        //.iterator().next();  //get first item, list of Games
+                //gameList= new HashSet<GameData>();
             }
-            return new ListGamesResponse(response, statusCode,statusMessage);
+            return new ListGamesResponse(gameList, statusCode,statusMessage);
         }
     }
 

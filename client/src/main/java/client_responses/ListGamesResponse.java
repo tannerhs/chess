@@ -2,6 +2,9 @@ package client_responses;
 
 
 import bodyResponses.ListGamesBodyResponse;
+import model.GameData;
 
-public record ListGamesResponse(String response, int statusCode, String statusMessage) {
+import java.util.List;
+
+public record ListGamesResponse(List<GameData> games, int statusCode, String statusMessage) {
 }
