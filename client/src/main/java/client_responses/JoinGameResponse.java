@@ -1,4 +1,6 @@
 package client_responses;
 
-public record JoinGameResponse(int statusCode, String statusMessage) {
+import chess.ChessGame;
+
+public record JoinGameResponse(ChessGame game, int statusCode, String statusMessage) {
 }

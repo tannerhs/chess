@@ -490,14 +490,12 @@ public class Client {
             printErrorMessage(out,joinGameResponse.statusCode());
         }
         else {
-            ChessGame game = new ChessGame();  //
-            game.setTeamTurn(ChessGame.TeamColor.BLACK);
-            new DrawChessBoard(out, game);
+            ChessGame game = joinGameResponse.game();
+            new DrawChessBoard(out, game);  //draws it in orientation of currentTeam at bottom
             //draw line
             drawVerticalLine(out,2);  //line width of 2 characters
-            //draw in other
-            game.setTeamTurn(ChessGame.TeamColor.WHITE);
-            new DrawChessBoard(out,game);
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_WHITE);
         }
     }
 

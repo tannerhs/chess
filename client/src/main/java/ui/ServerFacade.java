@@ -2,6 +2,7 @@ package ui;
 
 import bodyResponses.CreateGameBodyResponse;
 import bodyResponses.LoginBodyResponse;
+import chess.ChessGame;
 import client_responses.*;
 import com.google.gson.Gson;
 import model.AuthData;
@@ -275,7 +276,7 @@ public class ServerFacade {
 
         CreateGameBodyResponse response=null;
         if(statusCode!=200) {  //return before http exception can be thrown
-            return new JoinGameResponse(statusCode,statusMessage);
+            return new JoinGameResponse(new ChessGame(),statusCode,statusMessage);
         }
         else {
 
@@ -284,7 +285,7 @@ public class ServerFacade {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
                 response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
             }
-            return new JoinGameResponse(statusCode,statusMessage);
+            return new JoinGameResponse(new ChessGame(),statusCode,statusMessage);
         }
     }
 }
