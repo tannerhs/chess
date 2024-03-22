@@ -26,7 +26,7 @@ import java.util.List;
 
 //also create ClientCommunicator class called by server facade, do get, post, delete update etc.. http
 
-public class ServerFacade {
+public class ServerFacade extends Facade {
     int port=8080;
 
     public ServerFacade(int port) {

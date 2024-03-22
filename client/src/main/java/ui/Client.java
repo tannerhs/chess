@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Client {
+public class Client implements ServerMessageObserver {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
