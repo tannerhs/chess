@@ -314,6 +314,15 @@ public class Client implements ServerMessageObserver {
         String password="";
         String email="";
         while(!validInput) {
+
+
+            String[] labels=new String[3];
+            labels[0]="username";
+            labels[1]="password";
+            labels[2]="email";
+            String[] output = new String[3];
+            output=generalRepl(labels);
+
             System.out.printf("Register%n");
 
             Boolean validUsername=false;
@@ -368,44 +377,15 @@ public class Client implements ServerMessageObserver {
     }
 
     private static LoginRequest loginRepl() {
-        String username="";
-        String password="";
-        Boolean validInput=false;
-        while(!validInput) {
-            System.out.printf("Login%n");
+        System.out.printf("Login%n");
 
-            Boolean validUsername = false;
-            while (!validUsername) {
-                System.out.printf("username:%n>>>");
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine();
-                String[] words = line.split(" ");
-                if (!words[0].isEmpty()) {
-                    username = words[0];
-                    validUsername = true;
-                } else {  //invalid input (empty string)
-                    System.out.printf("invalid username%n");
-                }
-            }
-
-            Boolean validPassword = false;  //valid in the sense of valid input, not valid as in it is correct
-            while (!validPassword) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.printf("password:%n>>>");
-                String line = scanner.nextLine();
-                String[] words = line.split(" ");
-                password = words[0];
-                if (!words[0].isEmpty()) {
-                    password = words[0];
-                    validPassword = true;
-                    validInput=true;  //username and password both in valid format
-                } else {  //invalid input (empty string)
-                    System.out.printf("invalid password%n");
-                }
-            }
-        }
-        return new LoginRequest(username,password);
-
+        String[] labels=new String[2];
+        labels[0]="username";
+        labels[1]="password";
+        String[] output;
+        output=generalRepl(labels);
+        System.out.println("login general repl returned");
+        return new LoginRequest(output[0],output[1]);
     }
 
 
@@ -424,7 +404,7 @@ public class Client implements ServerMessageObserver {
             String[] inputParams=new String[inputLabels.length];
             Boolean validInput=false;
             for(int i=0; i<inputLabels.length;i++) {
-                Boolean validUsername = false;
+                validInput=false;
                 while (!validInput) {
                     System.out.printf("%s:%n>>>",inputLabels[i]);
                     Scanner scanner = new Scanner(System.in);
