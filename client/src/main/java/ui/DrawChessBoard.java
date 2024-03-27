@@ -3,6 +3,7 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 
@@ -269,5 +270,11 @@ public class DrawChessBoard {
         out.print(" ");
         out.print(toUpperCase(player));
         out.print(" ");
+    }
+
+    //FIXME
+    private static void highlightMoves(ChessPosition position) {
+        //List<Move> validMoves=ChessPiece.validMoves(position);
+
     }
 }

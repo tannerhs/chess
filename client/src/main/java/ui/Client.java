@@ -309,71 +309,14 @@ public class Client implements ServerMessageObserver {
     }
 
     private static UserData registerRepl() {
-        Boolean validInput=false;
-        String username="";
-        String password="";
-        String email="";
-        while(!validInput) {
-
-
-            String[] labels=new String[3];
-            labels[0]="username";
-            labels[1]="password";
-            labels[2]="email";
-            String[] output = new String[3];
-            output=generalRepl(labels);
-
-            System.out.printf("Register%n");
-
-            Boolean validUsername=false;
-            while(!validUsername) {
-                System.out.printf("username:%n>>>");
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine();
-                String[]  words = line.split(" ");
-                if(!words[0].isEmpty()) {
-                    username=words[0];
-                    validUsername=true;
-                }
-                else {  //invalid input (empty string)
-                    System.out.printf("invalid username%n");
-                }
-            }
-
-            Boolean validPassword=false;
-            while(!validPassword) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.printf("password:%n>>>");
-                String line = scanner.nextLine();
-                String[] words = line.split(" ");
-                password=words[0];
-                if(!words[0].isEmpty()) {
-                    password=words[0];
-                    validPassword=true;
-                }
-                else {  //invalid input (empty string)
-                    System.out.printf("invalid password%n");
-                }
-            }
-
-            Boolean validEmail=false;
-            while(!validEmail) {
-                System.out.printf("email:%n>>>");
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine();
-                String[] words = line.split(" ");
-                email=words[0];
-                if(!words[0].isEmpty()) {
-                    email=words[0];
-                    validEmail=true;
-                }
-                else {  //invalid input (empty string)
-                    System.out.printf("invalid email%n");
-                }
-            }
-            validInput=true;
-        }
-        return new UserData(username,password,email);
+        System.out.printf("Register%n");
+        String[] labels=new String[3];
+        labels[0]="username";
+        labels[1]="password";
+        labels[2]="email";
+        String[] output = new String[3];
+        output=generalRepl(labels);
+        return new UserData(output[0],output[1],output[2]);
     }
 
     private static LoginRequest loginRepl() {
