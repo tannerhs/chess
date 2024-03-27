@@ -279,7 +279,11 @@ public class HttpCommunicator {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
                 response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
             }
-            return new JoinGameResponse(new ChessGame(),statusCode,statusMessage);
+            ChessGame game = new ChessGame();
+            if(joinGameRequest.playerColor()=="WHITE" || joinGameRequest.playerColor()=="BLACK") {  //only if valid color and join game, not just observer
+                game.setTeamTurn(ChessGame.TeamColor.valueOf(joinGameRequest.playerColor()));
+            }
+            return new JoinGameResponse(game,statusCode,statusMessage);
         }
     }
 }
