@@ -9,6 +9,7 @@ import model.GameData;
 import model.UserData;
 import client_requests.*;
 import client_responses.*;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -422,4 +423,8 @@ public class Client implements ServerMessageObserver {
         }
     }
 
+    @Override
+    public void notify(ServerMessage notification) {
+        //FIXME
+    }
 }

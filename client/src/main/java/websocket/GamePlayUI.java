@@ -1,4 +1,4 @@
-package ui;
+package websocket;
 
 public class GamePlayUI {
 }
