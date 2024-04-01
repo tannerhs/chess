@@ -4,10 +4,6 @@ import dataAccess.*;
 import handlers.*;
 import spark.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-
 
 public class Server {
 
@@ -48,6 +44,7 @@ public class Server {
     }
 
     public void createRoutes() {
+        Spark.webSocket("/connect", WebSocketHandler.class);
         Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
         Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
         Spark.post("/session", (req,res) -> new LoginHandler().handleRequest(req,res,usersDAO,authDAO));

@@ -23,6 +23,8 @@ public class ChessGame {
 
     TeamColor team=WHITE;  //initialize to WHITE since white starts
     ChessBoard board;
+
+    boolean lockBoardFromFurtherMoves;  //FIXME
     public ChessGame() {
 
     }

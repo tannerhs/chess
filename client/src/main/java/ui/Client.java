@@ -5,10 +5,12 @@ import chess.ChessPiece;
 import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
 import client_responses.*;
+import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
 import client_requests.*;
 import client_responses.*;
+import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
@@ -18,7 +20,7 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Client implements ServerMessageObserver {
+public class Client {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
@@ -423,8 +425,5 @@ public class Client implements ServerMessageObserver {
         }
     }
 
-    @Override
-    public void notify(ServerMessage notification) {
-        //FIXME
-    }
+
 }

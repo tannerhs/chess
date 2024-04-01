@@ -20,7 +20,13 @@ public class ServerFacade {
     public ServerFacade(int port) {
         this.port=port;
         httpCommunicator=new HttpCommunicator(port);
-        //WebSocketCommunicator = new WebSocketCommunicator(port);  //FIXME different or same port?
+        String url = "ws://localhost:"+port;
+        try {
+            webSocketCommunicator = new WebSocketCommunicator(port,url);  //same port
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     //represents your server to the client, provides simple way to do it
         //2-3 lines of code in each since calls client communicator

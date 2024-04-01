@@ -27,6 +27,7 @@ public class JoinGameService {
 
     public Object joinGame() throws BadRequestException, AuthenticationException, DataAccessException, PlayerFieldTakenException, UnauthorizedAccessException {
         GameData gameToJoin = games.getGameByID(gameID);
+        System.out.println("joinGame service reached");
 
         if(gameToJoin==null || games==null ) {
             throw new BadRequestException("{\"message\": \"Error: bad request\"}");
@@ -40,10 +41,10 @@ public class JoinGameService {
         else if(nonstandardColor(playerColor)) {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
-        else if (gameToJoin.whiteUsername()!="" && gameToJoin.whiteUsername()!=null && playerColor.equals("WHITE")) {
+        else if (gameToJoin.whiteUsername()!="" && gameToJoin.whiteUsername()!=null && playerColor=="WHITE") {  //using .equals() throws an error here
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
-        else if (gameToJoin.blackUsername()!="" && gameToJoin.blackUsername()!=null && playerColor.equals("BLACK")) {
+        else if (gameToJoin.blackUsername()!="" && gameToJoin.blackUsername()!=null && playerColor=="BLACK") {  //ditto
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
         else {

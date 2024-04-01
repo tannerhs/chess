@@ -144,6 +144,7 @@ public class DatabaseGameDAO implements GameDAO {
 //        if(gameIndex==-1) {
 //            System.out.println("is this reached?");
 //        }
+        System.out.println("joinGame() in DatabaseGameDAO reached");
         if(playerColor == null || playerColor.isEmpty()){  //needs to be ==null, not .equals()
             //observer
         }
