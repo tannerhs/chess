@@ -5,6 +5,7 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 import client_responses_http.RegisterResponse;
 import server.Server;
+import ui.Client;
 import ui.ServerFacade;
 
 
@@ -19,7 +20,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade(port);
+        facade = new ServerFacade(port,new Client());
         System.out.println("Started test HTTP client on " + port);
 
     }

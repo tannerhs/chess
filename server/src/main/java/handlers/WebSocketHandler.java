@@ -2,10 +2,12 @@ package handlers;
 
 //import org.eclipse.jetty.websocket.api.Session;
 //import org.eclipse.jetty.server.session.Session;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
-import spark.Spark;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayer;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -32,12 +34,11 @@ public class WebSocketHandler {
             //TODO finish case statement
         }
         //depending on UserGameCommand message type, do stuff
-        String serverMessage ="{}";
-//                this.getSession().getBasicRemote().sendText(new Gson().toJson(serverMessage));
-
+        ChessGame myGame = new ChessGame();
+        String serverMessage = new Gson().toJson(new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,myGame));
 
         //send server messages, receive client messages
-        session.getRemote().sendString("WebSocket response: " + message);
+        session.getRemote().sendString(serverMessage);
         //send back server message if needed
     }
 
@@ -48,8 +49,9 @@ public class WebSocketHandler {
 
     public void joinObserver(Session session, JoinPlayer command) throws IOException {
         //send proper message and take care of stuff
-        String message="nope";
-        session.getRemote().sendString("WebSocket response: " + message);
+        ChessGame myGame = new ChessGame();
+        String message=new Gson().toJson(new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,myGame));
+        session.getRemote().sendString(message);
     }
 
 

@@ -4,6 +4,7 @@ import client_responses_http.*;
 import client_responses_ws.JoinGameResponseWS;
 import com.google.gson.Gson;
 
+import ui.Client;
 import ui.ServerMessageObserver;
 import webSocketMessages.ResponseException;
 import webSocketMessages.userCommands.JoinObserver;
@@ -21,13 +22,13 @@ public class WebSocketCommunicator extends Endpoint {
     ServerMessageObserver notificationHandler;
 
 
-    public WebSocketCommunicator(int port, String url) throws ResponseException {
+    public WebSocketCommunicator(int port, String url, Client me) throws ResponseException {
         this.port = port;
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
 //            URI socketURI = new URI("ws://localhost:8080/connect");
-            this.notificationHandler = new ServerMessageObserver();
+            //this.notificationHandler = new ServerMessageObserver();
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -43,7 +44,7 @@ public class WebSocketCommunicator extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {  //every time a message is received, this runs
-                    notificationHandler.notify(message);
+                    me.notify(message);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -86,14 +87,16 @@ public class WebSocketCommunicator extends Endpoint {
         if(joinGameResponseHttp.statusCode()==200) {
             if(observe) {
                 try {
-                    //
+                    UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
+                    assert session != null;
+                    String message = new Gson().toJson(joinObserver);
+                    session.getBasicRemote().sendText(message);  //send user command
                 }
                 catch (Exception e) {
                     //if invalid UserGameCommand, only inform root
                     return new JoinGameResponseWS(null,joinGameResponseHttp.statusCode(), joinGameResponseHttp.statusMessage());
                 }
-                UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
-                session.getBasicRemote().sendText(new Gson().toJson(joinObserver));  //send user command
+
 
 
 

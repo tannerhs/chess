@@ -32,12 +32,12 @@ public class ServerFacade {
     static final String ERROR_MESSAGE_500="Error: bad request\n";
     static final String UNKOWN_ERROR_MESSAGE="Error: unknown error";
 
-    public ServerFacade(int port) {
+    public ServerFacade(int port, Client myClient) {
         this.port=port;
         httpCommunicator=new HttpCommunicator(port);
         String url = "ws://localhost:"+port;
         try {
-            webSocketCommunicator = new WebSocketCommunicator(port,url);  //same port
+            webSocketCommunicator = new WebSocketCommunicator(port,url, myClient);  //same port
         }
         catch (Exception e) {
             System.out.println(e.getMessage());

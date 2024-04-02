@@ -6,9 +6,12 @@ import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
 import client_responses_http.*;
 import client_responses_ws.JoinGameResponseWS;
+import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
 import client_requests.*;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -17,14 +20,14 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Client {
+public class Client implements ServerMessageObserver{
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final String EMPTY = "   ";
 
     private int port=8080;  //client/serverFacade port
-    private ServerFacade facade = new ServerFacade(port);
+    private ServerFacade facade = new ServerFacade(port, this);
 
     private Boolean quitProgram=false;
     private String currentUserAuthToken;
@@ -38,6 +41,17 @@ public class Client {
 
     public ServerFacade clientSetup() {
         return facade;
+    }
+
+    public void notify(String message) {  //print stuff based on notification received (print string or game)
+        ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+        switch(notification.getServerMessageType()) {
+            case LOAD_GAME : {
+                LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
+                //do something useful like print whatever it is, game or string
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {  //pass in... game? team color?
