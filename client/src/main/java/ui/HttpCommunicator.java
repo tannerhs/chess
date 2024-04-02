@@ -244,6 +244,8 @@ public class HttpCommunicator {
     }
 
     public JoinGameResponseHttp joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
+        System.out.printf("joinGameRequest- %s\n",joinGameRequest);
+
         System.out.println("joinGame in HttpCommunicator reached");
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:"+port+"/game");
@@ -273,12 +275,14 @@ public class HttpCommunicator {
         CreateGameBodyResponse response=null;
         if(statusCode!=200) {  //return before http exception can be thrown
             System.out.println("Http communicator join game status code not 200");
+            System.out.printf("status code: %d\n",statusCode);
+            System.out.printf("joinGameRequest: %s\n",joinGameRequest);
             return new JoinGameResponseHttp(null,gameID,statusCode,statusMessage);
         }
         else {
             //no response body
             ChessGame game = new ChessGame();
-            if(joinGameRequest.playerColor()=="WHITE" || joinGameRequest.playerColor()=="BLACK") {  //only if valid color and join game, not just observer
+            if("WHITE".equals(joinGameRequest.playerColor()) || "BLACK".equals(joinGameRequest.playerColor())) {  //only if valid color and join game, not just observer
                 game.setTeamTurn(ChessGame.TeamColor.valueOf(joinGameRequest.playerColor()));
             }
             return new JoinGameResponseHttp(game, gameID, statusCode,statusMessage);

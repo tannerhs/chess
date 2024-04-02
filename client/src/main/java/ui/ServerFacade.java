@@ -81,7 +81,7 @@ public class ServerFacade {
         if(webSocketCommunicator.getSession()==null) {
             System.out.println("webSocketCommunicator.getSession()==null");
         }
-//        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, observe, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
+        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, observe, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
 
         return joinGameResponseHttp;
     }
