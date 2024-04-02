@@ -90,6 +90,7 @@ public class WebSocketCommunicator extends Endpoint {
                 }
                 catch (Exception e) {
                     //if invalid UserGameCommand, only inform root
+                    return new JoinGameResponseWS(null,joinGameResponseHttp.statusCode(), joinGameResponseHttp.statusMessage());
                 }
                 UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
                 session.getBasicRemote().sendText(new Gson().toJson(joinObserver));  //send user command

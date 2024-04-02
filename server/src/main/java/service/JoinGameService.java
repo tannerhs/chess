@@ -41,10 +41,12 @@ public class JoinGameService {
         else if(nonstandardColor(playerColor)) {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
-        else if (gameToJoin.whiteUsername()!="" && gameToJoin.whiteUsername()!=null && playerColor=="WHITE") {  //using .equals() throws an error here
+        else if (!gameToJoin.whiteUsername().isEmpty() && gameToJoin.whiteUsername()!=null && "WHITE".equals(playerColor)) {  //using null.equals() throws an error here
+            System.out.println("already taken");
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
-        else if (gameToJoin.blackUsername()!="" && gameToJoin.blackUsername()!=null && playerColor=="BLACK") {  //ditto
+        else if (!gameToJoin.blackUsername().isEmpty() && gameToJoin.blackUsername()!=null && "BLACK".equals(playerColor)) {  //ditto
+            System.out.println("already taken");
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
         }
         else {
