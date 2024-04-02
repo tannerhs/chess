@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 
 import ui.ServerMessageObserver;
 import webSocketMessages.ResponseException;
-import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -62,7 +61,7 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
     public void login(String authToken) throws ResponseException {
-        //add to map of Server Sessions. FIXME; server side?
+        //add to map of Server Sessions. FIXME; server side!
 
     }
 
@@ -74,7 +73,7 @@ public class WebSocketCommunicator extends Endpoint {
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
-        //remove from map of Server Sessions. FIXME; server side?
+        //remove from map of Server Sessions. FIXME; server side!
     }
 
     public JoinGameResponseWS joinGame(String authToken, Boolean observe, JoinGameResponseHttp joinGameResponseHttp, Session session) throws Exception {
@@ -95,15 +94,9 @@ public class WebSocketCommunicator extends Endpoint {
                 UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
                 session.getBasicRemote().sendText(new Gson().toJson(joinObserver));  //send user command
 
-                //FIXME
-                //what about web socket handler?   get server response
-                String serverMessage ="{}";
-//                this.getSession().getBasicRemote().sendText(new Gson().toJson(serverMessage));
-                session.getBasicRemote().sendText(serverMessage);
-                notificationHandler.notify(serverMessage);
 
-                //TODO add session to map of sessions in -- whenever you start one
-                //remove whenever you end one
+
+
             }
             else {
                 //player color... how to get...

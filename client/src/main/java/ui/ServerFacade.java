@@ -37,7 +37,7 @@ public class ServerFacade {
         httpCommunicator=new HttpCommunicator(port);
         String url = "ws://localhost:"+port;
         try {
-            webSocketCommunicator = new WebSocketCommunicator(8040,url);  //same port
+            webSocketCommunicator = new WebSocketCommunicator(port,url);  //same port
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
