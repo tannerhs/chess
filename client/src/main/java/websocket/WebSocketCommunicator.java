@@ -1,35 +1,19 @@
 package websocket;
 
-import bodyResponses.CreateGameBodyResponse;
-import bodyResponses.LoginBodyResponse;
-import chess.ChessGame;
-import client_requests.CreateGameRequest;
-import client_requests.JoinGameRequest;
-import client_requests.LoginRequest;
-import client_requests.LogoutRequest;
-import client_responses.*;
+import client_responses_http.*;
+import client_responses_ws.JoinGameResponseWS;
 import com.google.gson.Gson;
 import jakarta.websocket.EndpointConfig;
-import model.AuthData;
-import model.GameData;
-import model.UserData;
 import org.glassfish.tyrus.core.wsadl.model.Endpoint;
-import ui.Client;
 import ui.ServerMessageObserver;
 import webSocketMessages.ResponseException;
+import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.JoinObserver;
+import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-
-import webSocketMessages.serverMessages.LoadGame;
-import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.UserGameCommand;
 
 import javax.websocket.*;
 
@@ -69,10 +53,49 @@ public class WebSocketCommunicator extends Endpoint {
         this.session.getBasicRemote().sendText(msg);
     }
 
+    public JoinGameResponseWS joinGame(String authToken, Boolean observe, JoinGameResponseHttp joinGameResponseHttp) throws Exception {
+        System.out.println("JoinGameResponseWS reached");
+        //send JOIN_PLAYER or JOIN_OBSERVER
+        //receive LOAD_GAME
+        if(joinGameResponseHttp.statusCode()==200) {
+            if(observe) {
+                try {
+                    //
+                }
+                catch (Exception e) {
+                    //if invalid UserGameCommand, only inform root
+                }
+                System.out.println("found probleM?");
+//                UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
+//                this.getSession().getBasicRemote().sendText(new Gson().toJson(joinObserver));  //send user command
 
+                //FIXME
+                //what about web socket handler?   get server response
+                String serverMessage ="{}";
+//                this.getSession().getBasicRemote().sendText(new Gson().toJson(serverMessage));
+                this.getSession().getBasicRemote().sendText(serverMessage);
+                notificationHandler.notify(serverMessage);
+
+                //TODO add session to map of sessions in -- whenever you start one
+                //remove whenever you end one
+            }
+            else {
+                //player color... how to get...
+                //UserGameCommand joinPLayer = new JoinPlayer(authToken, joinGameResponseHttp.gameID(), jo)
+            }
+        }
+        else {
+            //
+        }
+        return null;
+    }
 
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         System.out.println("Websocket initialized");
+    }
+
+    public Session getSession() {
+        return session;
     }
 
 

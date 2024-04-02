@@ -7,7 +7,7 @@ import client_requests.CreateGameRequest;
 import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
 import client_requests.LogoutRequest;
-import client_responses.*;
+import client_responses_http.*;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -238,11 +238,12 @@ public class HttpCommunicator {
                 InputStreamReader inputStreamReader = new InputStreamReader(respBody);
                 response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
             }
+            System.out.printf("response: %s\n",response);
             return new CreateGameResponse(response.gameID(),statusCode,statusMessage);
         }
     }
 
-    public JoinGameResponse joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
+    public JoinGameResponseHttp joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:"+port+"/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
@@ -266,24 +267,19 @@ public class HttpCommunicator {
         //Receive the response body
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();  //http message not very descriptive, we want exception message returned:
-
+        int gameID= joinGameRequest.gameID();
 
         CreateGameBodyResponse response=null;
         if(statusCode!=200) {  //return before http exception can be thrown
-            return new JoinGameResponse(new ChessGame(),statusCode,statusMessage);
+            return new JoinGameResponseHttp(new ChessGame(),gameID,statusCode,statusMessage);
         }
         else {
-
-            // Output the response body
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-                response = new Gson().fromJson(inputStreamReader, CreateGameBodyResponse.class);
-            }
+            //no response body
             ChessGame game = new ChessGame();
             if(joinGameRequest.playerColor()=="WHITE" || joinGameRequest.playerColor()=="BLACK") {  //only if valid color and join game, not just observer
                 game.setTeamTurn(ChessGame.TeamColor.valueOf(joinGameRequest.playerColor()));
             }
-            return new JoinGameResponse(game,statusCode,statusMessage);
+            return new JoinGameResponseHttp(game, gameID, statusCode,statusMessage);
         }
     }
 }

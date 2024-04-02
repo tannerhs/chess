@@ -1,4 +1,4 @@
-package client_responses;
+package client_responses_http;
 
 public record ClientGameList() {
 }

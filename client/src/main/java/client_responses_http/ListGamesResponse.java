@@ -1,7 +1,6 @@
-package client_responses;
+package client_responses_http;
 
 
-import bodyResponses.ListGamesBodyResponse;
 import model.GameData;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package clientTests;
 import client_requests.*;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import client_responses.RegisterResponse;
+import client_responses_http.RegisterResponse;
 import server.Server;
 import ui.ServerFacade;
 

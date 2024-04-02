@@ -4,14 +4,11 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
-import client_responses.*;
-import com.google.gson.Gson;
+import client_responses_http.*;
+import client_responses_ws.JoinGameResponseWS;
 import model.GameData;
 import model.UserData;
 import client_requests.*;
-import client_responses.*;
-import webSocketMessages.serverMessages.LoadGame;
-import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -401,7 +398,7 @@ public class Client {
     }
 
     private static void joinGameLogic(PrintStream out, Boolean onlyObserve) {
-        JoinGameResponse joinGameResponse=null;
+        JoinGameResponseHttp joinGameResponse=null;
         try{
             JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
             joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
@@ -423,6 +420,30 @@ public class Client {
             out.print(SET_BG_COLOR_BLACK);
             out.print(SET_TEXT_COLOR_WHITE);
         }
+
+//        JoinGameResponseHttp joinGameResponseHttp;
+//        try{
+//            JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
+//            joinGameResponseHttp =facade.joinGame(currentUserAuthToken,joinGameRequest);
+////            JoinGameResponseWS joinGameResponseWS =facade.joinGameWS(currentUserAuthToken,joinGameRequest);
+//            if(joinGameResponseHttp.statusCode()!=200) {
+//                printErrorMessage(out, joinGameResponseHttp.statusCode());
+//            }
+//            else {
+//                ChessGame game = joinGameResponseHttp.game();
+//                new DrawChessBoard(out, game);  //draws it in orientation of currentTeam at bottom
+//                //draw line
+//                //drawVerticalLine(out,2);  //line width of 2 characters
+//                out.print(SET_BG_COLOR_BLACK);
+//                out.print(SET_TEXT_COLOR_WHITE);
+//            }
+//        }
+//        catch (Exception e) {
+//            out.println(e.getMessage());
+//            return;  //don't print out board if unhandled error encountered
+//        }
+
+
     }
 
 
