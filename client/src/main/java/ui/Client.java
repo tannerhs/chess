@@ -23,11 +23,11 @@ public class Client {
     private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final String EMPTY = "   ";
 
-    private static int port=8080;  //client/serverFacade port
-    private static ServerFacade facade = new ServerFacade(port);
+    private int port=8080;  //client/serverFacade port
+    private ServerFacade facade = new ServerFacade(port);
 
-    private static Boolean quitProgram=false;
-    private static String currentUserAuthToken;
+    private Boolean quitProgram=false;
+    private String currentUserAuthToken;
 
     //error messages
     static final String ERROR_MESSAGE_403="Error: already taken\n";
@@ -41,7 +41,11 @@ public class Client {
     }
 
     public static void main(String[] args) {  //pass in... game? team color?
+        Client myClient = new Client();
+        myClient.run();
+    }
 
+    private void run() {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -56,11 +60,9 @@ public class Client {
             }
             postloginMenu(out);  //stays here until you log out, upon which you return to the prelogin menu
         }
-
-
     }
 
-    private static void preloginMenu(PrintStream out) throws Exception {
+    private void preloginMenu(PrintStream out) throws Exception {
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
         Boolean loggedIn=false;
@@ -132,7 +134,7 @@ public class Client {
     }
 
 
-    private static int readInputNumber() {
+    private  int readInputNumber() {
         int selection = 8;
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
@@ -149,7 +151,7 @@ public class Client {
         return selection;
     }
 
-    private static void postloginMenu(PrintStream out) {
+    private void postloginMenu(PrintStream out) {
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
 //        Boolean validInput=false;
@@ -248,7 +250,7 @@ public class Client {
 
     }
 
-    private static JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
+    private JoinGameRequest joinGameRepl(PrintStream out, Boolean onlyObserve) {
         out.printf("Please enter the number for one of the following games:\n");
         ListGamesResponse listGamesResponse;
         List<GameData> gameList=null;
@@ -290,7 +292,7 @@ public class Client {
     }
 
 
-    private static void preloginHelpMenu(PrintStream out) {
+    private void preloginHelpMenu(PrintStream out) {
         out.printf("Please select one of the below options by typing its number:%n" +
                 "1. Help%n" +
                 "2. Quit%n" +
@@ -298,7 +300,7 @@ public class Client {
                 "4. Register\n\n");
     }
 
-    private static void postloginHelpMenu(PrintStream out) {
+    private void postloginHelpMenu(PrintStream out) {
         out.printf("Please select one of the below options by typing its number:%n" +
                 "1. Help%n" +
                 "2. Logout%n" +
@@ -308,7 +310,7 @@ public class Client {
                 "6. Join Observer\n\n");
     }
 
-    private static UserData registerRepl() {
+    private UserData registerRepl() {
         System.out.printf("Register%n");
         String[] labels=new String[3];
         labels[0]="username";
@@ -319,7 +321,7 @@ public class Client {
         return new UserData(output[0],output[1],output[2]);
     }
 
-    private static LoginRequest loginRepl() {
+    private LoginRequest loginRepl() {
         System.out.printf("Login%n");
 
         String[] labels=new String[2];
@@ -332,7 +334,7 @@ public class Client {
     }
 
 
-    private static CreateGameRequest createGameRepl() {
+    private CreateGameRequest createGameRepl() {
         String[] inputLabels = new String[1];
         inputLabels[0]="gameName";
         String[] input= generalRepl(inputLabels);
@@ -343,7 +345,7 @@ public class Client {
 
 
     //generalRepl, returns list of Strings, takes as input parameter names to request
-    private static String[] generalRepl(String[] inputLabels) {
+    private String[] generalRepl(String[] inputLabels) {
             String[] inputParams=new String[inputLabels.length];
             Boolean validInput=false;
             for(int i=0; i<inputLabels.length;i++) {
@@ -364,7 +366,7 @@ public class Client {
             return inputParams;
     }
 
-    private static void drawVerticalLine(PrintStream out, int lineWidthInChars) {
+    private void drawVerticalLine(PrintStream out, int lineWidthInChars) {
 
         int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
                 (BOARD_SIZE_IN_SQUARES - 1) * lineWidthInChars;
@@ -379,7 +381,7 @@ public class Client {
 
 
 
-    private static void printErrorMessage(PrintStream out, int statusCode) {
+    private void printErrorMessage(PrintStream out, int statusCode) {
         if(statusCode==400) {
             out.printf(ERROR_MESSAGE_400);
         }
@@ -397,7 +399,7 @@ public class Client {
         }
     }
 
-    private static void joinGameLogic(PrintStream out, Boolean onlyObserve) {
+    private void joinGameLogic(PrintStream out, Boolean onlyObserve) {
         JoinGameResponseHttp joinGameResponse=null;
         try{
             JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
