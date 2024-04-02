@@ -37,7 +37,7 @@ public class ServerFacade {
         httpCommunicator=new HttpCommunicator(port);
         String url = "ws://localhost:"+port;
         try {
-            webSocketCommunicator = new WebSocketCommunicator(port,url);  //same port
+            webSocketCommunicator = new WebSocketCommunicator(8040,url);  //same port
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -73,6 +73,15 @@ public class ServerFacade {
 
     public JoinGameResponseHttp joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
         JoinGameResponseHttp joinGameResponseHttp = httpCommunicator.joinGame(authToken,joinGameRequest);
+        PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        //if exception was one I accounted for, it should never be thrown to the user, so joinGameResponseHttp should have the correct statusCode (returned before exception can be thrown to user)
+
+        Boolean observe = joinGameRequest.playerColor().isEmpty();  //that is what I put in by default
+        if(webSocketCommunicator.getSession()==null) {
+            System.out.println("webSocketCommunicator.getSession()==null");
+        }
+        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, observe, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
+
         return joinGameResponseHttp;
     }
 

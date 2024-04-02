@@ -14,6 +14,21 @@ public class WebSocketHandler {
         //deserialize user game commands, which edits data more directly in the case of makeMove by calling DAO
         System.out.printf("Received: %s", message);
         session.getRemote().sendString("WebSocket response: " + message);
+
+
+        //depending on UserGameCommand message type, do stuff
+
+        //send back server message if needed
+    }
+
+    @OnWebSocketConnect
+    public void onConnect(Session session) {
+        //keep track of sessions in sesion manager class, store sessions form onMessage in session map
+    }
+
+    @OnWebSocketClose
+    public void onClose(Session session) {
+        //remov stuff from map
     }
 
 
