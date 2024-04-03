@@ -11,6 +11,7 @@ import model.GameData;
 import model.UserData;
 import client_requests.*;
 import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
@@ -44,12 +45,17 @@ public class Client implements ServerMessageObserver{
     }
 
     public void notify(String message) {  //print stuff based on notification received (print string or game)
-        ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-        switch(notification.getServerMessageType()) {
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+        switch(serverMessage.getServerMessageType()) {
             case LOAD_GAME : {
                 LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
+                System.out.println(loadGame.getGame());  //fixme
                 //do something useful like print whatever it is, game or string
                 break;
+            }
+            case NOTIFICATION: {
+                Notification notification = new Gson().fromJson(message, Notification.class);
+                System.out.println(notification.getMessage());  //print to terminal for all players who receive it
             }
         }
     }

@@ -49,8 +49,8 @@ public class WebSocketHandler {
                 String username = auth.getAuth(authToken).username();
                 String notificationMessage = username+" joined the game as an observer.\n";
                 Notification notification = new Notification(notificationMessage);
-                //connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
-                //connections.broadcast(gameID,notification,authToken);
+                connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
+                connections.broadcast(gameID,notification,authToken);  //FIXME, notifications not working yet
                 break;
             case JOIN_PLAYER:
                 break;

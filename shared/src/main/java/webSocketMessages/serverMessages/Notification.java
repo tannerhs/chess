@@ -6,4 +6,8 @@ public class Notification {
     public Notification(String notificationMessage) {
         this.message=notificationMessage;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }
