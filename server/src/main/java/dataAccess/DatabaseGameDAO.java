@@ -1,5 +1,6 @@
 package dataAccess;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.mysql.cj.x.protobuf.MysqlxPrepare;
@@ -42,7 +43,11 @@ public class DatabaseGameDAO implements GameDAO {
                 //createGameStatement.setInt(1,gameIDCounter);
                 createGameStatement.setString(1,gameName);
                 // Serialize and store the friend JSON.
-                var json = new Gson().toJson(new ChessGame());
+                ChessGame addGame = new ChessGame();
+                ChessBoard addBoard = new ChessBoard();
+                addBoard.resetBoard();
+                addGame.setBoard(addBoard);
+                var json = new Gson().toJson(addGame);
                 Blob blob = conn.createBlob();  //make blob to store game in
                 blob.setBytes(1, json.getBytes());
                 createGameStatement.setBlob(2, blob);

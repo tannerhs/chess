@@ -1,18 +1,13 @@
 package websocket;
 
 import com.google.gson.Gson;
-import dataAccess.GameDAO;
 import org.eclipse.jetty.websocket.api.*;
-import webSocketMessages.serverMessages.LoadGame;
+//import javax.websocket.*;
 import webSocketMessages.serverMessages.Notification;
-import webSocketMessages.serverMessages.ServerMessage;
 
-import java.net.URI;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -25,6 +20,7 @@ public class WebSocketSessions {
         Map<String,Session> addEntry = new HashMap<>();
         addEntry.put(authToken,session);
         connections.put(gameID, addEntry);
+        System.out.printf("gameid/auth/session added to WebSocketSessions: %d, %s, %s\n", gameID,authToken,session);
     }
 
     public void removeSessionFromGame(String username, int gameID, Session session) {
@@ -45,10 +41,13 @@ public class WebSocketSessions {
         System.out.println("broadcasting now");
         Map<String, Session> allPlayersAndObservers =connections.get(gameID);
         for (String token:allPlayersAndObservers.keySet()) {
+            //System.out.
             if(!token.equals(exceptThisAuthToken)) {
                 Session session = (Session) connections.get(token);
                 String sendMessage=new Gson().toJson(notification);
+//                session.getBasicRemote().sendText(sendMessage);
                 session.getRemote().sendString(sendMessage);
+                //
             }
         }
     }

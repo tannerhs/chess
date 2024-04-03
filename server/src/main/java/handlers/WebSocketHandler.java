@@ -12,6 +12,7 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.UserGameCommand;
 import websocket.WebSocketSessions;
+//import javax.websocket.*;
 import org.eclipse.jetty.websocket.api.Session;
 //import webSocketMessages.Notification;
 
@@ -25,6 +26,11 @@ public class WebSocketHandler {
     GameDAO games = new DatabaseGameDAO();
     AuthDAO auth = new DatabaseAuthDAO();
     UserDAO users = new DatabaseUserDAO();
+
+    public WebSocketHandler() {
+        System.out.println("WebSocketHandlerReached");
+    }
+
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         System.out.printf("Received: %s", message);
@@ -43,7 +49,9 @@ public class WebSocketHandler {
                 ChessGame myGame = games.getGameByID(gameID).game();
                 String sendMessage=new Gson().toJson(new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,myGame));
                 System.out.printf("sendMessage: %s\n",sendMessage);
+//                session.getBasicRemote().sendText(sendMessage);
                 session.getRemote().sendString(sendMessage);
+
 
                 //now broadcast notification to everyone playing or observing this game
                 String username = auth.getAuth(authToken).username();
