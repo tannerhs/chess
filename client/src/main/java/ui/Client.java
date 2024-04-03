@@ -54,6 +54,7 @@ public class Client implements ServerMessageObserver{
                 break;
             }
             case NOTIFICATION: {
+                System.out.println("Notification received");
                 Notification notification = new Gson().fromJson(message, Notification.class);
                 System.out.println(notification.getMessage());  //print to terminal for all players who receive it
             }

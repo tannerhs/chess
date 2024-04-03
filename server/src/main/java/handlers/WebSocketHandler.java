@@ -10,6 +10,7 @@ import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinObserver;
+import webSocketMessages.userCommands.JoinPlayer;
 import webSocketMessages.userCommands.UserGameCommand;
 import websocket.WebSocketSessions;
 //import javax.websocket.*;
@@ -61,6 +62,23 @@ public class WebSocketHandler {
                 connections.broadcast(gameID,notification,authToken);  //FIXME, notifications not working yet
                 break;
             case JOIN_PLAYER:
+                System.out.println("JOIN_PLAYER case reached");
+                //send load_game to root
+                JoinPlayer joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
+                int gameID2 = joinPlayer.getGameID();
+                ChessGame myGame2 = games.getGameByID(gameID2).game();
+                String sendMessage2=new Gson().toJson(new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,myGame2));
+                System.out.printf("sendMessage: %s\n",sendMessage2);
+//                session.getBasicRemote().sendText(sendMessage);
+                session.getRemote().sendString(sendMessage2);
+
+
+                //now broadcast notification to everyone playing or observing this game
+                String username2 = auth.getAuth(authToken).username();
+                String notificationMessage2 = username2+" joined the game as a player.\n";
+                Notification notification2 = new Notification(notificationMessage2);
+                connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
+                connections.broadcast(gameID2,notification2,authToken);  //FIXME, notifications not working yet
                 break;
             //TODO finish case statement
         }

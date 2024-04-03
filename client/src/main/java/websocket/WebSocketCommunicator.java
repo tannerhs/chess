@@ -45,6 +45,7 @@ public class WebSocketCommunicator extends Endpoint {
                 @Override
                 public void onMessage(String message) {  //every time a message is received, this runs
                     me.notify(message);
+                    //
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
