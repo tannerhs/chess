@@ -28,7 +28,7 @@ public class WebSocketHandler {
     UserDAO users = new DatabaseUserDAO();
 
     public WebSocketHandler() {
-        System.out.println("WebSocketHandlerReached");
+        System.out.println("WebSocketHandler constructor reached");
     }
 
     @OnWebSocketMessage

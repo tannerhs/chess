@@ -14,12 +14,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 public class WebSocketSessions {
-    public final Map<Integer, Map<String, Session>> connections = new ConcurrentHashMap<>();
+    public final HashMap<Integer, HashMap<String, Session>> connections = new HashMap<Integer, HashMap<String, Session>>();
 
     public void addSessionToGame(int gameID, String authToken,Session session) {
-        Map<String,Session> addEntry = new HashMap<>();
-        addEntry.put(authToken,session);
-        connections.put(gameID, addEntry);
+//        HashMap<String,Session> oldEntry = connections.get(gameID);
+//        HashMap<String,Session> addEntry = new HashMap<>();
+        HashMap<String,Session> addEntry;
+        if(connections.containsKey(gameID)) {
+            addEntry = connections.get(gameID);
+            addEntry.put(authToken,session);
+        }
+        else {
+            addEntry = new HashMap<>();
+            addEntry.put(authToken,session);
+        }
+
+//        for( String authToken2:oldEntry.keySet()) {
+//            Session value = oldEntry.get(authToken2);
+//            addEntry.put(authToken2,value);
+//        }
+        connections.put(gameID, addEntry);  //overwrite current entry with updated one with added Map entry
         System.out.printf("gameid/auth/session added to WebSocketSessions: %d, %s, %s\n", gameID,authToken,session);
     }
 
