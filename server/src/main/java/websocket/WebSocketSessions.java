@@ -57,7 +57,7 @@ public class WebSocketSessions {
         for (String token:allPlayersAndObservers.keySet()) {
             //System.out.
             if(!token.equals(exceptThisAuthToken)) {
-                Session session = (Session) connections.get(token);
+                Session session = (Session) allPlayersAndObservers.get(token);
                 String sendMessage=new Gson().toJson(notification);
 //                session.getBasicRemote().sendText(sendMessage);
                 session.getRemote().sendString(sendMessage);
