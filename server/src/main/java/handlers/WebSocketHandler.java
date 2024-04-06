@@ -53,14 +53,28 @@ public class WebSocketHandler {
             case JOIN_OBSERVER:
                 System.out.println("JOIN_OBSERVER case reached");
                 username = auth.getAuth(authToken).username();
-                //send load_game to root
                 JoinObserver joinObserver= new Gson().fromJson(message, JoinObserver.class);
                 int gameID = joinObserver.getGameID();
-                ChessGame myGame = games.getGameByID(gameID).game();
-                String sendMessage=new Gson().toJson(new LoadGame(myGame));
-                System.out.printf("sendMessage: %s\n",sendMessage);
+                GameData myGameData = games.getGameByID(gameID);
+                ChessGame myGame;
+                if(session==null || authToken==null||auth.getAuth(authToken)==null ||
+                        myGameData==null || myGameData.game()==null) {  //403, spot taken already
+                    System.out.println("spot taken");
+                    String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
+                    System.out.printf("sendMessage: %s\n",sendMessage2);
+                    session.getRemote().sendString(sendMessage2);  //error message, send to root only
+
+                    break;
+                }
+                else {
+                    String sendMessage=new Gson().toJson(new LoadGame(myGameData.game()));
+                    System.out.printf("sendMessage: %s\n",sendMessage);
 //                session.getBasicRemote().sendText(sendMessage);
-                session.getRemote().sendString(sendMessage);
+                    session.getRemote().sendString(sendMessage);
+            }
+
+                //send load_game to root
+
 
 
                 //now broadcast notification to everyone playing or observing this game
@@ -78,8 +92,8 @@ public class WebSocketHandler {
 
                 //fixme, what does auth return when null?
                 if(joinPlayer.getPlayerColor()==null || session==null || authToken==null||auth.getAuth(authToken)==null ||
-                        myGameData2==null ||
-                        (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username()))
+                        myGameData2==null || myGameData2.game()==null
+                        || (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username()))
                         || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(auth.getAuth(authToken).username()))) {  //403, spot taken already
 
                     System.out.println("spot taken");
