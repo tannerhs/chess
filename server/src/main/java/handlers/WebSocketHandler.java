@@ -45,13 +45,14 @@ public class WebSocketHandler {
         //deserialize UserGameCommand to get command type
         UserGameCommand userGameCommand = new Gson().fromJson(message,UserGameCommand.class);
         String authToken = userGameCommand.getAuthString();
-        String username = auth.getAuth(authToken).username();
+        String username="rando";
 
         //deserialize specific command:
         System.out.printf("commandType: %s\n",userGameCommand.getCommandType());
         switch(userGameCommand.getCommandType()) {
             case JOIN_OBSERVER:
                 System.out.println("JOIN_OBSERVER case reached");
+                username = auth.getAuth(authToken).username();
                 //send load_game to root
                 JoinObserver joinObserver= new Gson().fromJson(message, JoinObserver.class);
                 int gameID = joinObserver.getGameID();
@@ -76,10 +77,10 @@ public class WebSocketHandler {
                 GameData myGameData2 = games.getGameByID(gameID2);
 
                 //fixme, what does auth return when null?
-                if(joinPlayer.getPlayerColor()==null || session==null || auth.getAuth(authToken)==null ||
+                if(joinPlayer.getPlayerColor()==null || session==null || authToken==null||auth.getAuth(authToken)==null ||
                         myGameData2==null ||
-                        (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(username))
-                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(username))) {  //403, spot taken already
+                        (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username()))
+                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(auth.getAuth(authToken).username()))) {  //403, spot taken already
 
                     System.out.println("spot taken");
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
@@ -90,6 +91,8 @@ public class WebSocketHandler {
                 }
                 //send load_game to root
                 else {
+                    username = auth.getAuth(authToken).username();
+
                     ChessGame myGame2 = myGameData2.game();
 
                     //if successful message...
