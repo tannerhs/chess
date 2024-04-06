@@ -78,10 +78,23 @@ public class ServerFacade {
         //if exception was one I accounted for, it should never be thrown to the user, so joinGameResponseHttp should have the correct statusCode (returned before exception can be thrown to user)
 
         Boolean observe = joinGameRequest.playerColor().isEmpty();  //that is what I put in by default
+        ChessGame.TeamColor joinAsColor=null;
+        if(joinGameRequest.playerColor().equals("BLACK")){
+            joinAsColor=ChessGame.TeamColor.BLACK;
+        }
+        else if(joinGameRequest.playerColor().equals("WHITE")) {
+            joinAsColor= ChessGame.TeamColor.WHITE;
+        }
+        else if(joinGameRequest.playerColor().isEmpty()) {
+            joinAsColor=null;  //when color is "", we observer
+        }
+        else {
+            System.out.println("ServerFacade joinGame received invalid color");
+        }
         if(webSocketCommunicator.getSession()==null) {
             System.out.println("webSocketCommunicator.getSession()==null");
         }
-        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, observe, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
+        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, joinAsColor, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
 
         return joinGameResponseHttp;
     }

@@ -38,10 +38,6 @@ public class WebSocketSessions {
             addEntry.put(authToken,session);
         }
 
-//        for( String authToken2:oldEntry.keySet()) {
-//            Session value = oldEntry.get(authToken2);
-//            addEntry.put(authToken2,value);
-//        }
         connections.put(gameID, addEntry);  //overwrite current entry with updated one with added Map entry
         System.out.printf("gameid/auth/session added to WebSocketSessions: %d, %s, %s\n", gameID,authToken,session);
     }

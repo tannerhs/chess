@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessGame;
 import client_responses_http.*;
 import client_responses_ws.JoinGameResponseWS;
 import com.google.gson.Gson;
@@ -8,6 +9,7 @@ import ui.Client;
 import ui.ServerMessageObserver;
 import webSocketMessages.ResponseException;
 import webSocketMessages.userCommands.JoinObserver;
+import webSocketMessages.userCommands.JoinPlayer;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
@@ -78,15 +80,15 @@ public class WebSocketCommunicator extends Endpoint {
         //remove from map of Server Sessions. FIXME; server side!
     }
 
-    public JoinGameResponseWS joinGame(String authToken, Boolean observe, JoinGameResponseHttp joinGameResponseHttp, Session session) throws Exception {
+    public JoinGameResponseWS joinGame(String authToken, ChessGame.TeamColor joinAsColor, JoinGameResponseHttp joinGameResponseHttp, Session session) throws Exception {
         System.out.println("JoinGameResponseWS reached");
         if(session==null) {
             System.out.println("session initialization failed in joinGame");
         }
         //send JOIN_PLAYER or JOIN_OBSERVER
         //receive LOAD_GAME
-        if(joinGameResponseHttp.statusCode()==200) {
-            if(observe) {
+        if(joinGameResponseHttp.statusCode()==200 || ) {
+            if(joinAsColor==null) {
                 try {
                     UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());
                     assert session != null;
@@ -97,19 +99,34 @@ public class WebSocketCommunicator extends Endpoint {
                     //if invalid UserGameCommand, only inform root
                     return new JoinGameResponseWS(null,joinGameResponseHttp.statusCode(), joinGameResponseHttp.statusMessage());
                 }
-
-
-
-
-
             }
             else {
-                //player color... how to get...
-                //UserGameCommand joinPLayer = new JoinPlayer(authToken, joinGameResponseHttp.gameID(), jo)
+                try {
+                    UserGameCommand joinPlayer = new JoinPlayer(authToken, joinGameResponseHttp.gameID(),joinAsColor);
+                    assert session != null;
+                    String message = new Gson().toJson(joinPlayer);
+                    session.getBasicRemote().sendText(message);  //send user command
+                }
+                catch (Exception e) {
+                    //if invalid UserGameCommand, only inform root
+                    System.out.println("invalid UserGameCommand");
+                    return new JoinGameResponseWS(null,joinGameResponseHttp.statusCode(), joinGameResponseHttp.statusMessage());
+                }
             }
         }
-        else {
-            //
+        else {  //if join unsuccessful
+            System.out.println("joinGame response code not 200");
+            try {
+                UserGameCommand joinPlayer = new JoinPlayer(authToken, joinGameResponseHttp.gameID(),null);
+                assert session != null;
+                String message = new Gson().toJson(joinPlayer);
+                session.getBasicRemote().sendText(message);  //send user command
+            }
+            catch (Exception e) {
+                //if invalid UserGameCommand, only inform root
+                System.out.println("invalid UserGameCommand");
+                return new JoinGameResponseWS(null,joinGameResponseHttp.statusCode(), joinGameResponseHttp.statusMessage());
+            }
         }
         return null;
     }
