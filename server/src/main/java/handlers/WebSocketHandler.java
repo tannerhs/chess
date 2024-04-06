@@ -52,7 +52,6 @@ public class WebSocketHandler {
         switch(userGameCommand.getCommandType()) {
             case JOIN_OBSERVER:
                 System.out.println("JOIN_OBSERVER case reached");
-                username = auth.getAuth(authToken).username();
                 JoinObserver joinObserver= new Gson().fromJson(message, JoinObserver.class);
                 int gameID = joinObserver.getGameID();
                 GameData myGameData = games.getGameByID(gameID);
@@ -63,7 +62,6 @@ public class WebSocketHandler {
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
                     session.getRemote().sendString(sendMessage2);  //error message, send to root only
-
                     break;
                 }
                 else {
@@ -71,18 +69,17 @@ public class WebSocketHandler {
                     System.out.printf("sendMessage: %s\n",sendMessage);
 //                session.getBasicRemote().sendText(sendMessage);
                     session.getRemote().sendString(sendMessage);
-            }
+                    //send load_game to root
+                    //now broadcast notification to everyone playing or observing this game
+                    username = auth.getAuth(authToken).username();
+                    String notificationMessage = username+" joined the game as an observer.\n";
+                    Notification notification = new Notification(notificationMessage);
+                    connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
+                    connections.broadcast(gameID,notification,authToken);  //FIXME, notifications not working yet
+                    break;
+                }
 
-                //send load_game to root
 
-
-
-                //now broadcast notification to everyone playing or observing this game
-                String notificationMessage = username+" joined the game as an observer.\n";
-                Notification notification = new Notification(notificationMessage);
-                connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
-                connections.broadcast(gameID,notification,authToken);  //FIXME, notifications not working yet
-                break;
             case JOIN_PLAYER:
                 System.out.println("JOIN_PLAYER case reached");
 
