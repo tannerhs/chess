@@ -87,7 +87,7 @@ public class WebSocketCommunicator extends Endpoint {
         }
         //send JOIN_PLAYER or JOIN_OBSERVER
         //receive LOAD_GAME
-        if(joinGameResponseHttp.statusCode()==200 || ) {
+        if(joinGameResponseHttp.statusCode()==200 ) {
             if(joinAsColor==null) {
                 try {
                     UserGameCommand joinObserver = new JoinObserver(authToken, joinGameResponseHttp.gameID());

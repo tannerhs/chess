@@ -74,14 +74,13 @@ public class WebSocketHandler {
                 JoinPlayer joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
                 int gameID2 = joinPlayer.getGameID();
                 GameData myGameData2 = games.getGameByID(gameID2);
-                ChessGame myGame2 = myGameData2.game();
-                String whiteUsername = myGameData2.whiteUsername();
-                String blackUsername = myGameData2.blackUsername();
 
                 //fixme, what does auth return when null?
-                if(myGame2==null ||  (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !whiteUsername.equals(username))
-                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !blackUsername.equals(username)
-                        ||  joinPlayer.getPlayerColor()==null || joinPlayer.getGameID()==-1 || session==null || auth.getAuth(authToken)==null)) {  //403, spot taken already
+                if(joinPlayer.getPlayerColor()==null || session==null || auth.getAuth(authToken)==null ||
+                        myGameData2==null ||
+                        (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(username))
+                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(username))) {  //403, spot taken already
+
                     System.out.println("spot taken");
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
@@ -91,6 +90,7 @@ public class WebSocketHandler {
                 }
                 //send load_game to root
                 else {
+                    ChessGame myGame2 = myGameData2.game();
 
                     //if successful message...
                     String sendMessage2=new Gson().toJson(new LoadGame(myGame2));
