@@ -158,15 +158,15 @@ public class WebSocketHandler {
                     String sendMessage2=new Gson().toJson(new LoadGame(game));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
                     session.getRemote().sendString(sendMessage2);  //reload game for root
-                    //connections.broadcast(gameID3,new sendMessage2,authToken);
+                    connections.broadcast(gameID3, new LoadGame(game),authToken);
 
 
                     //now broadcast notification to everyone else playing or observing this game
-                    session.getRemote().sendString(sendMessage2);
+                    //session.getRemote().sendString(sendMessage2);
                     String notificationMessage1 = username + "made the move" +makeMove.getMove().toString()+ "---\n";
                     Notification notification1=new Notification(notificationMessage1);
                     connections.broadcast(gameID3,notification1,authToken);
-                    connections.broadcast(gameID3,notification1,authToken);
+//                    connections.broadcast(gameID3,notification1,authToken);
                 }
                 break;
             case LEAVE:

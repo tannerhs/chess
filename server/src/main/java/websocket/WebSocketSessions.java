@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.*;
 //import javax.websocket.*;
 import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,30 +57,31 @@ public class WebSocketSessions {
         return null;
     }
 
-    public void broadcast(int gameID, Notification serverMessage, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
+    public void broadcast(int gameID, ServerMessage serverMessage, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
         System.out.println("broadcasting now");
         HashMap<String, Session> allPlayersAndObservers =connections.get(gameID);
 
         //can have valid auth token with invalid session
         //could be logged in but left game etc.
         List<String> badTokens = new ArrayList<>();
-        switch (serverMessage.getServerMessageType()) {
-            case NOTIFICATION:
-                //
-                break;
-            case LOAD_GAME:
-                //
-                break;
-        }
+//        switch (serverMessage.getServerMessageType()) {
+//            case NOTIFICATION:
+//                //
+//                break;
+//            case LOAD_GAME:
+//                //
+//                break;
+//        }
 
         for (String token:allPlayersAndObservers.keySet()) {
             //System.out.
             if(!token.equals(exceptThisAuthToken)) {
-                System.out.printf("notification sent, gameID: %d\n", gameID);
+
+//                System.out.printf("notification sent, gameID: %d\n", gameID);
                 Session session = allPlayersAndObservers.get(token);
                 String sendMessage=new Gson().toJson(serverMessage);
-                System.out.printf("notification sent to %s: %s\n",token,sendMessage);
-                System.out.printf("notification sent by %s \n", exceptThisAuthToken);
+//                System.out.printf("notification sent to %s: %s\n",token,sendMessage);
+//                System.out.printf("notification sent by %s \n", exceptThisAuthToken);
                 if(!session.isOpen()) {
                     //add to list to remove from map after for loop (so no exceptions)
                     badTokens.add(token);
