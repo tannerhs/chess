@@ -56,7 +56,8 @@ public class WebSocketHandler {
                 int gameID = joinObserver.getGameID();
                 GameData myGameData = games.getGameByID(gameID);
                 ChessGame myGame;
-                if(session==null || authToken==null||auth.getAuth(authToken)==null ||
+                //if null session...what do I do? TODO
+                if(authToken==null||auth.getAuth(authToken)==null ||
                         myGameData==null || myGameData.game()==null) {  //403, spot taken already
                     System.out.println("spot taken");
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
@@ -88,8 +89,9 @@ public class WebSocketHandler {
                 GameData myGameData2 = games.getGameByID(gameID2);
 
                 //fixme, what does auth return when null?
-                if(joinPlayer.getPlayerColor()==null || session==null || authToken==null||auth.getAuth(authToken)==null ||
-                        myGameData2==null || myGameData2.game()==null
+                //what about null session?
+                if(joinPlayer.getPlayerColor()==null || authToken==null||auth.getAuth(authToken)==null ||
+                        myGameData2==null || myGameData2.game()==null || joinPlayer.getPlayerColor()==null
                         || (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username()))
                         || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(auth.getAuth(authToken).username()))) {  //403, spot taken already
 
