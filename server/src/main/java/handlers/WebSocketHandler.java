@@ -3,6 +3,7 @@ package handlers;
 //import org.eclipse.jetty.websocket.api.Session;
 //import org.eclipse.jetty.server.session.Session;
 import chess.ChessGame;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataAccess.*;
 import model.GameData;
@@ -13,6 +14,7 @@ import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.JoinPlayer;
+import webSocketMessages.userCommands.MakeMove;
 import webSocketMessages.userCommands.UserGameCommand;
 import websocket.WebSocketSessions;
 //import javax.websocket.*;
@@ -99,8 +101,6 @@ public class WebSocketHandler {
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
                     session.getRemote().sendString(sendMessage2);  //error message, send to root only
-
-                    break;
                 }
                 //send load_game to root
                 else {
@@ -114,17 +114,47 @@ public class WebSocketHandler {
 //                session.getBasicRemote().sendText(sendMessage);
                     session.getRemote().sendString(sendMessage2);
 
-
                     //now broadcast notification to everyone playing or observing this game
                     String username2 = auth.getAuth(authToken).username();
                     String notificationMessage2 = username2+" joined the game as a player.\n";
                     Notification notification2 = new Notification(notificationMessage2);
                     connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
                     connections.broadcast(gameID2,notification2,authToken);  //FIXME, notifications not working yet
-                    break;
                 }
+                break;
+            case MAKE_MOVE:
+                System.out.println("MAKE_MOVE case reached");
+                MakeMove makeMove = new Gson().fromJson(message,MakeMove.class);
+                username = auth.getAuth(authToken).username();
+                Integer gameID3 = makeMove.getGameID();
+                GameData gameData = games.getGameByID(gameID3);
+                ChessGame game = gameData.game();
 
+                //determine actual color in database
+                ChessGame.TeamColor userColor;
+                if(gameData.whiteUsername().equals(username)) {
+                    userColor = ChessGame.TeamColor.WHITE;
+                }
+                else if (gameData.blackUsername().equals(username)) {
+                    userColor= ChessGame.TeamColor.BLACK;
+                }
+                else {
+                    userColor=null;
+                }
+                ChessPosition startPos = makeMove.getMove().getStartPosition();
+                ChessGame.TeamColor moveColor = game.getBoard().getPiece(startPos).getTeamColor();
 
+                //compare userColor to color indicated in move and current team in game
+                if(userColor==null || !userColor.equals(game.getTeamTurn()) || !moveColor.equals(userColor)) {
+                    //TODO send error message
+                    //
+                }
+                break;
+            case LEAVE:
+                //
+                break;
+            case RESIGN:
+                break;
             //TODO finish case statement
         }
         //depending on UserGameCommand message type, do stuff
