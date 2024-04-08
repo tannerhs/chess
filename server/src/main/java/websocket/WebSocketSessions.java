@@ -56,21 +56,28 @@ public class WebSocketSessions {
         return null;
     }
 
-    public void broadcast(int gameID, Notification notification, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
+    public void broadcast(int gameID, Notification serverMessage, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
         System.out.println("broadcasting now");
         HashMap<String, Session> allPlayersAndObservers =connections.get(gameID);
 
         //can have valid auth token with invalid session
         //could be logged in but left game etc.
         List<String> badTokens = new ArrayList<>();
-
+        switch (serverMessage.getServerMessageType()) {
+            case NOTIFICATION:
+                //
+                break;
+            case LOAD_GAME:
+                //
+                break;
+        }
 
         for (String token:allPlayersAndObservers.keySet()) {
             //System.out.
             if(!token.equals(exceptThisAuthToken)) {
                 System.out.printf("notification sent, gameID: %d\n", gameID);
                 Session session = allPlayersAndObservers.get(token);
-                String sendMessage=new Gson().toJson(notification);
+                String sendMessage=new Gson().toJson(serverMessage);
                 System.out.printf("notification sent to %s: %s\n",token,sendMessage);
                 System.out.printf("notification sent by %s \n", exceptThisAuthToken);
                 if(!session.isOpen()) {

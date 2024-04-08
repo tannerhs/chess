@@ -58,6 +58,9 @@ public class ChessMove {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        String printedMove = "ChessMove method toString() under construction\n";
+        return printedMove;
+    }
 }

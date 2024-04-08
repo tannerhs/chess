@@ -94,8 +94,8 @@ public class WebSocketHandler {
                 //what about null session?
                 if(joinPlayer.getPlayerColor()==null || authToken==null||auth.getAuth(authToken)==null ||
                         myGameData2==null || myGameData2.game()==null || joinPlayer.getPlayerColor()==null
-                        || (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username()))
-                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && !myGameData2.blackUsername().equals(auth.getAuth(authToken).username()))) {  //403, spot taken already
+                        || (joinPlayer.getPlayerColor()== ChessGame.TeamColor.WHITE && (myGameData2.whiteUsername()==null|| !myGameData2.whiteUsername().equals(auth.getAuth(authToken).username())))
+                        || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && (myGameData2.blackUsername()==null ||!myGameData2.blackUsername().equals(auth.getAuth(authToken).username())))) {  //403, spot taken already
 
                     System.out.println("spot taken");
                     String sendMessage2=new Gson().toJson(new Error("NOPE! That color is already taken."));
@@ -144,10 +144,29 @@ public class WebSocketHandler {
                 ChessPosition startPos = makeMove.getMove().getStartPosition();
                 ChessGame.TeamColor moveColor = game.getBoard().getPiece(startPos).getTeamColor();
 
-                //compare userColor to color indicated in move and current team in game
-                if(userColor==null || !userColor.equals(game.getTeamTurn()) || !moveColor.equals(userColor)) {
+                //compare userColor to color indicated in move and current team in game or move is invalid
+                if(userColor==null || !userColor.equals(game.getTeamTurn()) || !moveColor.equals(userColor) || !game.validMoves(startPos).contains(makeMove.getMove())) {
                     //TODO send error message
-                    //
+                    System.out.println("invalid move");
+                    String sendMessage2=new Gson().toJson(new Error("NOPE! Invalid move."));
+                    System.out.printf("sendMessage: %s\n",sendMessage2);
+                    session.getRemote().sendString(sendMessage2);  //error message, send to root only
+                }
+                else {  //if valid move...
+                    //make move and load game for all users observing or playing game
+                    //if successful message...
+                    String sendMessage2=new Gson().toJson(new LoadGame(game));
+                    System.out.printf("sendMessage: %s\n",sendMessage2);
+                    session.getRemote().sendString(sendMessage2);  //reload game for root
+                    //connections.broadcast(gameID3,new sendMessage2,authToken);
+
+
+                    //now broadcast notification to everyone else playing or observing this game
+                    session.getRemote().sendString(sendMessage2);
+                    String notificationMessage1 = username + "made the move" +makeMove.getMove().toString()+ "---\n";
+                    Notification notification1=new Notification(notificationMessage1);
+                    connections.broadcast(gameID3,notification1,authToken);
+                    connections.broadcast(gameID3,notification1,authToken);
                 }
                 break;
             case LEAVE:
