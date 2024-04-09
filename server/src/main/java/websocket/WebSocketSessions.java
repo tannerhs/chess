@@ -1,8 +1,11 @@
 package websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.*;
 //import javax.websocket.*;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.LoadGameObject;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 
@@ -15,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 import java.util.Map;
+
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class WebSocketSessions {
     public final HashMap<Integer, HashMap<String, Session>> connections = new HashMap<Integer, HashMap<String, Session>>();
@@ -64,24 +69,27 @@ public class WebSocketSessions {
         //can have valid auth token with invalid session
         //could be logged in but left game etc.
         List<String> badTokens = new ArrayList<>();
-//        switch (serverMessage.getServerMessageType()) {
-//            case NOTIFICATION:
-//                //
-//                break;
-//            case LOAD_GAME:
-//                //
-//                break;
-//        }
+        ServerMessage.ServerMessageType serverMessageType = serverMessage.getServerMessageType();
 
         for (String token:allPlayersAndObservers.keySet()) {
+//            String username =
             //System.out.
             if(!token.equals(exceptThisAuthToken)) {
 
-//                System.out.printf("notification sent, gameID: %d\n", gameID);
                 Session session = allPlayersAndObservers.get(token);
+                if(serverMessageType.equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
+                    LoadGame loadGame = (LoadGame)serverMessage;
+                    if(token.equals(loadGame.getLoadGameObject().otherTeamAuthToken())) {  //other player??
+                        ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals("WHITE")? ChessGame.TeamColor.BLACK:WHITE);
+                        serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(),otherTeamColor, loadGame.getLoadGameObject().otherTeamAuthToken()));
+                    }
+                    else {
+                        //obeserver, set print-as color to white
+                        serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(), WHITE, loadGame.getLoadGameObject().otherTeamAuthToken()));
+                    }
+                }
                 String sendMessage=new Gson().toJson(serverMessage);
-//                System.out.printf("notification sent to %s: %s\n",token,sendMessage);
-//                System.out.printf("notification sent by %s \n", exceptThisAuthToken);
+
                 if(!session.isOpen()) {
                     //add to list to remove from map after for loop (so no exceptions)
                     badTokens.add(token);
@@ -89,8 +97,6 @@ public class WebSocketSessions {
                 else {
                     session.getRemote().sendString(sendMessage);
                 }
-//                session.getBasicRemote().sendText(sendMessage);
-                //
             }
         }
 

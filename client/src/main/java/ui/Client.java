@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
 import client_requests.*;
+import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -43,14 +44,20 @@ public class Client implements ServerMessageObserver{
     public ServerFacade clientSetup() {
         return facade;
     }
+    ChessGame mostRecentGame=null;
+    GameData mostRecentGameData=null;
 
     public void notify(String message) {  //print stuff based on notification received (print string or game)
         ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
         switch(serverMessage.getServerMessageType()) {
             case LOAD_GAME : {
                 LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
-                System.out.println(loadGame.getGame());  //fixme
+                //System.out.println(loadGame.getGame());  //fixme
                 //do something useful like print whatever it is, game or string
+                PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+                mostRecentGame=loadGame.getGame();
+                ChessGame.TeamColor currentUserColor = (loadGame.getLoadGameObject().printAsTeamColor());
+                DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame,currentUserColor);
                 break;
             }
             case NOTIFICATION: {
@@ -59,7 +66,9 @@ public class Client implements ServerMessageObserver{
                 System.out.println(notification.getMessage());  //print to terminal for all players who receive it
             }
             case ERROR: {
-                //FIXME
+                System.out.println("Error received");
+                Error notification = new Gson().fromJson(message, Error.class);
+                System.out.println(notification.getErrorMessage());  //print to terminal for all players who receive it
             }
         }
     }
@@ -68,6 +77,11 @@ public class Client implements ServerMessageObserver{
         Client myClient = new Client();
         myClient.run();
     }
+
+    public ChessGame getMostRecentGame() {
+        return mostRecentGame;
+    }
+
 
     private void run() {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
@@ -310,7 +324,6 @@ public class Client implements ServerMessageObserver{
                 colorSelection=readInputNumber();
             }
             color=(colorSelection==1)?"WHITE":"BLACK";
-
         }
         return new JoinGameRequest(color,gameID);
     }
@@ -425,9 +438,11 @@ public class Client implements ServerMessageObserver{
 
     private void joinGameLogic(PrintStream out, Boolean onlyObserve) {
         JoinGameResponseHttp joinGameResponse=null;
+        ChessGame.TeamColor printAsTeamColor =null;
         try{
             JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
             joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
+            printAsTeamColor= (joinGameRequest.playerColor().equals("BLACK"))? ChessGame.TeamColor.BLACK: ChessGame.TeamColor.WHITE;
         }
         catch (Exception e) {
             out.println(e.getMessage());
@@ -440,34 +455,12 @@ public class Client implements ServerMessageObserver{
         }
         else {
             ChessGame game = joinGameResponse.game();
-            new DrawChessBoard(out, game);  //draws it in orientation of currentTeam at bottom
+            new DrawChessBoard(out, game, printAsTeamColor);  //draws it in orientation of currentTeam at bottom
             //draw line
             drawVerticalLine(out,2);  //line width of 2 characters
             out.print(SET_BG_COLOR_BLACK);
             out.print(SET_TEXT_COLOR_WHITE);
         }
-
-//        JoinGameResponseHttp joinGameResponseHttp;
-//        try{
-//            JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
-//            joinGameResponseHttp =facade.joinGame(currentUserAuthToken,joinGameRequest);
-////            JoinGameResponseWS joinGameResponseWS =facade.joinGameWS(currentUserAuthToken,joinGameRequest);
-//            if(joinGameResponseHttp.statusCode()!=200) {
-//                printErrorMessage(out, joinGameResponseHttp.statusCode());
-//            }
-//            else {
-//                ChessGame game = joinGameResponseHttp.game();
-//                new DrawChessBoard(out, game);  //draws it in orientation of currentTeam at bottom
-//                //draw line
-//                //drawVerticalLine(out,2);  //line width of 2 characters
-//                out.print(SET_BG_COLOR_BLACK);
-//                out.print(SET_TEXT_COLOR_WHITE);
-//            }
-//        }
-//        catch (Exception e) {
-//            out.println(e.getMessage());
-//            return;  //don't print out board if unhandled error encountered
-//        }
 
 
     }

@@ -21,9 +21,11 @@ public class DrawChessBoard {
     private static final String EMPTY = "   ";
     private static ChessGame game;
     private static ChessPiece[][] board;
+    private static ChessGame.TeamColor printFromPerspective;
 
-    public DrawChessBoard(PrintStream out, ChessGame gameIn) {  //call when you join or observe a gameC
+    public DrawChessBoard(PrintStream out, ChessGame gameIn, ChessGame.TeamColor printFromPerspective) {  //call when you join or observe a gameC
         game=gameIn;
+        this.printFromPerspective=printFromPerspective;
         //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
@@ -62,7 +64,7 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_DARK_GREY);
         String[] whiteHeaders = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
         String[] blackHeaders = {" h ", " g ", " f ", " e ", " d ", " c ", " b ", " a "};
-        String[] headers = (game.getTeamTurn()== ChessGame.TeamColor.WHITE)? whiteHeaders:blackHeaders;
+        String[] headers = (printFromPerspective== ChessGame.TeamColor.WHITE)? whiteHeaders:blackHeaders;
         out.print("   ");  //offset for side column
 
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
@@ -109,7 +111,7 @@ public class DrawChessBoard {
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
 
-                    if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                    if(printFromPerspective== ChessGame.TeamColor.WHITE) {
                         char player = (board[boardRow][boardCol]==null)? ' ' : board[boardRow][boardCol].toChar();
                         if(boardCol==0) {
                             //print side column labels
@@ -144,7 +146,7 @@ public class DrawChessBoard {
                             out.print(" ");
                         }
                     }
-                    else if (game.getTeamTurn()== ChessGame.TeamColor.BLACK) {  //flip board with 7-x operations
+                    else if (printFromPerspective== ChessGame.TeamColor.BLACK) {  //flip board with 7-x operations
                         char player = (board[7-boardRow][7-boardCol]==null)? ' ' : board[7-boardRow][7-boardCol].toChar();
                         if(boardCol==0) {
                             //print side column labels
@@ -181,7 +183,7 @@ public class DrawChessBoard {
                     }
                 }
                 else {
-                    if(game.getTeamTurn()== ChessGame.TeamColor.WHITE) {
+                    if(printFromPerspective== ChessGame.TeamColor.WHITE) {
                         if(boardCol==0) {
                             //print side column line
                             out.print(SET_BG_COLOR_DARK_GREY);

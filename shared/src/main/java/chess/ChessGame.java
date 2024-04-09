@@ -24,9 +24,20 @@ public class ChessGame {
     TeamColor team=WHITE;  //initialize to WHITE since white starts
     ChessBoard board;
 
-    boolean lockBoardFromFurtherMoves;  //FIXME
+    boolean gameOver;  //FIXME
     public ChessGame() {
 
+    }
+
+    public boolean isGameOver(){
+        System.out.println("isGameOver reached");
+//        isInCheckmate(team);
+//        isInStalemate(team);
+        return gameOver;
+    }
+
+    public void setGameOver(boolean setTo) {
+        gameOver=setTo;
     }
 
     /**
@@ -83,15 +94,19 @@ public class ChessGame {
         Collection<ChessMove> validMoves = new HashSet<>();  //create copy so you can iterate over one and change the other
         for(ChessMove move: pieceMoves) {
             if(move==null) {
+                System.out.println("null move");
                 //validMoves.remove(null);
             }
             else if(movePutsOwnTeamInCheck(move)) {
+                System.out.println("movePutsOwnTeamInCheck");
                 //validMoves.remove(move);
             }
             else if (!move.startPosition.validPosition() || !move.endPosition.validPosition()) {
+                System.out.println("invalid start or end position");
                 //validMoves.remove(move);
             }
             else if(moveLeavesTeamInCheck(move)) {
+                System.out.println("moveLeavesTeamInCheck");
                 //validMoves.remove(move);
             }
             else {
@@ -124,7 +139,9 @@ public class ChessGame {
                 board.addPiece(move.getStartPosition(),null);
             }
             //switch teams after making a move
-            team=(pieceTeam==WHITE)?BLACK:WHITE;
+            team=(pieceTeam.equals(WHITE))?BLACK:WHITE;
+            //check to see if other team is in checkmate to know if game is over
+            isInCheckmate(team);  //sets gameOver flag if true
 
         }
         else {
@@ -206,7 +223,7 @@ public class ChessGame {
 
 
             }
-
+            gameOver=true;  //for gameply in client
             return true;
         }
         else {  //cannot be in checkmate if not in check
@@ -228,6 +245,7 @@ public class ChessGame {
             return false;  //in checkmate
         }
         else if(!isInCheck(teamColor) && !teamHasValidMoves(teamColor)) {
+            gameOver=true;
             return true;
         }
         else {
@@ -374,7 +392,7 @@ public class ChessGame {
             gameClone.board.addPiece(move.startPosition,null);  //remove from old location
 
             //check to see if moving into check when not currently in it
-            if(this.isInCheck(teamColor) && gameClone.isInCheck(teamColor)) {
+            if(this.isInCheck(teamColor) && gameClone.isInCheck(teamColor) && !isInCheckmate(teamColor)) {
                 return true;
             }
             else {
