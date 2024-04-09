@@ -162,6 +162,7 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
     public void makeMove(PrintStream out, Client client, WebSocketCommunicator webSocketCommunicator, String authToken, Integer gameID) {
+
         //make move
         //read in move
         String[] labels = {"startPosRow","startPosCol", "endPosRow", "endPosCol"};
@@ -190,11 +191,15 @@ public class WebSocketCommunicator extends Endpoint {
         MakeMove makeMove = new MakeMove(authToken,gameID,move);
         String makeMoveString = new Gson().toJson(makeMove);
         try {
+            System.out.println("MakeMove user command sent by root");
             session.getBasicRemote().sendText(makeMoveString);  //send user command
         }
         catch (Exception e) {
-            //
+            System.out.println("MakeMove user command NOT sent");
         }
+
+        //get game to update somehow...
+        //makeMove does not automatically send load game to root; try with other users
     }
 
 

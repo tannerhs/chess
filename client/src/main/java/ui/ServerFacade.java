@@ -100,11 +100,11 @@ public class ServerFacade {
         return joinGameResponseHttp;
     }
 
-    public void startGameplayMenu(PrintStream out, String currentUserAuthToken, JoinGameResponseHttp joinGameResponse) {
+    public void startGameplayMenu(PrintStream out, String currentUserAuthToken, JoinGameResponseHttp joinGameResponse, ChessGame.TeamColor joinAsColor) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
         GamePlayUI gamePlayUI = new GamePlayUI(currentUserAuthToken, joinGameResponse.gameID());
-        gamePlayUI.gamePlayMenu(out,webSocketCommunicator.getMyClient(),webSocketCommunicator);
+        gamePlayUI.gamePlayMenu(out,webSocketCommunicator.getMyClient(),webSocketCommunicator, joinAsColor);
     }
 
 //    public JoinGameResponseWS joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {

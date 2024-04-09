@@ -179,6 +179,7 @@ public class WebSocketHandler {
                     gameData3.game().makeMove(makeMove.getMove());
                     String sendMessage2=new Gson().toJson(new LoadGame(new LoadGameObject(gameData3,userColor,null)));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
+//                    System.out.println("")
                     session.getRemote().sendString(sendMessage2);  //reload game for root
                     connections.broadcast(gameID3, new LoadGame(new LoadGameObject(gameData3,userColor,null)),authToken);
 

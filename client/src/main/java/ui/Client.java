@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Scanner;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.*;
 
 public class Client implements ServerMessageObserver{
@@ -88,7 +90,7 @@ public class Client implements ServerMessageObserver{
 
 
     private void run() {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        var piece = new ChessPiece(WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         while(!quitProgram) {
@@ -443,10 +445,11 @@ public class Client implements ServerMessageObserver{
     private void joinGameLogic(PrintStream out, Boolean onlyObserve) {
         JoinGameResponseHttp joinGameResponse=null;
         ChessGame.TeamColor printAsTeamColor =null;
+        JoinGameRequest joinGameRequest=null;
         try{
-            JoinGameRequest joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
+            joinGameRequest= joinGameRepl(out,onlyObserve);  //asks for color
             joinGameResponse = facade.joinGame(currentUserAuthToken,joinGameRequest);
-            printAsTeamColor= (joinGameRequest.playerColor().equals("BLACK"))? ChessGame.TeamColor.BLACK: ChessGame.TeamColor.WHITE;
+            printAsTeamColor= (joinGameRequest.playerColor().equals("BLACK"))? ChessGame.TeamColor.BLACK: WHITE;
         }
         catch (Exception e) {
             out.println(e.getMessage());
@@ -467,7 +470,14 @@ public class Client implements ServerMessageObserver{
 //            GamePlayUI gamePlayUI = new GamePlayUI(currentUserAuthToken, joinGameResponse.gameID());
 //            gamePlayUI.gamePlayMenu(out,this,new WebSocketCommunicator());
             if(!onlyObserve) {
-                facade.startGameplayMenu(out,currentUserAuthToken,joinGameResponse);
+                ChessGame.TeamColor joinAsPlayer =null;
+                if(joinAsPlayer!=null && joinAsPlayer.equals("WHITE")) {
+                    joinAsPlayer=WHITE;
+                }
+                else if(joinAsPlayer!=null && joinAsPlayer.equals("BLACK")) {
+                    joinAsPlayer=BLACK;
+                }
+                facade.startGameplayMenu(out,currentUserAuthToken,joinGameResponse, joinAsPlayer);
             }
         }
 

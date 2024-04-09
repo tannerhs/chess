@@ -29,7 +29,7 @@ public class GamePlayUI {
         this.authToken=authToken;
         this.gameID=gameID;
     }
-    public void gamePlayMenu(PrintStream out, Client client, WebSocketCommunicator webSocketCommunicator) {
+    public void gamePlayMenu(PrintStream out, Client client, WebSocketCommunicator webSocketCommunicator, ChessGame.TeamColor currentUserColor) {
         //while command is not leave,
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
@@ -47,7 +47,8 @@ public class GamePlayUI {
                     break;
                 case 2:
                     //redraw
-                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, client.getMostRecentGame(), client.getMostRecentGame().getTeamTurn());
+                    //get current user color:
+                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, client.getMostRecentGame(), currentUserColor);
                     break;
                 case 3:
                     //leave
