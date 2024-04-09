@@ -14,6 +14,8 @@ import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
+import websocket.GamePlayUI;
+import websocket.WebSocketCommunicator;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -64,11 +66,13 @@ public class Client implements ServerMessageObserver{
                 System.out.println("Notification received");
                 Notification notification = new Gson().fromJson(message, Notification.class);
                 System.out.println(notification.getMessage());  //print to terminal for all players who receive it
+                break;
             }
             case ERROR: {
                 System.out.println("Error received");
                 Error notification = new Gson().fromJson(message, Error.class);
                 System.out.println(notification.getErrorMessage());  //print to terminal for all players who receive it
+                break;
             }
         }
     }
@@ -455,11 +459,16 @@ public class Client implements ServerMessageObserver{
         }
         else {
             ChessGame game = joinGameResponse.game();
-            new DrawChessBoard(out, game, printAsTeamColor);  //draws it in orientation of currentTeam at bottom
+//            new DrawChessBoard(out, game, printAsTeamColor);  //draws it in orientation of currentTeam at bottom
             //draw line
             drawVerticalLine(out,2);  //line width of 2 characters
             out.print(SET_BG_COLOR_BLACK);
             out.print(SET_TEXT_COLOR_WHITE);
+//            GamePlayUI gamePlayUI = new GamePlayUI(currentUserAuthToken, joinGameResponse.gameID());
+//            gamePlayUI.gamePlayMenu(out,this,new WebSocketCommunicator());
+            if(!onlyObserve) {
+                facade.startGameplayMenu(out,currentUserAuthToken,joinGameResponse);
+            }
         }
 
 

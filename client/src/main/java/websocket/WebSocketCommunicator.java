@@ -31,9 +31,11 @@ public class WebSocketCommunicator extends Endpoint {
     ServerMessageObserver notificationHandler;
     HashMap<String,Integer> columnsByName = new HashMap<>();
     HashMap<Integer,ChessPiece.PieceType> promotionPieceTypes = new HashMap<>();  //for use in promotion
+    Client myClient;
 
     public WebSocketCommunicator(int port, String url, Client me) throws ResponseException {
         this.port = port;
+        myClient=me;
         try {
             //set up columns by name hash map
             columnsByName.put("a",1);
@@ -82,6 +84,10 @@ public class WebSocketCommunicator extends Endpoint {
         }
 
         //onOpen(session,null);
+    }
+
+    public Client getMyClient() {
+        return myClient;
     }
 
     public void send(String msg) throws Exception {
@@ -160,10 +166,12 @@ public class WebSocketCommunicator extends Endpoint {
         //read in move
         String[] labels = {"startPosRow","startPosCol", "endPosRow", "endPosCol"};
         String[] positions = generalRepl(labels);
-        Integer startPosRow=(columnsByName.containsKey(positions[0]))? columnsByName.get(positions[0]): -1;
-        ChessPosition startPos= new ChessPosition(startPosRow, Integer.parseInt(positions[1]));
-        Integer endPosRow=(columnsByName.containsKey(positions[2]))? columnsByName.get(positions[2]): -1;
-        ChessPosition endPos = new ChessPosition(endPosRow, Integer.parseInt(positions[3]));
+        Integer startPosCol=(columnsByName.containsKey(positions[1]))? columnsByName.get(positions[1]): -1;
+        Integer startPosRow = Integer.parseInt(positions[0]);
+        ChessPosition startPos= new ChessPosition(startPosRow,startPosCol);
+        Integer endPosCol=(columnsByName.containsKey(positions[3]))? columnsByName.get(positions[3]): -1;
+        Integer endPosRow = Integer.parseInt(positions[2]);
+        ChessPosition endPos = new ChessPosition( endPosRow,endPosCol);
         ChessPiece.PieceType promotionPiece=null;
 
         //if piece in startPos is a pawn and about to promote

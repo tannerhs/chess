@@ -6,6 +6,7 @@ import client_responses_ws.JoinGameResponseWS;
 import com.google.gson.Gson;
 import model.UserData;
 import client_requests.*;
+import websocket.GamePlayUI;
 import websocket.WebSocketCommunicator;
 
 import java.io.PrintStream;
@@ -97,6 +98,13 @@ public class ServerFacade {
         JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, joinAsColor, joinGameResponseHttp,webSocketCommunicator.getSession());  //add session as param??
 
         return joinGameResponseHttp;
+    }
+
+    public void startGameplayMenu(PrintStream out, String currentUserAuthToken, JoinGameResponseHttp joinGameResponse) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_WHITE);
+        GamePlayUI gamePlayUI = new GamePlayUI(currentUserAuthToken, joinGameResponse.gameID());
+        gamePlayUI.gamePlayMenu(out,webSocketCommunicator.getMyClient(),webSocketCommunicator);
     }
 
 //    public JoinGameResponseWS joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
