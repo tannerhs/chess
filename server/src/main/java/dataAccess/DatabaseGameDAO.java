@@ -16,6 +16,25 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DatabaseGameDAO implements GameDAO {
     static int gameIDCounter=0;
+
+    public void updateGame(GameData gameData) throws DataAccessException {
+        Integer index=getGameIndex(gameData.gameID());
+        //how to edit something in the database...
+//        games.
+        try (Connection conn = CustomDatabaseManager.getConnection()) {
+            var json = new Gson().toJson(gameData.game());
+            Blob blob = conn.createBlob();  //make blob to store game in
+            blob.setBytes(1, json.getBytes());
+
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE games SET game=? WHERE gameID=?");
+            preparedStatement.setBlob(1, blob);
+            preparedStatement.setInt(2,index);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
     @Override
     public void clear() throws DataAccessException {
         try (Connection conn = CustomDatabaseManager.getConnection()) {

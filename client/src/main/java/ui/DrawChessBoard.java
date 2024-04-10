@@ -30,11 +30,15 @@ public class DrawChessBoard {
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();  //can print out board for debugging if you want
-        board=boardObj.getBoardArray();
+//        board=boardObj.getBoardArray();
+        board=gameIn.getBoard().getBoardArray();
+        if (board==null || board[0][0]==null) {
+            System.out.println("AHHHHHH");
+        }
 
 
 
-        out.print(ERASE_SCREEN);
+//        out.print(ERASE_SCREEN);
 
 
 
@@ -47,11 +51,11 @@ public class DrawChessBoard {
         for (int boardRow = BOARD_SIZE_IN_SQUARES-1; boardRow >= 0; boardRow--) {
 
             drawRowOfSquares(out, boardRow);
-
-            if (boardRow >0 ) {
-                drawVerticalLine(out);
-                out.print(SET_BG_COLOR_DARK_GREY);
-            }
+//
+//            if (boardRow >0 ) {
+//                drawVerticalLine(out);
+//                out.print(SET_BG_COLOR_DARK_GREY);
+//            }
         }
         drawHeaders(out);  //bottom header
 
@@ -96,6 +100,7 @@ public class DrawChessBoard {
         //out.print(SET_TEXT_COLOR_GREEN);
 
         out.print(player);
+        //
         out.print(SET_BG_COLOR_DARK_GREY);
     }
 

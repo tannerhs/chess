@@ -7,6 +7,7 @@ import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface GameDAO {
+    public void updateGame(GameData gameData) throws DataAccessException;
 
     public void clear() throws DataAccessException;
     public CreateGameResponse createGame(String gameName) throws BadRequestException, DataAccessException;

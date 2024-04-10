@@ -8,6 +8,12 @@ import java.util.List;
 public class MemoryGameDAO implements GameDAO {
     static List<GameData> games = new ArrayList<>();
     static int gameIDCounter=0;
+
+    @Override
+    public void updateGame(GameData gameData) throws DataAccessException {
+
+    }
+
     @Override
     public void clear() {
         while(!games.isEmpty()) {

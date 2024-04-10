@@ -21,6 +21,7 @@ public class GamePlayUI {
     String authToken;
     //pass in game itself
     Integer gameID;
+    ChessGame updatedGame;
 
 
 
@@ -48,6 +49,7 @@ public class GamePlayUI {
                 case 2:
                     //redraw
                     //get current user color:
+//                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, new ChessGame(), currentUserColor);
                     DrawChessBoard drawChessBoard = new DrawChessBoard(out, client.getMostRecentGame(), currentUserColor);
                     break;
                 case 3:

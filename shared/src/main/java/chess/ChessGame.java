@@ -24,9 +24,11 @@ public class ChessGame {
     TeamColor team=WHITE;  //initialize to WHITE since white starts
     ChessBoard board;
 
-    boolean gameOver;  //FIXME
+    boolean gameOver;
     public ChessGame() {
-
+        board=new ChessBoard();
+        board.resetBoard();
+        gameOver=false;
     }
 
     public boolean isGameOver(){
@@ -139,7 +141,7 @@ public class ChessGame {
                 board.addPiece(move.getStartPosition(),null);
             }
             //switch teams after making a move
-            team=(pieceTeam.equals(WHITE))?BLACK:WHITE;
+            team=((pieceTeam==WHITE)?BLACK:WHITE);
             //check to see if other team is in checkmate to know if game is over
             isInCheckmate(team);  //sets gameOver flag if true
 

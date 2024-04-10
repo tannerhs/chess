@@ -80,6 +80,7 @@ public class WebSocketSessions {
                 if(serverMessageType.equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
                     LoadGame loadGame = (LoadGame)serverMessage;
                     if(token.equals(loadGame.getLoadGameObject().otherTeamAuthToken())) {  //other player??
+                        System.out.println("changing color of load game request");
                         ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals("WHITE")? ChessGame.TeamColor.BLACK:WHITE);
                         serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(),otherTeamColor, loadGame.getLoadGameObject().otherTeamAuthToken()));
                     }
@@ -88,6 +89,7 @@ public class WebSocketSessions {
                         serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(), WHITE, loadGame.getLoadGameObject().otherTeamAuthToken()));
                     }
                 }
+
                 String sendMessage=new Gson().toJson(serverMessage);
 
                 if(!session.isOpen()) {
