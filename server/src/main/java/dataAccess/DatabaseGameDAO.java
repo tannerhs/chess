@@ -28,10 +28,11 @@ public class DatabaseGameDAO implements GameDAO {
 
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE games SET game=? WHERE gameID=?");
             preparedStatement.setBlob(1, blob);
-            preparedStatement.setInt(2,index);
+            preparedStatement.setInt(2,gameData.gameID());
             preparedStatement.executeUpdate();
         }
         catch (SQLException | DataAccessException e) {
+            System.out.println("updateGame in DatabaseGameDAO failed");
             throw new DataAccessException(e.getMessage());
         }
     }
