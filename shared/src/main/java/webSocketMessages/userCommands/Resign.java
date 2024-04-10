@@ -8,4 +8,8 @@ public class Resign extends UserGameCommand{
         super.setCommandType(CommandType.RESIGN);
 
     }
+
+    public Integer getGameID() {
+        return gameID;
+    }
 }

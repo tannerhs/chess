@@ -11,10 +11,7 @@ import com.google.gson.Gson;
 import ui.Client;
 import ui.ServerMessageObserver;
 import webSocketMessages.ResponseException;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -202,7 +199,29 @@ public class WebSocketCommunicator extends Endpoint {
         //makeMove does not automatically send load game to root; try with other users
     }
 
+    public void leave(String authToken, Integer gameID) {
+        Leave leave = new Leave(authToken,gameID);
+        String leaveString = new Gson().toJson(leave);
+        try {
+            System.out.println("Leave user command sent by root");
+            session.getBasicRemote().sendText(leaveString);
+        }
+        catch(Exception e) {
+            System.out.println("Leave user command NOT sent");
+        }
+    }
 
+    public void resign(String authToken, Integer gameID) {
+        Resign resign = new Resign(authToken,gameID);
+        String resignString = new Gson().toJson(resign);
+        try {
+            System.out.println("Leave user command sent by root");
+            session.getBasicRemote().sendText(resignString);
+        }
+        catch(Exception e) {
+            System.out.println("Leave user command NOT sent");
+        }
+    }
     private String[] generalRepl(String[] inputLabels) {
         String[] inputParams=new String[inputLabels.length];
         Boolean validInput=false;

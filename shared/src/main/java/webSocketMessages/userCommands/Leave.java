@@ -8,4 +8,8 @@ public class Leave extends UserGameCommand{
         super.setCommandType(CommandType.LEAVE);
 
     }
+
+    public Integer getGameID() {
+        return gameID;
+    }
 }

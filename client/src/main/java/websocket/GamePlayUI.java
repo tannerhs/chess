@@ -63,10 +63,12 @@ public class GamePlayUI {
                     break;
                 case 5:
                     //resign
+                    webSocketCommunicator.leave(authToken,gameID);
                     break;
                 case 6:
                     //take as input loc of piece
                     //highlight legal moves, do it in drawChessBoard with another parameter
+                    webSocketCommunicator.resign(authToken,gameID);
                     break;
             }
         }

@@ -10,10 +10,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import webSocketMessages.serverMessages.*;
 import webSocketMessages.serverMessages.Error;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 import websocket.WebSocketSessions;
 //import javax.websocket.*;
 import org.eclipse.jetty.websocket.api.Session;
@@ -79,7 +76,7 @@ public class WebSocketHandler {
                     String notificationMessage = username+" joined the game as an observer.\n";
                     Notification notification = new Notification(notificationMessage);
                     connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
-                    connections.broadcast(gameID,notification,authToken);  //FIXME, notifications not working yet
+                    connections.broadcast(gameID,notification,null,authToken);  //otherTeamAuthToken only for load game
                     break;
                 }
 
@@ -90,6 +87,7 @@ public class WebSocketHandler {
                 JoinPlayer joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
                 int gameID2 = joinPlayer.getGameID();
                 GameData myGameData2 = gameDAO.getGameByID(gameID2);
+                GameData oldGameData=null;  //used in Leave and Resign
 
                 //fixme, what does auth return when null?
                 //what about null session?
@@ -128,7 +126,7 @@ public class WebSocketHandler {
                     String notificationMessage2 = username2+" joined the game as the "+joinPlayer.getPlayerColor().toString()+" player.\n";
                     Notification notification2 = new Notification(notificationMessage2);
                     connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
-                    connections.broadcast(gameID2,notification2,authToken);  //FIXME, notifications not working yet
+                    connections.broadcast(gameID2,notification2,null,authToken);  //otherTeamAuthToken only for load game
                 }
                 break;
             case MAKE_MOVE:
@@ -225,38 +223,65 @@ public class WebSocketHandler {
                     String sendMessage2=new Gson().toJson(new LoadGame(new LoadGameObject(gameData3,userColor,otherTeamAuthToken)));
                     System.out.printf("sendMessage: %s\n",sendMessage2);
                     session.getRemote().sendString(sendMessage2);  //reload game for root
-                    connections.broadcast(gameID3, new LoadGame(new LoadGameObject(gameData3,userColor,otherTeamAuthToken)),authToken);
+                    connections.broadcast(gameID3, new LoadGame(new LoadGameObject(gameData3,userColor,otherTeamAuthToken)),otherTeamAuthToken,authToken);
 
 
                     //now broadcast notification to everyone else playing or observing this game
                     String notificationMessage1 = username + "made the move" +makeMove.getMove().toString()+ "---\n";
                     Notification notification1=new Notification(notificationMessage1);
-                    connections.broadcast(gameID3,notification1,authToken);
+                    connections.broadcast(gameID3,notification1,null,authToken);  //otherTeamAuthToken only for load game
                 }
                 break;
             case LEAVE:
-                //
+                //call
+                Leave leave = new Gson().fromJson(message,Leave.class);
+                gameID = leave.getGameID();
+                 connections.removeSession(gameID,authToken);
+
+                //remove username from game and update white/black username in game dao if you are a player
+                oldGameData =  gameDAO.getGameByID(leave.getGameID());
+                String whiteUsername= oldGameData.whiteUsername();
+                String blackUsername = oldGameData.blackUsername();
+                if(username.equals(whiteUsername))  {
+                    whiteUsername=null;
+                }
+                else if(username.equals(blackUsername)) {
+                    blackUsername=null;
+                }
+                GameData updatedGameData = new GameData(oldGameData.gameID(),whiteUsername,blackUsername, oldGameData.gameName(), oldGameData.game());
+                gameDAO.updateGame(updatedGameData);
+                //go back to postlogin menu-- taken care of in GameUI
+                //send notification
+                String notificationMessage = username+"left the game.";
+                Notification leaveNotification = new Notification(notificationMessage);
+                connections.broadcast(gameID,leaveNotification,null,authToken);
+
                 break;
             case RESIGN:
+                Resign resign = new Gson().fromJson(message,Resign.class);
+                gameID = resign.getGameID();
+                connections.removeSession(gameID,authToken);
+
+
+                //user does NOT leave the game
+                //mark game as over so no moves can be made!
+                oldGameData =  gameDAO.getGameByID(resign.getGameID());
+                ChessGame endedGame = oldGameData.game();
+                endedGame.setGameOver(true);
+                gameDAO.updateGame(new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game()));
+
+                //notify other users
+                String notificationMessage2 = username+"resigned from the game.";
+                Notification resignNotification = new Notification(notificationMessage2);
+                connections.broadcast(gameID,resignNotification,null,authToken);
                 break;
-            //TODO finish case statement
         }
         //depending on UserGameCommand message type, do stuff
-
 
         //send server messages, receive client messages
         //send back server message if needed
     }
 
-//    Boolean validJoinGameRequest(Session session, int gameID) {
-//        Boolean valid = false;
-//        //get auth token associated with it and game and see if that player has successfully done the
-//        //http join gme
-//        //call method to do this: connections.get(gameID);
-//        //get color
-//        //get username with authToken, then check to make sure it is in game object in right color
-//        return valid;
-//    }
 
 //    @OnWebSocketConnect
 //    public void onConnect(Session session) {

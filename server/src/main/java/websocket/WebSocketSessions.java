@@ -6,7 +6,6 @@ import org.eclipse.jetty.websocket.api.*;
 //import javax.websocket.*;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.LoadGameObject;
-import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 import java.util.Map;
@@ -48,13 +46,11 @@ public class WebSocketSessions {
         System.out.printf("gameid/auth/session added to WebSocketSessions: %d, %s, %s\n", gameID,authToken,session);
     }
 
-    public void removeSessionFromGame(String username, int gameID, Session session) {
-        String authToken = "fixme";
-        //connections.put(gameID, Map<authToken,session>());
-    }
 
-    public void removeSession(Session session) {
-        //
+    public void removeSession(int gameID, String authToken) {
+        HashMap<String,Session> editEntry = connections.get(gameID);
+        editEntry.remove(authToken);
+        connections.put(gameID,editEntry);  //overwrite entry with removal
     }
 
     Map<String,Session> getSessionsForGame(int gameID) {
@@ -62,7 +58,7 @@ public class WebSocketSessions {
         return null;
     }
 
-    public void broadcast(int gameID, ServerMessage serverMessage, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
+    public void broadcast(int gameID, ServerMessage serverMessage, String otherTeamAuthToken, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
         System.out.println("broadcasting now");
         HashMap<String, Session> allPlayersAndObservers =connections.get(gameID);
 
@@ -78,10 +74,12 @@ public class WebSocketSessions {
 
                 Session session = allPlayersAndObservers.get(token);
                 if(serverMessageType.equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
+
                     LoadGame loadGame = (LoadGame)serverMessage;
-                    if(token.equals(loadGame.getLoadGameObject().otherTeamAuthToken())) {  //other player??
+
+                    if(token.equals(otherTeamAuthToken)) {  //other player??
                         System.out.println("changing color of load game request");
-                        ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals("WHITE")? ChessGame.TeamColor.BLACK:WHITE);
+                        ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals(WHITE)? ChessGame.TeamColor.BLACK:WHITE);
                         serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(),otherTeamColor, loadGame.getLoadGameObject().otherTeamAuthToken()));
                     }
                     else {
