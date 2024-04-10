@@ -286,4 +286,5 @@ public class WebSocketCommunicator extends Endpoint {
     public void onOpen(Session session, javax.websocket.EndpointConfig endpointConfig) {
 
     }
+
 }

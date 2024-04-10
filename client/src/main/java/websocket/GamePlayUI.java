@@ -50,7 +50,11 @@ public class GamePlayUI {
                     //redraw
                     //get current user color:
 //                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, new ChessGame(), currentUserColor);
-                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, client.getMostRecentGame(), currentUserColor);
+                    ChessGame mostRecentGame =client.getMostRecentGame();  //fixme!
+                    System.out.println("Most recent game:");
+                    System.out.println(mostRecentGame.getBoard().getBoardArray()[0][0]);
+                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, currentUserColor);
+
                     break;
                 case 3:
                     //leave

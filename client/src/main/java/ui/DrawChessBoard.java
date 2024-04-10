@@ -51,11 +51,11 @@ public class DrawChessBoard {
         for (int boardRow = BOARD_SIZE_IN_SQUARES-1; boardRow >= 0; boardRow--) {
 
             drawRowOfSquares(out, boardRow);
-//
-//            if (boardRow >0 ) {
-//                drawVerticalLine(out);
-//                out.print(SET_BG_COLOR_DARK_GREY);
-//            }
+
+            if (boardRow >0 ) {
+                drawVerticalLine(out);
+                out.print(SET_BG_COLOR_DARK_GREY);
+            }
         }
         drawHeaders(out);  //bottom header
 

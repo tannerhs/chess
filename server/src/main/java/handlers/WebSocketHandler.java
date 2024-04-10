@@ -254,7 +254,9 @@ public class WebSocketHandler {
                 GameData updatedGameData = new GameData(oldGameData.gameID(),whiteUsername,blackUsername, oldGameData.gameName(), oldGameData.game());
                 gameDAO.updateGame(updatedGameData);
                 //go back to postlogin menu-- taken care of in GameUI
-                //send notification
+                //notify root of successful leave action
+                session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
+                //send notification to everyone else
                 String notificationMessage = username+"left the game.";
                 Notification leaveNotification = new Notification(notificationMessage);
                 connections.broadcast(gameID,leaveNotification,null,authToken);
