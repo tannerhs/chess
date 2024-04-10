@@ -46,6 +46,9 @@ public class WebSocketHandler {
         UserGameCommand userGameCommand = new Gson().fromJson(message,UserGameCommand.class);
         String authToken = userGameCommand.getAuthString();
         String username="rando";
+        if(authDAO.getAuth(authToken)!=null) {
+            username = authDAO.getAuth(authToken).username();
+        }
 
         //deserialize specific command:
         System.out.printf("commandType: %s\n",userGameCommand.getCommandType());
@@ -260,20 +263,35 @@ public class WebSocketHandler {
             case RESIGN:
                 Resign resign = new Gson().fromJson(message,Resign.class);
                 gameID = resign.getGameID();
-                connections.removeSession(gameID,authToken);
+                oldGameData =  gameDAO.getGameByID(gameID);
+                whiteUsername= oldGameData.whiteUsername();
+                blackUsername = oldGameData.blackUsername();
+                System.out.printf("username: %s\n",username);
+                System.out.printf("whiteUsername: %s\n",whiteUsername);
+                System.out.printf("blackUsername: %s\n",blackUsername);
+                if((username.equals(whiteUsername) || username.equals(blackUsername)) && !oldGameData.game().isGameOver())  {
+                    connections.removeSession(gameID,authToken);
+
+                    //user does NOT leave the game
+                    //mark game as over so no moves can be made!
+                    oldGameData =  gameDAO.getGameByID(resign.getGameID());
+                    ChessGame endedGame = oldGameData.game();
+                    endedGame.setGameOver(true);
+                    gameDAO.updateGame(new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), oldGameData.blackUsername(), oldGameData.gameName(), endedGame));
+
+                    //notify other users
+                    String notificationMessage2 = username+"resigned from the game.";
+                    Notification resignNotification = new Notification(notificationMessage2);
+                    connections.broadcast(gameID,resignNotification,null,authToken);
+                }
+                else {
+                    //send error message
+                    String errorMessage = "NOPE!  Observers can't resign from a game.  Please select leave instead.";
+                    Error error = new Error(errorMessage);
+                    session.getRemote().sendString(new Gson().toJson(error));  //error message, send to root only
+                }
 
 
-                //user does NOT leave the game
-                //mark game as over so no moves can be made!
-                oldGameData =  gameDAO.getGameByID(resign.getGameID());
-                ChessGame endedGame = oldGameData.game();
-                endedGame.setGameOver(true);
-                gameDAO.updateGame(new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game()));
-
-                //notify other users
-                String notificationMessage2 = username+"resigned from the game.";
-                Notification resignNotification = new Notification(notificationMessage2);
-                connections.broadcast(gameID,resignNotification,null,authToken);
                 break;
         }
         //depending on UserGameCommand message type, do stuff
