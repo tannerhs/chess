@@ -279,6 +279,8 @@ public class WebSocketHandler {
                     endedGame.setGameOver(true);
                     gameDAO.updateGame(new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), oldGameData.blackUsername(), oldGameData.gameName(), endedGame));
 
+                    //notify root of successful resign
+                    session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
                     //notify other users
                     String notificationMessage2 = username+"resigned from the game.";
                     Notification resignNotification = new Notification(notificationMessage2);
