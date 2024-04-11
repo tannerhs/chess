@@ -15,6 +15,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public void removeWhiteUsername(Integer gameID) throws DataAccessException {
+
+    }
+
+    @Override
+    public void removeBlackUsername(Integer gameID) throws DataAccessException {
+
+    }
+
+    @Override
     public void clear() {
         while(!games.isEmpty()) {
             games.removeFirst();  //removes 0th item

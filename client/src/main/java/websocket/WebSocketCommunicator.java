@@ -173,7 +173,7 @@ public class WebSocketCommunicator extends Endpoint {
         ChessPiece.PieceType promotionPiece=null;
 
         //if piece in startPos is a pawn and about to promote
-        if(client.getMostRecentGame().getBoard().getPiece(startPos).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+        if(client.getMostRecentGame().getBoard().getPiece(startPos)!=null && client.getMostRecentGame().getBoard().getPiece(startPos).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
             if((client.getMostRecentGame().getBoard().getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.WHITE) &&
                     startPosRow==7)
                     || (client.getMostRecentGame().getBoard().getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.BLACK) &&

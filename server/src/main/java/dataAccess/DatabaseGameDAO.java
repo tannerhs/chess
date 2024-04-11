@@ -3,16 +3,12 @@ package dataAccess;
 import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import model.GameData;
 import responses.CreateGameResponse;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DatabaseGameDAO implements GameDAO {
     static int gameIDCounter=0;
@@ -33,6 +29,36 @@ public class DatabaseGameDAO implements GameDAO {
         }
         catch (SQLException | DataAccessException e) {
             System.out.println("updateGame in DatabaseGameDAO failed");
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeWhiteUsername(Integer gameID) throws DataAccessException {
+        //how to edit something in the database...
+//        games.
+        try (Connection conn = CustomDatabaseManager.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE games SET whiteUsername=null WHERE gameID=?");
+            preparedStatement.setInt(1,gameID);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException | DataAccessException e) {
+            System.out.println("removeWhiteUsername in DatabaseGameDAO failed");
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeBlackUsername(Integer gameID) throws DataAccessException {
+        //how to edit something in the database...
+//        games.
+        try (Connection conn = CustomDatabaseManager.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE games SET blackUsername=null WHERE gameID=?");
+            preparedStatement.setInt(1,gameID);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException | DataAccessException e) {
+            System.out.println("removeWhiteUsername in DatabaseGameDAO failed");
             throw new DataAccessException(e.getMessage());
         }
     }

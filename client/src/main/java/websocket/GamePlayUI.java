@@ -54,7 +54,7 @@ public class GamePlayUI {
                 case 3:
                     //leave
                     System.out.println("Leaving game");
-                    //FIXME remove from hash map in Client
+                    webSocketCommunicator.leave(authToken,gameID);
                     leave=true;
                     break;
                 case 4:
@@ -63,12 +63,14 @@ public class GamePlayUI {
                     break;
                 case 5:
                     //resign
-                    webSocketCommunicator.leave(authToken,gameID);
+                    System.out.println("Resigning from game");
+                    webSocketCommunicator.resign(authToken,gameID);
+                    leave=true;
                     break;
                 case 6:
                     //take as input loc of piece
                     //highlight legal moves, do it in drawChessBoard with another parameter
-                    webSocketCommunicator.resign(authToken,gameID);
+                    //webSocketCommunicator.resign(authToken,gameID);
                     break;
             }
         }

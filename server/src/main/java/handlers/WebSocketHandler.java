@@ -84,7 +84,7 @@ public class WebSocketHandler {
                     sendMessage=new Gson().toJson(new Error("NOPE! That color is already taken."));
                     System.out.printf("sendMessage: %s\n",sendMessage);
                     session.getRemote().sendString(sendMessage);  //error message, send to root only
-                    break;
+//                    break;
                 }
                 else {
                     sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(myGameData,WHITE,null)));
@@ -98,9 +98,9 @@ public class WebSocketHandler {
                     Notification notification = new Notification(notificationMessage);
                     connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
                     connections.broadcast(gameID,notification,null,authToken);  //otherTeamAuthToken only for load game
-                    break;
+//                    break;
                 }
-
+                break;
 
             case JOIN_PLAYER:
                 System.out.println("JOIN_PLAYER case reached");
@@ -260,26 +260,38 @@ public class WebSocketHandler {
                 }
                 break;
             case LEAVE:
+                System.out.println("LEAVE case reached");
                 //call
                 Leave leave = new Gson().fromJson(message,Leave.class);
                 gameID = leave.getGameID();
                  connections.removeSession(gameID,authToken);
 
+
+
                 //remove username from game and update white/black username in game dao if you are a player
                 oldGameData =  gameDAO.getGameByID(leave.getGameID());
                 whiteUsername= oldGameData.whiteUsername();
                 blackUsername = oldGameData.blackUsername();
+
+                System.out.printf("username: %s\n",username);
+                System.out.printf("whiteUsername: %s\n",whiteUsername);
+                System.out.printf("blackUsername: %s\n",blackUsername);
                 if(username.equals(whiteUsername))  {
+                    System.out.println("remove whiteUsername");
+                    gameDAO.removeWhiteUsername(oldGameData.gameID());
                     whiteUsername=null;
                 }
                 else if(username.equals(blackUsername)) {
+                    System.out.println("remove blackUsername");
+                    gameDAO.removeBlackUsername(oldGameData.gameID());
                     blackUsername=null;
                 }
-                GameData updatedGameData = new GameData(oldGameData.gameID(),whiteUsername,blackUsername, oldGameData.gameName(), oldGameData.game());
-                gameDAO.updateGame(updatedGameData);
+
+//                GameData updatedGameData = new GameData(oldGameData.gameID(),whiteUsername,blackUsername, oldGameData.gameName(), oldGameData.game());
+
                 //go back to postlogin menu-- taken care of in GameUI
                 //notify root of successful leave action
-                session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
+                session.getRemote().sendString(new Gson().toJson(new Notification("You left the game.")));
                 //send notification to everyone else
                 notificationMessage = username+"left the game.";
                 Notification leaveNotification = new Notification(notificationMessage);
@@ -287,6 +299,7 @@ public class WebSocketHandler {
 
                 break;
             case RESIGN:
+                System.out.println("RESIGN case reached");
                 Resign resign = new Gson().fromJson(message,Resign.class);
                 gameID = resign.getGameID();
                 oldGameData =  gameDAO.getGameByID(gameID);
