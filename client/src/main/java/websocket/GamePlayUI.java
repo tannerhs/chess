@@ -49,12 +49,7 @@ public class GamePlayUI {
                 case 2:
                     //redraw
                     //get current user color:
-//                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, new ChessGame(), currentUserColor);
-                    ChessGame mostRecentGame =client.getMostRecentGame();  //fixme!
-                    System.out.println("Most recent game:");
-                    System.out.println(mostRecentGame.getBoard().getBoardArray()[0][0]);
-                    DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, currentUserColor);
-
+                    client.drawMostRecentBoard(out, ChessGame.TeamColor.WHITE);
                     break;
                 case 3:
                     //leave
@@ -64,6 +59,7 @@ public class GamePlayUI {
                     break;
                 case 4:
                     webSocketCommunicator.makeMove(out,client,webSocketCommunicator,authToken,gameID);
+                    client.drawMostRecentBoard(out, ChessGame.TeamColor.WHITE);
                     break;
                 case 5:
                     //resign

@@ -48,7 +48,7 @@ public class Client implements ServerMessageObserver{
     public ServerFacade clientSetup() {
         return facade;
     }
-    ChessGame mostRecentGame=null;
+    ChessGame mostRecentGame=new ChessGame();
     GameData mostRecentGameData=null;
 
     public void notify(String message) {  //print stuff based on notification received (print string or game)
@@ -82,6 +82,10 @@ public class Client implements ServerMessageObserver{
     public static void main(String[] args) {  //pass in... game? team color?
         Client myClient = new Client();
         myClient.run();
+    }
+
+    public void drawMostRecentBoard(PrintStream out, ChessGame.TeamColor printAsPlayer) {
+        DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, printAsPlayer);
     }
 
     public ChessGame getMostRecentGame() {

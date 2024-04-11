@@ -52,10 +52,6 @@ public class DrawChessBoard {
 
             drawRowOfSquares(out, boardRow);
 
-            if (boardRow >0 ) {
-                drawVerticalLine(out);
-                out.print(SET_BG_COLOR_DARK_GREY);
-            }
         }
         drawHeaders(out);  //bottom header
 
