@@ -29,7 +29,7 @@ public class HttpCommunicator {
     //represents your server to the client, provides simple way to do it
     //2-3 lines of code in each since calls client communicator
 
-    public ClearAppResponse ClearApp(String authToken) throws Exception {
+    public ClearAppResponse clearApp(String authToken) throws Exception {
         // Specify the desired endpoint
         URI uri = new URI("http://localhost:"+port+"/db");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();

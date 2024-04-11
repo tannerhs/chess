@@ -38,17 +38,17 @@ public class LoginService {
         else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            String hashed_password = users.getPassword(username);
-            System.out.println("hashed_password: '"+(hashed_password==null)+"'");
+            String hashedPassword = users.getPassword(username);
+            System.out.println("hashedPassword: '"+(hashedPassword==null)+"'");
             System.out.println("user entered password: '"+password+"'");
 
-            if (hashed_password==null) {
+            if (hashedPassword==null) {
                 System.out.println("no password");
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
-            else if (!encoder.matches(password,hashed_password)) {
+            else if (!encoder.matches(password,hashedPassword)) {
                 System.out.println("password: "+ password);
-                System.out.println("user.password(): "+hashed_password);
+                System.out.println("user.password(): "+hashedPassword);
                 System.out.println("password doesn't match");
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }

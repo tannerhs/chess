@@ -33,8 +33,6 @@ public class ChessGame {
 
     public boolean isGameOver(){
         System.out.println("isGameOver reached");
-//        isInCheckmate(team);
-//        isInStalemate(team);
         return gameOver;
     }
 
@@ -84,12 +82,6 @@ public class ChessGame {
             TeamColor teamColor = board.getPiece(startPosition).getTeamColor();
             validMoves = removeNonValidBoardMoves(pieceMoves,teamColor);
 
-//            //print out valid moves before passing them t ensure they are correct
-//            for(ChessMove addedMove:validMoves) {
-//                ChessPosition addedPos = addedMove.getEndPosition();
-//                System.out.printf("%s\n",validMoves.get)
-//            }
-
             return validMoves;
         }
     }
@@ -103,19 +95,15 @@ public class ChessGame {
         for(ChessMove move: pieceMoves) {
             if(move==null) {
                 System.out.println("null move");
-                //validMoves.remove(null);
             }
             else if(movePutsOwnTeamInCheck(move)) {
                 System.out.println("movePutsOwnTeamInCheck");
-                //validMoves.remove(move);
             }
             else if (!move.startPosition.validPosition() || !move.endPosition.validPosition()) {
                 System.out.println("invalid start or end position");
-                //validMoves.remove(move);
             }
             else if(moveLeavesTeamInCheck(move)) {
                 System.out.println("moveLeavesTeamInCheck");
-                //validMoves.remove(move);
             }
             else {
                 validMoves.add(move);

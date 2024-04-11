@@ -3,7 +3,6 @@ package ui;
 import chess.ChessGame;
 import client_responses_http.*;
 import client_responses_ws.JoinGameResponseWS;
-import com.google.gson.Gson;
 import model.UserData;
 import client_requests.*;
 import websocket.GamePlayUI;
@@ -47,8 +46,8 @@ public class ServerFacade {
     //represents your server to the client, provides simple way to do it
         //2-3 lines of code in each since calls client communicator
 
-    public ClearAppResponse ClearApp(String authToken) throws Exception {
-        return httpCommunicator.ClearApp(authToken);
+    public ClearAppResponse clearApp(String authToken) throws Exception {
+        return httpCommunicator.clearApp(authToken);
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws Exception {

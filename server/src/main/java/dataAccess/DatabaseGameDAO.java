@@ -76,17 +76,14 @@ public class DatabaseGameDAO implements GameDAO {
     @Override
     public CreateGameResponse createGame(String gameName) throws BadRequestException, DataAccessException {
         System.out.println("reached createGame");
-        int ID = -1;
+        int gameID = -1;
         if(gameName==null) {
             throw new BadRequestException("{ \"message\": \"Error: bad request\" }");
         }
-        //gameIDCounter+=1;
-        //System.out.println("gameIDCounter: "+gameIDCounter);
         System.out.println("gameName: "+gameName);
         try(Connection conn = DatabaseManager.getConnection()) {
             try(PreparedStatement createGameStatement = conn.prepareStatement("INSERT INTO games (gameName, game) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
 
-                //createGameStatement.setInt(1,gameIDCounter);
                 createGameStatement.setString(1,gameName);
                 // Serialize and store the friend JSON.
                 ChessGame addGame = new ChessGame();
@@ -101,16 +98,16 @@ public class DatabaseGameDAO implements GameDAO {
 
                 ResultSet rs = createGameStatement.getGeneratedKeys();
                 if(rs.next()) {
-                    ID = rs.getInt(1);
-                    System.out.println("generatedID: "+ID);
+                    gameID = rs.getInt(1);
+                    System.out.println("generatedID: "+gameID);
                 }
-                if(ID==-1) {
-                    System.out.println("ID is -1, game not created");
+                if(gameID==-1) {
+                    System.out.println("gameID is -1, game not created");
                     return null;
                 }
             }
 
-            return new CreateGameResponse(ID);
+            return new CreateGameResponse(gameID);
 
         }
         catch(SQLException e) {
@@ -191,10 +188,6 @@ public class DatabaseGameDAO implements GameDAO {
     @Override
     public void joinGame(int gameID, String username, String playerColor) throws PlayerFieldTakenException, DataAccessException {
         GameData currentGame = getGameByID(gameID);
-//        int gameIndex = getGameIndex(gameID);
-//        if(gameIndex==-1) {
-//            System.out.println("is this reached?");
-//        }
         System.out.println("joinGame() in DatabaseGameDAO reached");
         if(playerColor == null || playerColor.isEmpty()){  //needs to be ==null, not .equals()
             //observer
@@ -208,8 +201,6 @@ public class DatabaseGameDAO implements GameDAO {
             catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            //games.set(gameIndex,new GameData(gameID,username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game()) );
-            //System.out.println("games.size(): "+games.size());
         }
         else if(playerColor.equals("BLACK")){
             try(Connection conn = DatabaseManager.getConnection()) {
@@ -220,8 +211,6 @@ public class DatabaseGameDAO implements GameDAO {
             catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            //games.set(gameIndex,new GameData(gameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game()) );
-            //System.out.println("games.size(): "+games.size());
         }
         else {
             throw new PlayerFieldTakenException("{\"message\": \"Error: already taken\" }");
@@ -261,12 +250,6 @@ public class DatabaseGameDAO implements GameDAO {
             try (PreparedStatement createGamesTableStatement = conn.prepareStatement(createGamesTable)) {
                 createGamesTableStatement.executeUpdate();
             }
-//            try(PreparedStatement setDefaultGameID = conn.prepareStatement("ALTER TABLE games CHANGE gameID gameID INT(10)AUTO_INCREMENT PRIMARY KEY")) {
-//                setDefaultGameID.executeUpdate();
-//            }
-//            try(PreparedStatement setDefaultGameID = conn.prepareStatement("ALTER TABLE games ALTER gameID SET DEFAULT 1")) {
-//                //setDefaultGameID.executeUpdate();
-//            }
 
         }
         catch (SQLException e){

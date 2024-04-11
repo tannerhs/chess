@@ -88,7 +88,7 @@ public class ServerFacadeTests {
 
     @Test void clearApp() throws Exception {
         var res = facade.register(new UserData("newLogin","login","login"));
-        var res2=facade.ClearApp(res.addedAuth().authToken());
+        var res2=facade.clearApp(res.addedAuth().authToken());
         Assertions.assertEquals(res2.statusCode(),200);
     }
 
@@ -132,7 +132,7 @@ public class ServerFacadeTests {
         var res2=facade.createGame(res.addedAuth().authToken(),new CreateGameRequest("gameName3-1"));
         var res3=facade.joinGame(res.addedAuth().authToken(),new JoinGameRequest("",res2.gameID()));  //expects only to receive blank string, WHITE or BLACK
         Assertions.assertEquals(res3.statusCode(),200);
-        facade.ClearApp(res.addedAuth().authToken());
+        facade.clearApp(res.addedAuth().authToken());
     }
 
     @Test void joinGameObserverNeg() throws Exception {

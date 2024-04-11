@@ -21,9 +21,9 @@ public class DatabaseAuthDAO implements AuthDAO{
     public void deleteAuth(String authToken) throws UnauthorizedAccessException, DataAccessException {
         try(Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken='"+authToken+"'", Statement.RETURN_GENERATED_KEYS);
-            int rows_deleted= deleteStatement.executeUpdate();
+            int rowsDeleted= deleteStatement.executeUpdate();
             ResultSet rs = deleteStatement.getGeneratedKeys();
-            if(rows_deleted==0) {
+            if(rowsDeleted==0) {
                 throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
             }
         }
@@ -37,7 +37,6 @@ public class DatabaseAuthDAO implements AuthDAO{
         try (Connection conn = CustomDatabaseManager.getConnection()) {
             String token = UUID.randomUUID().toString();
             AuthData addedAuth = new AuthData(token,username);
-            //String statement = "CREATE DATABASE IF NOT EXISTS " + token;
             System.out.println("createAuth reached");
 
             try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
@@ -45,13 +44,6 @@ public class DatabaseAuthDAO implements AuthDAO{
                 preparedStatement.setString(2, username);
 
                 preparedStatement.executeUpdate();
-
-//                var resultSet = preparedStatement.getGeneratedKeys();
-//                var ID = 0;
-//                if (resultSet.next()) {
-//                    ID = resultSet.getInt(1);
-//                }
-//                System.out.println("ID: "+ ID);
             }
             return addedAuth;
         } catch (SQLException e) {
@@ -71,8 +63,6 @@ public class DatabaseAuthDAO implements AuthDAO{
                 return addedAuth;
             }
             return null;
-            //throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
-            //throw new DataAccessException("no valid token");
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -92,8 +82,6 @@ public class DatabaseAuthDAO implements AuthDAO{
                 return addedAuth;
             }
             return null;
-            //throw new UnauthorizedAccessException("{\"message\": \"Error: unauthorized\"}");
-            //throw new DataAccessException("no valid token");
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
