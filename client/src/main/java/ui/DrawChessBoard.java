@@ -148,12 +148,12 @@ public class DrawChessBoard {
                                 printPlayerLightGreenBackground(out,player);
                                 out.print(EMPTY.repeat(suffixLength));
                             }
-//                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
-//                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
-//                                out.print(EMPTY.repeat(prefixLength));
-//                                printPlayerLightYellowBackground(out,player);
-//                                out.print(EMPTY.repeat(suffixLength));
-//                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightYellowBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
                             else {
                                 out.print(SET_BG_COLOR_LIGHT_GREY);
                                 out.print(EMPTY.repeat(prefixLength));
@@ -167,6 +167,12 @@ public class DrawChessBoard {
                                 out.print(SET_BG_COLOR_DARK_GREEN);
                                 out.print(EMPTY.repeat(prefixLength));
                                 printPlayerDarkGreenBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_YELLOW);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkYellowBackground(out,player);
                                 out.print(EMPTY.repeat(suffixLength));
                             }
                             else {
@@ -269,6 +275,34 @@ public class DrawChessBoard {
             out.println();
         }
     }
+
+    private static void printPlayerLightYellowBackground(PrintStream out, char player) {
+        out.print(SET_BG_COLOR_LIGHT_YELLOW);
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        out.print(" ");
+        out.print(toUpperCase(player));
+        out.print(" ");
+    }
+
+    private static void printPlayerDarkYellowBackground(PrintStream out, char player) {
+        out.print(SET_BG_COLOR_DARK_YELLOW);
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        out.print(" ");
+        out.print(toUpperCase(player));
+        out.print(" ");
+    }
+
+
 
     private static void printPlayerDarkGreenBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_DARK_GREEN);
