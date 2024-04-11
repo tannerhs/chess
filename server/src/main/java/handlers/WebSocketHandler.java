@@ -247,7 +247,7 @@ public class WebSocketHandler {
                     gameDAO.updateGame(gameData);
                     //update game in gameData3
                     //games.makeMove(game);
-                    gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);
+                    gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);  //fixme redundant
                     sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)));
                     System.out.printf("sendMessage: %s\n",sendMessage);
                     session.getRemote().sendString(sendMessage);  //reload game for root
@@ -293,7 +293,7 @@ public class WebSocketHandler {
                 //notify root of successful leave action
                 session.getRemote().sendString(new Gson().toJson(new Notification("You left the game.")));
                 //send notification to everyone else
-                notificationMessage = username+"left the game.";
+                notificationMessage = username+" left the game.";
                 Notification leaveNotification = new Notification(notificationMessage);
                 connections.broadcast(gameID,leaveNotification,null,authToken);
 
@@ -321,13 +321,13 @@ public class WebSocketHandler {
                     //notify root of successful resign
                     session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
                     //notify other users
-                    notificationMessage = username+"resigned from the game.";
+                    notificationMessage = username+" resigned from the game.";
                     Notification resignNotification = new Notification(notificationMessage);
                     connections.broadcast(gameID,resignNotification,null,authToken);
                 }
                 else {
                     //send error message
-                    String errorMessage = "NOPE!  Observers can't resign from a game.  Please select leave instead.";
+                    String errorMessage = "NOPE!  Observers can't resign from a game, and you can't resign from a finished game.  Please select leave instead.";
                     Error error = new Error(errorMessage);
                     session.getRemote().sendString(new Gson().toJson(error));  //error message, send to root only
                 }

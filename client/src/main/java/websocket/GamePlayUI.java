@@ -32,6 +32,7 @@ public class GamePlayUI {
     }
     public void gamePlayMenu(PrintStream out, Client client, WebSocketCommunicator webSocketCommunicator, ChessGame.TeamColor currentUserColor) {
         //while command is not leave,
+        Boolean observer = (currentUserColor==null);
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(SET_BG_COLOR_BLACK);
 //        Boolean validInput=false;
@@ -64,8 +65,9 @@ public class GamePlayUI {
                 case 5:
                     //resign
                     System.out.println("Resigning from game");
-                    webSocketCommunicator.resign(authToken,gameID);
-                    leave=true;
+                    webSocketCommunicator.resign(authToken,gameID);;//should fail for observer
+                    ChessGame game = client.getMostRecentGame();
+                    leave = !observer;
                     break;
                 case 6:
                     //take as input loc of piece

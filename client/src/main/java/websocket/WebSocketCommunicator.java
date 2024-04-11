@@ -211,7 +211,7 @@ public class WebSocketCommunicator extends Endpoint {
         }
     }
 
-    public void resign(String authToken, Integer gameID) {
+    public boolean resign(String authToken, Integer gameID) {
         Resign resign = new Resign(authToken,gameID);
         String resignString = new Gson().toJson(resign);
         try {
@@ -220,7 +220,9 @@ public class WebSocketCommunicator extends Endpoint {
         }
         catch(Exception e) {
             System.out.println("Leave user command NOT sent");
+            return false;
         }
+        return true;
     }
     private String[] generalRepl(String[] inputLabels) {
         String[] inputParams=new String[inputLabels.length];
