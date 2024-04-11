@@ -220,13 +220,13 @@ public class DrawChessBoard {
 //                        }
 
                         if(((boardRow+1)%2)!=((boardCol+1)%2)) {
-                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
                                 out.print(SET_BG_COLOR_GREEN);
                                 out.print(EMPTY.repeat(prefixLength));
                                 printPlayerLightGreenBackground(out,player);
                                 out.print(EMPTY.repeat(suffixLength));
                             }
-                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                            else if (startPos!=null && startPos.equals(new ChessPosition(8-boardRow,8-boardCol))) {
                                 out.print(SET_BG_COLOR_LIGHT_YELLOW);
                                 out.print(EMPTY.repeat(prefixLength));
                                 printPlayerLightYellowBackground(out,player);
@@ -241,13 +241,13 @@ public class DrawChessBoard {
                             }
                         }
                         else {
-                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
                                 out.print(SET_BG_COLOR_DARK_GREEN);
                                 out.print(EMPTY.repeat(prefixLength));
                                 printPlayerDarkGreenBackground(out,player);
                                 out.print(EMPTY.repeat(suffixLength));
                             }
-                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                            else if (startPos!=null && startPos.equals(new ChessPosition(8-boardRow,8-boardCol))) {
                                 out.print(SET_BG_COLOR_DARK_YELLOW);
                                 out.print(EMPTY.repeat(prefixLength));
                                 printPlayerDarkYellowBackground(out,player);
@@ -313,11 +313,35 @@ public class DrawChessBoard {
                             out.print(SET_TEXT_COLOR_BLACK);
                             out.print("   ");
                         }
+//                        if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
+//                            out.print(SET_BG_COLOR_LIGHT_GREY);
+//                        }
+//                        else {
+//                            out.print(SET_BG_COLOR_BLACK);
+//                        }
                         if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
-                            out.print(SET_BG_COLOR_LIGHT_GREY);
+                            //todo
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
+                                out.print(SET_BG_COLOR_GREEN);
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(8-boardRow,8-boardCol))) {
+                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_LIGHT_GREY);
+                            }
                         }
                         else {
-                            out.print(SET_BG_COLOR_BLACK);
+                            //todo if
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
+                                out.print(SET_BG_COLOR_DARK_GREEN);
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(8-boardRow,8-boardCol))) {
+                                out.print(SET_BG_COLOR_DARK_YELLOW);
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_BLACK);
+                            }
                         }
                     }
 
