@@ -296,16 +296,17 @@ public class WebSocketHandler {
                     Notification notification1=new Notification(notificationMessage);
                     connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
 
-                    if(game.isInCheck(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
-                        notificationMessage ="You put " + otherTeamUsername+ " in check";
-                        session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
-                        connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername+" in check."),null,authToken);
-                    }
-                    else if(game.isInCheckmate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+                    if(game.isInCheckmate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
                         notificationMessage ="You put " + otherTeamUsername+ " in checkmate";
                         session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
                         connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername  +" in checkmate."),null,authToken);
                     }
+                    else if(game.isInCheck(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+                        notificationMessage ="You put " + otherTeamUsername+ " in check";
+                        session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+                        connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername+" in check."),null,authToken);
+                    }
+
                     else if(game.isInStalemate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
                         notificationMessage ="Stalemate";
                         session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));

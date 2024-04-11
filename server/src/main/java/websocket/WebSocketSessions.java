@@ -17,6 +17,7 @@ import java.util.List;
 
 import java.util.Map;
 
+import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 public class WebSocketSessions {
@@ -80,7 +81,7 @@ public class WebSocketSessions {
 
                     if(token.equals(otherTeamAuthToken)) {  //other player??
                         System.out.println("changing color of load game request");
-                        ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals(WHITE)? ChessGame.TeamColor.BLACK:WHITE);
+                        ChessGame.TeamColor otherTeamColor = (loadGame.getLoadGameObject().printAsTeamColor().equals(WHITE)? BLACK:WHITE);
                         serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(),otherTeamColor, loadGame.getLoadGameObject().otherTeamAuthToken()));
                     }
                     else {
