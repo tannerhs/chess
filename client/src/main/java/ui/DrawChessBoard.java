@@ -27,24 +27,19 @@ public class DrawChessBoard {
 
 
     public DrawChessBoard(PrintStream out, ChessGame gameIn, ChessGame.TeamColor printFromPerspective, ChessPosition startPos) {  //call when you join or observe a gameC
-        System.out.println("DrawChessBoard reached");
         game=gameIn;
         highlightLocs=new HashSet();
         this.startPos=startPos;
         this.printFromPerspective=printFromPerspective;
         if(startPos!=null) {
-            System.out.printf("highlight board index: %d,%d\n",startPos.getRow()-1,startPos.getColumn()-1);
         }
 
         if(game.validMoves(startPos)!=null) {
             for(ChessMove validMove: game.validMoves(startPos)) {
                 highlightLocs.add(validMove.getEndPosition());
-                System.out.printf("move board index added: %d,%d\n",validMove.getStartPosition().getRow()-1,validMove.getStartPosition().getColumn()-1);
             }
         }
 
-        //game.setTeamTurn(ChessGame.TeamColor.BLACK);
-        //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
         boardObj.setStartBoard();  //can print out board for debugging if you want
 //        board=boardObj.getBoardArray();

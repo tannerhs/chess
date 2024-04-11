@@ -381,7 +381,6 @@ public class Client implements ServerMessageObserver{
         labels[1]="password";
         String[] output;
         output=generalRepl(labels);
-        System.out.println("login general repl returned");
         return new LoginRequest(output[0],output[1]);
     }
 

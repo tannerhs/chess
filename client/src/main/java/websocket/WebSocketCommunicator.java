@@ -162,13 +162,13 @@ public class WebSocketCommunicator extends Endpoint {
 
         //make move
         //read in move
-        String[] labels = {"startPosRow","startPosCol", "endPosRow", "endPosCol"};
+        String[] labels = {"startPosCol","startPosRow", "endPosCol", "endPosRow"};
         String[] positions = generalRepl(labels);
-        Integer startPosCol=(columnsByName.containsKey(positions[1]))? columnsByName.get(positions[1]): -1;
-        Integer startPosRow = Integer.parseInt(positions[0]);
+        Integer startPosCol=(columnsByName.containsKey(positions[0]))? columnsByName.get(positions[0]): -1;
+        Integer startPosRow = Integer.parseInt(positions[1]);
         ChessPosition startPos= new ChessPosition(startPosRow,startPosCol);
-        Integer endPosCol=(columnsByName.containsKey(positions[3]))? columnsByName.get(positions[3]): -1;
-        Integer endPosRow = Integer.parseInt(positions[2]);
+        Integer endPosCol=(columnsByName.containsKey(positions[2]))? columnsByName.get(positions[2]): -1;
+        Integer endPosRow = Integer.parseInt(positions[3]);
         ChessPosition endPos = new ChessPosition( endPosRow,endPosCol);
         ChessPiece.PieceType promotionPiece=null;
 
@@ -188,7 +188,6 @@ public class WebSocketCommunicator extends Endpoint {
         MakeMove makeMove = new MakeMove(authToken,gameID,move);
         String makeMoveString = new Gson().toJson(makeMove);
         try {
-            System.out.println("MakeMove user command sent by root");
             session.getBasicRemote().sendText(makeMoveString);  //send user command
         }
         catch (Exception e) {

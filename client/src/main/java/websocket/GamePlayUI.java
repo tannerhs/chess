@@ -49,7 +49,6 @@ public class GamePlayUI {
         Boolean leave = false;
         int selection = 8;
         out.printf("Welcome to the gameplay menu! Press 1 to see the options.\n");
-        System.out.printf("currentUserColor: %s\n",currentUserColor);
         while (!leave) {  //prelogin page
             leave = false;
             out.printf(">>>");
@@ -81,16 +80,16 @@ public class GamePlayUI {
                     System.out.println("Resigning from game");
                     webSocketCommunicator.resign(authToken,gameID);;//should fail for observer
                     ChessGame game = client.getMostRecentGame();
-                    leave = !observer;
+                    //should not leave game
                     break;
                 case 6:
                     //take as input loc of piece
                     //highlight legal moves, do it in drawChessBoard with another parameter
                     System.out.println("Type in the row and column of the square for which you want to highlight moves");
-                    String[] labels = {"startPosRow","startPosCol"};
+                    String[] labels = {"startPosCol","startPosRow"};
                     String[] positions = generalRepl(labels);
-                    Integer col=(columnsByName.containsKey(positions[1]))? columnsByName.get(positions[1]): -1;
-                    Integer row = Integer.parseInt(positions[0]);
+                    Integer col=(columnsByName.containsKey(positions[0]))? columnsByName.get(positions[0]): -1;
+                    Integer row = Integer.parseInt(positions[1]);
                     ChessPosition startPos = new ChessPosition(row,col);
                     System.out.printf("chessposition: %s\n",startPos);
                     System.out.printf("currentUserColor for highlight: %s\n",currentUserColor);
