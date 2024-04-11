@@ -205,19 +205,63 @@ public class DrawChessBoard {
                         }
 
 
+//                        if(((boardRow+1)%2)!=((boardCol+1)%2)) {
+//                            out.print(SET_BG_COLOR_LIGHT_GREY);
+//                            out.print(EMPTY.repeat(prefixLength));
+//                            printPlayerLightBackground(out, player);
+//                            out.print(EMPTY.repeat(suffixLength));
+//                        }
+//                        else {
+//                            out.print(SET_BG_COLOR_BLACK);
+//                            out.print(EMPTY.repeat(prefixLength));
+//                            printPlayerDarkBackground(out, player);
+//                            out.print(EMPTY.repeat(suffixLength));
+//
+//                        }
+
                         if(((boardRow+1)%2)!=((boardCol+1)%2)) {
-                            out.print(SET_BG_COLOR_LIGHT_GREY);
-                            out.print(EMPTY.repeat(prefixLength));
-                            printPlayerLightBackground(out, player);
-                            out.print(EMPTY.repeat(suffixLength));
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_GREEN);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightGreenBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightYellowBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_LIGHT_GREY);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightBackground(out, player);
+                                out.print(EMPTY.repeat(suffixLength));
+
+                            }
                         }
                         else {
-                            out.print(SET_BG_COLOR_BLACK);
-                            out.print(EMPTY.repeat(prefixLength));
-                            printPlayerDarkBackground(out, player);
-                            out.print(EMPTY.repeat(suffixLength));
-
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_GREEN);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkGreenBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_YELLOW);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkYellowBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_BLACK);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkBackground(out, player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
                         }
+
+
 
                         if(boardCol==7) {
                             //print side column labels
@@ -238,10 +282,28 @@ public class DrawChessBoard {
                             out.print("   ");
                         }
                         if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
-                            out.print(SET_BG_COLOR_LIGHT_GREY);
+                            //todo
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_GREEN);
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_LIGHT_GREY);
+                            }
                         }
                         else {
-                            out.print(SET_BG_COLOR_BLACK);
+                            //todo if
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_GREEN);
+                            }
+                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_YELLOW);
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_BLACK);
+                            }
                         }
                     }
                     else {
