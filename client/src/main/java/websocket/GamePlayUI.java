@@ -49,6 +49,7 @@ public class GamePlayUI {
         Boolean leave = false;
         int selection = 8;
         out.printf("Welcome to the gameplay menu! Press 1 to see the options.\n");
+        System.out.printf("currentUserColor: %s\n",currentUserColor);
         while (!leave) {  //prelogin page
             leave = false;
             out.printf(">>>");
@@ -59,6 +60,7 @@ public class GamePlayUI {
                     break;
                 case 2:
                     //redraw
+                    System.out.printf("currentUserColor: %s\n",currentUserColor);
                     //get current user color:
                     ChessGame.TeamColor redrawTeamColor = (currentUserColor!=null)? currentUserColor:WHITE;
                     System.out.printf("redrawTeamColor: %s\n",redrawTeamColor);

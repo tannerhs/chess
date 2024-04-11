@@ -480,10 +480,10 @@ public class Client implements ServerMessageObserver{
 //            gamePlayUI.gamePlayMenu(out,this,new WebSocketCommunicator());
 
             ChessGame.TeamColor joinAsPlayer =null;
-            if(joinAsPlayer!=null && joinAsPlayer.equals("WHITE")) {
+            if(joinGameRequest.playerColor()!=null && joinGameRequest.playerColor().equals("WHITE")) {
                 joinAsPlayer=WHITE;
             }
-            else if(joinAsPlayer!=null && joinAsPlayer.equals("BLACK")) {
+            else if(joinGameRequest.playerColor()!=null && joinGameRequest.playerColor().equals("BLACK")) {
                 joinAsPlayer=BLACK;
             }
             facade.startGameplayMenu(out,currentUserAuthToken,joinGameResponse, joinAsPlayer);
