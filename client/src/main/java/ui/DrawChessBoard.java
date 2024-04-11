@@ -1,14 +1,13 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import static java.lang.Character.isUpperCase;
-import static java.lang.Character.toUpperCase;
+import static java.lang.Character.*;
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_BG_COLOR_DARK_GREY;
 
@@ -23,9 +22,27 @@ public class DrawChessBoard {
     private static ChessPiece[][] board;
     private static ChessGame.TeamColor printFromPerspective;
 
-    public DrawChessBoard(PrintStream out, ChessGame gameIn, ChessGame.TeamColor printFromPerspective) {  //call when you join or observe a gameC
+    private static Collection<ChessPosition> highlightLocs;
+    private static ChessPosition startPos;
+
+
+    public DrawChessBoard(PrintStream out, ChessGame gameIn, ChessGame.TeamColor printFromPerspective, ChessPosition startPos) {  //call when you join or observe a gameC
+        System.out.println("DrawChessBoard reached");
         game=gameIn;
+        highlightLocs=new HashSet();
+        this.startPos=startPos;
         this.printFromPerspective=printFromPerspective;
+        if(startPos!=null) {
+            System.out.printf("highlight board index: %d,%d\n",startPos.getRow()-1,startPos.getColumn()-1);
+        }
+
+        if(game.validMoves(startPos)!=null) {
+            for(ChessMove validMove: game.validMoves(startPos)) {
+                highlightLocs.add(validMove.getEndPosition());
+                System.out.printf("move board index added: %d,%d\n",validMove.getStartPosition().getRow()-1,validMove.getStartPosition().getColumn()-1);
+            }
+        }
+
         //game.setTeamTurn(ChessGame.TeamColor.BLACK);
         //ChessBoard boardObj = game.getBoard();
         ChessBoard boardObj = new ChessBoard();
@@ -125,16 +142,39 @@ public class DrawChessBoard {
 
 
                         if(((boardRow+1)%2)!=((boardCol+1)%2)) {
-                            out.print(SET_BG_COLOR_LIGHT_GREY);
-                            out.print(EMPTY.repeat(prefixLength));
-                            printPlayerLightBackground(out, player);
-                            out.print(EMPTY.repeat(suffixLength));
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_GREEN);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightGreenBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+//                            else if (startPos!=null && startPos.equals(new ChessPosition(boardRow+1,boardCol+1))) {
+//                                out.print(SET_BG_COLOR_LIGHT_YELLOW);
+//                                out.print(EMPTY.repeat(prefixLength));
+//                                printPlayerLightYellowBackground(out,player);
+//                                out.print(EMPTY.repeat(suffixLength));
+//                            }
+                            else {
+                                out.print(SET_BG_COLOR_LIGHT_GREY);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerLightBackground(out, player);
+                                out.print(EMPTY.repeat(suffixLength));
+
+                            }
                         }
                         else {
-                            out.print(SET_BG_COLOR_BLACK);
-                            out.print(EMPTY.repeat(prefixLength));
-                            printPlayerDarkBackground(out, player);
-                            out.print(EMPTY.repeat(suffixLength));
+                            if(startPos!=null && highlightLocs.contains(new ChessPosition(boardRow+1,boardCol+1))) {
+                                out.print(SET_BG_COLOR_DARK_GREEN);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkGreenBackground(out,player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
+                            else {
+                                out.print(SET_BG_COLOR_BLACK);
+                                out.print(EMPTY.repeat(prefixLength));
+                                printPlayerDarkBackground(out, player);
+                                out.print(EMPTY.repeat(suffixLength));
+                            }
 
                         }
 
@@ -212,13 +252,14 @@ public class DrawChessBoard {
                             out.print(SET_BG_COLOR_BLACK);
                         }
                     }
-                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
+
+                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));  //KEY LINE TODO
                 }
 
                 if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
                     // Draw right line
                     setRed(out);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                    out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));  //KEY LINE TODO
                 }
 
                 out.print(SET_BG_COLOR_DARK_GREY);
@@ -227,6 +268,32 @@ public class DrawChessBoard {
 
             out.println();
         }
+    }
+
+    private static void printPlayerDarkGreenBackground(PrintStream out, char player) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        out.print(" ");
+        out.print(toUpperCase(player));
+        out.print(" ");
+    }
+
+    private static void printPlayerLightGreenBackground(PrintStream out, char player) {
+        out.print(SET_BG_COLOR_GREEN);
+        if(isUpperCase(player)) {  //white team color
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else {  //black team color
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+        out.print(" ");
+        out.print(toUpperCase(player));
+        out.print(" ");
     }
 
     private static void drawVerticalLine(PrintStream out) {

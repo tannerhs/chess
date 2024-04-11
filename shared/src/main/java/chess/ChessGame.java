@@ -84,6 +84,12 @@ public class ChessGame {
             TeamColor teamColor = board.getPiece(startPosition).getTeamColor();
             validMoves = removeNonValidBoardMoves(pieceMoves,teamColor);
 
+//            //print out valid moves before passing them t ensure they are correct
+//            for(ChessMove addedMove:validMoves) {
+//                ChessPosition addedPos = addedMove.getEndPosition();
+//                System.out.printf("%s\n",validMoves.get)
+//            }
+
             return validMoves;
         }
     }

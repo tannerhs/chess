@@ -44,7 +44,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if(position.validPosition()) {
+        if(position!=null && position.validPosition()) {
             return board[position.getRow()-1][position.getColumn()-1];
         }
         return null;

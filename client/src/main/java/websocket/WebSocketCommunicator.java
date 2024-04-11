@@ -272,6 +272,16 @@ public class WebSocketCommunicator extends Endpoint {
         out.printf(">>>");
     }
 
+    public void highlightMove(PrintStream out, ChessGame.TeamColor printAsColor) {
+        System.out.println("Type in the row and column of the square for which you want to highlight moves");
+        String[] labels = {"startPosRow","startPosCol"};
+        String[] positions = generalRepl(labels);
+        Integer col=(columnsByName.containsKey(positions[1]))? columnsByName.get(positions[1]): -1;
+        Integer row = Integer.parseInt(positions[0]);
+        ChessPosition startPos = new ChessPosition(row,col);
+        myClient.drawMostRecentBoard(out,printAsColor);
+        myClient.drawHighlightedMostRecentBoard(out,printAsColor,startPos);
+    }
 
 
 //    @Override

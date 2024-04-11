@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import client_requests.JoinGameRequest;
 import client_requests.LoginRequest;
 import client_responses_http.*;
@@ -61,7 +62,7 @@ public class Client implements ServerMessageObserver{
                 PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
                 mostRecentGame=loadGame.getGame();
                 ChessGame.TeamColor currentUserColor = (loadGame.getLoadGameObject().printAsTeamColor());
-                DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame,currentUserColor);
+                DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame,currentUserColor,null);
                 break;
             }
             case NOTIFICATION: {
@@ -85,7 +86,11 @@ public class Client implements ServerMessageObserver{
     }
 
     public void drawMostRecentBoard(PrintStream out, ChessGame.TeamColor printAsPlayer) {
-        DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, printAsPlayer);
+        DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, printAsPlayer, null);
+    }
+
+    public void drawHighlightedMostRecentBoard(PrintStream out, ChessGame.TeamColor printAsPlayer, ChessPosition startPos) {
+        DrawChessBoard drawChessBoard = new DrawChessBoard(out, mostRecentGame, printAsPlayer, startPos);
     }
 
     public ChessGame getMostRecentGame() {
