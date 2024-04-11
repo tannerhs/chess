@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import dataAccess.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import server.Server;
 import webSocketMessages.serverMessages.*;
 import webSocketMessages.serverMessages.Error;
 import webSocketMessages.userCommands.*;
@@ -28,9 +29,14 @@ public class WebSocketHandler {
     Map<Session,String> sessions = new HashMap<Session,String>();
     GameDAO gameDAO = new DatabaseGameDAO();  //FIXME!!!  need these kept in common and passed from server?
     AuthDAO authDAO = new DatabaseAuthDAO();
-    UserDAO users = new DatabaseUserDAO();
+    UserDAO userDAO = new DatabaseUserDAO();
+    Server myServer;
 
-    public WebSocketHandler() {
+    public WebSocketHandler(GameDAO gameDAO,AuthDAO authDAO, UserDAO userDAO, Server myServer) {
+        this.gameDAO=gameDAO;
+        this.authDAO=authDAO;
+        this.userDAO=userDAO;
+        this.myServer=myServer;
         System.out.println("WebSocketHandler constructor reached");
     }
 
@@ -38,6 +44,9 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws Exception {
         //if(session not valid)
         //if player tries to join as color they are not already registered as
+        gameDAO= myServer.getGamesDAO();
+        authDAO= myServer.getAuthDAO();
+        userDAO= myServer.getUsersDAO();
 
 
         System.out.printf("Received: %s", message);
@@ -51,6 +60,8 @@ public class WebSocketHandler {
         String sendMessage=null;
         ChessGame.TeamColor userColor=null;
         Integer gameID=-1;
+        GameData oldGameData=null;
+        String notificationMessage = "Uninitialized";
 
         if(authDAO.getAuth(authToken)!=null) {
             username = authDAO.getAuth(authToken).username();
@@ -83,7 +94,7 @@ public class WebSocketHandler {
                     //send load_game to root
                     //now broadcast notification to everyone playing or observing this game
                     username = authDAO.getAuth(authToken).username();
-                    String notificationMessage = username+" joined the game as an observer.\n";
+                    notificationMessage = username+" joined the game as an observer.\n";
                     Notification notification = new Notification(notificationMessage);
                     connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
                     connections.broadcast(gameID,notification,null,authToken);  //otherTeamAuthToken only for load game
@@ -97,7 +108,7 @@ public class WebSocketHandler {
                 JoinPlayer joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
                 gameID = joinPlayer.getGameID();
                 GameData myGameData2 = gameDAO.getGameByID(gameID);
-                GameData oldGameData=null;  //used in Leave and Resign
+                oldGameData=null;  //used in Leave and Resign
 
                 //fixme, what does auth return when null?
                 //what about null session?
@@ -132,9 +143,9 @@ public class WebSocketHandler {
                     session.getRemote().sendString(sendMessage);
 
                     //now broadcast notification to everyone playing or observing this game
-                    String username2 = authDAO.getAuth(authToken).username();
-                    String notificationMessage2 = username2+" joined the game as the "+joinPlayer.getPlayerColor().toString()+" player.\n";
-                    Notification notification2 = new Notification(notificationMessage2);
+                    username = authDAO.getAuth(authToken).username();
+                    notificationMessage = username+" joined the game as the "+joinPlayer.getPlayerColor().toString()+" player.\n";
+                    Notification notification2 = new Notification(notificationMessage);
                     connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
                     connections.broadcast(gameID,notification2,null,authToken);  //otherTeamAuthToken only for load game
                 }
@@ -213,11 +224,22 @@ public class WebSocketHandler {
 
                     String otherTeamAuthToken=null;
                     //if other player not null, get
-                    if((userColor.equals(BLACK) && authDAO.getAuth(gameData.whiteUsername())!=null)) {
-                        otherTeamAuthToken = authDAO.getAuth(gameData.whiteUsername()).authToken();
+                    if(userColor.equals(BLACK) && authDAO.getAuthByUsername(gameData.whiteUsername())!=null) {
+                        System.out.println("hallelujha");
+                        otherTeamAuthToken = authDAO.getAuthByUsername(gameData.whiteUsername()).authToken();
                     }
-                    else if (userColor.equals(WHITE) && authDAO.getAuth(gameData.blackUsername())!=null) {
-                        otherTeamAuthToken = authDAO.getAuth(gameData.blackUsername()).authToken();
+                    else if (userColor.equals(WHITE) && authDAO.getAuthByUsername(gameData.blackUsername())!=null) {
+                        System.out.println("hallelujah for reals");
+                        otherTeamAuthToken = authDAO.getAuthByUsername(gameData.blackUsername()).authToken();
+                    }
+                    else {
+                        System.out.println("Make Move else clause");
+                        System.out.printf("userColor: %s\n",userColor);
+                        System.out.printf("blackUsername: %s\n",gameData.blackUsername());
+                        System.out.printf("authDAO.getAuth(gameData.blackUsername()): %s\n",authDAO.getAuth(gameData.blackUsername()));
+                        System.out.printf("whiteUsername: %s\n",gameData.whiteUsername());
+                        System.out.printf("authDAO.getAuth(gameData.whiteUsername()): %s\n",authDAO.getAuth(gameData.whiteUsername()));
+                        System.out.printf("username: %s\n",username);
                     }
 
                     //loadGame send
@@ -232,8 +254,8 @@ public class WebSocketHandler {
                     connections.broadcast(gameID, new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)),otherTeamAuthToken,authToken);
 
                     //now broadcast notification to everyone else playing or observing this game
-                    String notificationMessage1 = username + "made the move" +makeMove.getMove().toString()+ "---\n";
-                    Notification notification1=new Notification(notificationMessage1);
+                    notificationMessage = username + "made the move" +makeMove.getMove().toString()+ "---\n";
+                    Notification notification1=new Notification(notificationMessage);
                     connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
                 }
                 break;
@@ -259,7 +281,7 @@ public class WebSocketHandler {
                 //notify root of successful leave action
                 session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
                 //send notification to everyone else
-                String notificationMessage = username+"left the game.";
+                notificationMessage = username+"left the game.";
                 Notification leaveNotification = new Notification(notificationMessage);
                 connections.broadcast(gameID,leaveNotification,null,authToken);
 
@@ -286,8 +308,8 @@ public class WebSocketHandler {
                     //notify root of successful resign
                     session.getRemote().sendString(new Gson().toJson(new Notification("You resigned from the game.")));
                     //notify other users
-                    String notificationMessage2 = username+"resigned from the game.";
-                    Notification resignNotification = new Notification(notificationMessage2);
+                    notificationMessage = username+"resigned from the game.";
+                    Notification resignNotification = new Notification(notificationMessage);
                     connections.broadcast(gameID,resignNotification,null,authToken);
                 }
                 else {

@@ -44,7 +44,7 @@ public class Server {
     }
 
     public void createRoutes() {
-        Spark.webSocket("/connect", WebSocketHandler.class);
+        Spark.webSocket("/connect", new WebSocketHandler(gamesDAO,authDAO,usersDAO, this));
         Spark.delete("/db",(req,res) -> new ClearHandler().handleRequest(req,res,usersDAO,gamesDAO,authDAO));  //clear application
         Spark.post("/user",(req, res) -> new RegisterHandler().handleRequest(req,res, usersDAO,authDAO));
         Spark.post("/session", (req,res) -> new LoginHandler().handleRequest(req,res,usersDAO,authDAO));
@@ -54,6 +54,13 @@ public class Server {
         Spark.put("/game", (req,res) -> new JoinGameHandler().handleRequest(req,res,usersDAO,authDAO,gamesDAO));
     }
 
-
-
+    public AuthDAO getAuthDAO() {
+        return authDAO;
+    }
+    public GameDAO getGamesDAO() {
+        return gamesDAO;
+    }
+    public UserDAO getUsersDAO(){
+        return usersDAO;
+    }
 }

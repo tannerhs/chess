@@ -60,6 +60,7 @@ public class WebSocketSessions {
 
     public void broadcast(int gameID, ServerMessage serverMessage, String otherTeamAuthToken, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
         System.out.println("broadcasting now");
+        System.out.printf("otherTeamAuthToken: %s\n",otherTeamAuthToken);
         HashMap<String, Session> allPlayersAndObservers =connections.get(gameID);
 
         //can have valid auth token with invalid session
@@ -71,10 +72,10 @@ public class WebSocketSessions {
 //            String username =
             //System.out.
             if(!token.equals(exceptThisAuthToken)) {
-
+                System.out.printf("not exceptThisAuthToken: %s\n",token);
                 Session session = allPlayersAndObservers.get(token);
                 if(serverMessageType.equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
-
+                    System.out.println("Load Game message detected");
                     LoadGame loadGame = (LoadGame)serverMessage;
 
                     if(token.equals(otherTeamAuthToken)) {  //other player??
@@ -84,6 +85,7 @@ public class WebSocketSessions {
                     }
                     else {
                         //obeserver, set print-as color to white
+                        System.out.printf("observer token being printed: %s\n",token);
                         serverMessage= new LoadGame(new LoadGameObject(loadGame.getGameData(), WHITE, loadGame.getLoadGameObject().otherTeamAuthToken()));
                     }
                 }
