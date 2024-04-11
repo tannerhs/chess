@@ -3,6 +3,8 @@ package handlers;
 //import org.eclipse.jetty.websocket.api.Session;
 //import org.eclipse.jetty.server.session.Session;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataAccess.*;
@@ -39,6 +41,54 @@ public class WebSocketHandler {
         this.myServer=myServer;
         System.out.println("WebSocketHandler constructor reached");
     }
+
+    public String toChar(ChessGame.TeamColor team,ChessPiece.PieceType type) {
+        if(team==null || type==null) {
+            return "x";
+        }
+        if(team== ChessGame.TeamColor.WHITE) {
+            if(type== ChessPiece.PieceType.PAWN) {
+                return "P";
+            }
+            else if(type== ChessPiece.PieceType.BISHOP) {
+                return "B";
+            }
+            else if (type== ChessPiece.PieceType.KNIGHT) {
+                return "N";
+            }
+            else if (type== ChessPiece.PieceType.ROOK) {
+                return "R";
+            }
+            else if (type== ChessPiece.PieceType.KING) {
+                return "K";
+            }
+            else if (type== ChessPiece.PieceType.QUEEN) {
+                return "Q";
+            }
+        }
+        else if (team== ChessGame.TeamColor.BLACK) {
+            if(type== ChessPiece.PieceType.PAWN) {
+                return "p";
+            }
+            else if(type== ChessPiece.PieceType.BISHOP) {
+                return "b";
+            }
+            else if (type== ChessPiece.PieceType.KNIGHT) {
+                return "n";
+            }
+            else if (type== ChessPiece.PieceType.ROOK) {
+                return "r";
+            }
+            else if (type== ChessPiece.PieceType.KING) {
+                return "k";
+            }
+            else if (type== ChessPiece.PieceType.QUEEN) {
+                return "q";
+            }
+        }
+        return "x";
+    }
+
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
@@ -241,20 +291,25 @@ public class WebSocketHandler {
                         System.out.printf("authDAO.getAuth(gameData.whiteUsername()): %s\n",authDAO.getAuth(gameData.whiteUsername()));
                         System.out.printf("username: %s\n",username);
                     }
+                    ChessPiece piece = game.getBoard().getPiece(makeMove.getMove().getStartPosition());  //get piece type before making move
 
                     //loadGame send
                     gameData.game().makeMove(makeMove.getMove());
                     gameDAO.updateGame(gameData);
                     //update game in gameData3
-                    //games.makeMove(game);
-                    gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);  //fixme redundant
+                    gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);  //redundant
                     sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)));
                     System.out.printf("sendMessage: %s\n",sendMessage);
                     session.getRemote().sendString(sendMessage);  //reload game for root
                     connections.broadcast(gameID, new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)),otherTeamAuthToken,authToken);
 
                     //now broadcast notification to everyone else playing or observing this game
-                    notificationMessage = username + "made the move" +makeMove.getMove().toString()+ "---\n";
+                    String pieceString="?";
+                    if(piece!=null) {
+                        pieceString = this.toChar(game.getTeamTurn(), piece.getPieceType());
+                    }
+                    ChessMove makeYourMove = makeMove.getMove();
+                    notificationMessage = username + " made the move "+pieceString+ makeYourMove.toString()+ "\n";
                     Notification notification1=new Notification(notificationMessage);
                     connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
                 }
@@ -341,20 +396,6 @@ public class WebSocketHandler {
         //send back server message if needed
     }
 
-
-//    @OnWebSocketConnect
-//    public void onConnect(Session session) {
-//        //String username ="um";  //FIXME
-//        //sessions.put(session,username);
-//        //keep track of sessions in session manager class, store sessions form onMessage in session map
-//    }
-//
-//
-//
-//    @OnWebSocketClose
-//    public void onClose(Session session) {  //pass session in causes error...
-//        //remove stuff from map
-//    }
 
     @OnWebSocketError
     public void onError(Throwable throwable) {

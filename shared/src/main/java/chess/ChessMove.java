@@ -1,4 +1,5 @@
 package chess;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static chess.ChessPiece.*;
@@ -13,12 +14,23 @@ public class ChessMove {
     ChessPosition startPosition;
     ChessPosition endPosition;
     PieceType promotionPiece;
+    HashMap<Integer, String> columnsByName = new HashMap<>();
+
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition=startPosition;
         this.endPosition=endPosition;
         this.promotionPiece=promotionPiece;
+
+        columnsByName.put(1,"a");
+        columnsByName.put(2,"b");
+        columnsByName.put(3,"c");
+        columnsByName.put(4,"d");
+        columnsByName.put(5,"e");
+        columnsByName.put(6,"f");
+        columnsByName.put(7,"g");
+        columnsByName.put(8,"h");
     }
 
     /**
@@ -58,9 +70,12 @@ public class ChessMove {
     }
 
 
+
     @Override
     public String toString() {
-        String printedMove = "ChessMove method toString() under construction\n";
+        String col = columnsByName.get(this.getEndPosition().getColumn());
+        String row = Integer.toString(this.getEndPosition().getRow());
+        String printedMove = col+row;
         return printedMove;
     }
 }
