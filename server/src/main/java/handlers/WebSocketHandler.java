@@ -46,9 +46,9 @@ public class WebSocketHandler {
         if(team==null || type==null) {
             return "x";
         }
-        if(team== ChessGame.TeamColor.WHITE) {
+        else {
             if(type== ChessPiece.PieceType.PAWN) {
-                return "P";
+                return "";
             }
             else if(type== ChessPiece.PieceType.BISHOP) {
                 return "B";
@@ -65,28 +65,8 @@ public class WebSocketHandler {
             else if (type== ChessPiece.PieceType.QUEEN) {
                 return "Q";
             }
+            return "x";
         }
-        else if (team== ChessGame.TeamColor.BLACK) {
-            if(type== ChessPiece.PieceType.PAWN) {
-                return "p";
-            }
-            else if(type== ChessPiece.PieceType.BISHOP) {
-                return "b";
-            }
-            else if (type== ChessPiece.PieceType.KNIGHT) {
-                return "n";
-            }
-            else if (type== ChessPiece.PieceType.ROOK) {
-                return "r";
-            }
-            else if (type== ChessPiece.PieceType.KING) {
-                return "k";
-            }
-            else if (type== ChessPiece.PieceType.QUEEN) {
-                return "q";
-            }
-        }
-        return "x";
     }
 
 
@@ -273,14 +253,17 @@ public class WebSocketHandler {
                     //if successful message...
 
                     String otherTeamAuthToken=null;
+                    String otherTeamUsername=null;
                     //if other player not null, get
                     if(userColor.equals(BLACK) && authDAO.getAuthByUsername(gameData.whiteUsername())!=null) {
                         System.out.println("hallelujha");
                         otherTeamAuthToken = authDAO.getAuthByUsername(gameData.whiteUsername()).authToken();
+                        otherTeamUsername= gameData.whiteUsername();
                     }
                     else if (userColor.equals(WHITE) && authDAO.getAuthByUsername(gameData.blackUsername())!=null) {
                         System.out.println("hallelujah for reals");
                         otherTeamAuthToken = authDAO.getAuthByUsername(gameData.blackUsername()).authToken();
+                        otherTeamUsername= gameData.blackUsername();
                     }
                     else {
                         System.out.println("Make Move else clause");
@@ -312,6 +295,22 @@ public class WebSocketHandler {
                     notificationMessage = username + " made the move "+pieceString+ makeYourMove.toString()+ "\n";
                     Notification notification1=new Notification(notificationMessage);
                     connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
+
+                    if(game.isInCheck(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+                        notificationMessage ="You put " + otherTeamUsername+ " in check";
+                        session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+                        connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername+" in check."),null,authToken);
+                    }
+                    else if(game.isInCheckmate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+                        notificationMessage ="You put " + otherTeamUsername+ " in checkmate";
+                        session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+                        connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername  +" in checkmate."),null,authToken);
+                    }
+                    else if(game.isInStalemate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+                        notificationMessage ="Stalemate";
+                        session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+                        connections.broadcast(gameID,new Notification("Stalemate"),null,authToken);
+                    }
                 }
                 break;
             case LEAVE:
