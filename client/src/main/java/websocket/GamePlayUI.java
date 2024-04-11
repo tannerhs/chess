@@ -59,7 +59,7 @@ public class GamePlayUI {
                     break;
                 case 4:
                     webSocketCommunicator.makeMove(out,client,webSocketCommunicator,authToken,gameID);
-                    client.drawMostRecentBoard(out, ChessGame.TeamColor.WHITE);
+//                    client.drawMostRecentBoard(out, ChessGame.TeamColor.WHITE);
                     break;
                 case 5:
                     //resign
