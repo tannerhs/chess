@@ -46,9 +46,6 @@ public class Client implements ServerMessageObserver{
     static final String ERROR_MESSAGE_500="Error: bad request\n";
     static final String UNKOWN_ERROR_MESSAGE="Error: unknown error";
 
-    public ServerFacade clientSetup() {
-        return facade;
-    }
     ChessGame mostRecentGame=new ChessGame();
     GameData mostRecentGameData=null;
 

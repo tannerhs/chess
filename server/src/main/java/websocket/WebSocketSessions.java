@@ -54,10 +54,6 @@ public class WebSocketSessions {
         connections.put(gameID,editEntry);  //overwrite entry with removal
     }
 
-    Map<String,Session> getSessionsForGame(int gameID) {
-        //
-        return null;
-    }
 
     public void broadcast(int gameID, ServerMessage serverMessage, String otherTeamAuthToken, String exceptThisAuthToken) throws IOException {  //broadcasts a message to all in a game
         System.out.println("broadcasting now");

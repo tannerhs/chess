@@ -106,15 +106,6 @@ public class ServerFacade {
         gamePlayUI.gamePlayMenu(out,webSocketCommunicator.getMyClient(),webSocketCommunicator, joinAsColor);
     }
 
-//    public JoinGameResponseWS joinGame(String authToken, JoinGameRequest joinGameRequest) throws Exception {
-//        JoinGameResponseHttp joinGameResponseHttp = httpCommunicator.joinGame(authToken,joinGameRequest);
-//        PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//        //if exception was one I accounted for, it should never be thrown to the user, so joinGameResponseHttp should have the correct statusCode (returned before exception can be thrown to user)
-//
-//        Boolean observe = joinGameRequest.playerColor()=="";  //that is what I put in by default
-//        JoinGameResponseWS joinGameResponseWS= webSocketCommunicator.joinGame(authToken, observe, joinGameResponseHttp);
-//        return joinGameResponseWS;
-//    }
 
     private static void printErrorMessage(PrintStream out, int statusCode) {
         if(statusCode==400) {
