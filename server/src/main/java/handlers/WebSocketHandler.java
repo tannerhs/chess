@@ -33,6 +33,20 @@ public class WebSocketHandler {
     AuthDAO authDAO = new DatabaseAuthDAO();
     UserDAO userDAO = new DatabaseUserDAO();
     Server myServer;
+    String sendMessage;
+    Session session;
+    GameData myGameData;
+    JoinObserver joinObserver;
+    UserGameCommand userGameCommand;
+    String authToken;
+    String username;
+    String whiteUsername;
+    String blackUsername;
+    String notificationMessage;
+    Integer gameID;
+    JoinPlayer joinPlayer;
+    GameData myGameData2;
+
 
     public WebSocketHandler(GameDAO gameDAO,AuthDAO authDAO, UserDAO userDAO, Server myServer) {
         this.gameDAO=gameDAO;
@@ -77,21 +91,22 @@ public class WebSocketHandler {
         gameDAO= myServer.getGamesDAO();
         authDAO= myServer.getAuthDAO();
         userDAO= myServer.getUsersDAO();
-
+        this.session=session;
 
         System.out.printf("Received: %s", message);
         //deserialize user game commands, which edits data more directly in the case of makeMove by calling DAO
         //deserialize UserGameCommand to get command type
-        UserGameCommand userGameCommand = new Gson().fromJson(message,UserGameCommand.class);
-        String authToken = userGameCommand.getAuthString();
-        String username="rando";
-        String whiteUsername=null;
-        String blackUsername=null;
-        String sendMessage=null;
+        userGameCommand = new Gson().fromJson(message,UserGameCommand.class);
+        authToken = userGameCommand.getAuthString();
+        username="rando";
+        whiteUsername=null;
+        blackUsername=null;
+        sendMessage=null;
+        gameID=-1;
+        notificationMessage = "Uninitialized";
         ChessGame.TeamColor userColor=null;
-        Integer gameID=-1;
         GameData oldGameData=null;
-        String notificationMessage = "Uninitialized";
+
 
         if(authDAO.getAuth(authToken)!=null) {
             username = authDAO.getAuth(authToken).username();
@@ -102,42 +117,26 @@ public class WebSocketHandler {
         switch(userGameCommand.getCommandType()) {
             case JOIN_OBSERVER:
                 System.out.println("JOIN_OBSERVER case reached");
-                JoinObserver joinObserver= new Gson().fromJson(message, JoinObserver.class);
+                joinObserver= new Gson().fromJson(message, JoinObserver.class);
                 gameID = joinObserver.getGameID();
-                GameData myGameData = gameDAO.getGameByID(gameID);
+                myGameData = gameDAO.getGameByID(gameID);
                 ChessGame myGame;
                 GameData gameData=null;
                 //if null session...what do I do? TODO
                 if(authToken==null|| authDAO.getAuth(authToken)==null ||
                         myGameData==null || myGameData.game()==null) {  //403, spot taken already
-                    System.out.println("spot taken");
-                    sendMessage=new Gson().toJson(new Error("NOPE! That color is already taken."));
-                    System.out.printf("sendMessage: %s\n",sendMessage);
-                    session.getRemote().sendString(sendMessage);  //error message, send to root only
-//                    break;
+                    joinObserverBad();
                 }
                 else {
-                    sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(myGameData,WHITE,null)));
-                    System.out.printf("sendMessage: %s\n",sendMessage);
-//                session.getBasicRemote().sendText(sendMessage);
-                    session.getRemote().sendString(sendMessage);
-                    //send load_game to root
-                    //now broadcast notification to everyone playing or observing this game
-                    username = authDAO.getAuth(authToken).username();
-                    notificationMessage = username+" joined the game as an observer.\n";
-                    Notification notification = new Notification(notificationMessage);
-                    connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
-                    connections.broadcast(gameID,notification,null,authToken);  //otherTeamAuthToken only for load game
-//                    break;
+                    joinObserverGood();
                 }
                 break;
 
             case JOIN_PLAYER:
                 System.out.println("JOIN_PLAYER case reached");
-
-                JoinPlayer joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
+                joinPlayer= new Gson().fromJson(message, JoinPlayer.class);
                 gameID = joinPlayer.getGameID();
-                GameData myGameData2 = gameDAO.getGameByID(gameID);
+                myGameData2 = gameDAO.getGameByID(gameID);
                 oldGameData=null;  //used in Leave and Resign
 
                 //fixme, what does auth return when null?
@@ -154,30 +153,7 @@ public class WebSocketHandler {
                 }
                 //send load_game to root
                 else {
-                    username = authDAO.getAuth(authToken).username();
-                    ChessGame.TeamColor usernameColor = joinPlayer.getPlayerColor();
-                    ChessGame myGame2 = myGameData2.game();
-                    String otherTeamAuthToken=null;
-                    //if other player not null, get
-                    if((usernameColor.equals(BLACK) && authDAO.getAuth(myGameData2.whiteUsername())!=null)) {
-                        otherTeamAuthToken = authDAO.getAuth(myGameData2.whiteUsername()).authToken();
-                    }
-                    else if (usernameColor.equals(WHITE) && authDAO.getAuth(myGameData2.blackUsername())!=null) {
-                        otherTeamAuthToken = authDAO.getAuth(myGameData2.blackUsername()).authToken();
-                    }
-
-                    //if successful message...
-                    sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(myGameData2,usernameColor,null)));
-                    System.out.printf("sendMessage: %s\n",sendMessage);
-//                session.getBasicRemote().sendText(sendMessage);
-                    session.getRemote().sendString(sendMessage);
-
-                    //now broadcast notification to everyone playing or observing this game
-                    username = authDAO.getAuth(authToken).username();
-                    notificationMessage = username+" joined the game as the "+joinPlayer.getPlayerColor().toString()+" player.\n";
-                    Notification notification2 = new Notification(notificationMessage);
-                    connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
-                    connections.broadcast(gameID,notification2,null,authToken);  //otherTeamAuthToken only for load game
+                    successfulJoinPlayer();
                 }
                 break;
             case MAKE_MOVE:
@@ -394,6 +370,56 @@ public class WebSocketHandler {
 
         //send server messages, receive client messages
         //send back server message if needed
+    }
+
+
+    private void joinObserverBad() throws Exception {
+        System.out.println("spot taken");
+        sendMessage=new Gson().toJson(new Error("NOPE! That color is already taken."));
+        System.out.printf("sendMessage: %s\n",sendMessage);
+        session.getRemote().sendString(sendMessage);  //error message, send to root only
+//                    break;
+    }
+
+    private void joinObserverGood() throws Exception {
+        sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(myGameData,WHITE,null)));
+        System.out.printf("sendMessage: %s\n",sendMessage);
+//                session.getBasicRemote().sendText(sendMessage);
+        session.getRemote().sendString(sendMessage);
+        //send load_game to root
+        //now broadcast notification to everyone playing or observing this game
+        username = authDAO.getAuth(authToken).username();
+        notificationMessage = username+" joined the game as an observer.\n";
+        Notification notification = new Notification(notificationMessage);
+        connections.addSessionToGame(joinObserver.getGameID(),authToken,session);
+        connections.broadcast(gameID,notification,null,authToken);  //otherTeamAuthToken only for load game
+    }
+
+    private void successfulJoinPlayer() throws Exception {
+        username = authDAO.getAuth(authToken).username();
+        ChessGame.TeamColor usernameColor = joinPlayer.getPlayerColor();
+        ChessGame myGame2 = myGameData2.game();
+        String otherTeamAuthToken=null;
+        //if other player not null, get
+        if((usernameColor.equals(BLACK) && authDAO.getAuth(myGameData2.whiteUsername())!=null)) {
+            otherTeamAuthToken = authDAO.getAuth(myGameData2.whiteUsername()).authToken();
+        }
+        else if (usernameColor.equals(WHITE) && authDAO.getAuth(myGameData2.blackUsername())!=null) {
+            otherTeamAuthToken = authDAO.getAuth(myGameData2.blackUsername()).authToken();
+        }
+
+        //if successful message...
+        sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(myGameData2,usernameColor,null)));
+        System.out.printf("sendMessage: %s\n",sendMessage);
+//                session.getBasicRemote().sendText(sendMessage);
+        session.getRemote().sendString(sendMessage);
+
+        //now broadcast notification to everyone playing or observing this game
+        username = authDAO.getAuth(authToken).username();
+        notificationMessage = username+" joined the game as the "+joinPlayer.getPlayerColor().toString()+" player.\n";
+        Notification notification2 = new Notification(notificationMessage);
+        connections.addSessionToGame(joinPlayer.getGameID(),authToken,session);
+        connections.broadcast(gameID,notification2,null,authToken);  //otherTeamAuthToken only for load game
     }
 
 
