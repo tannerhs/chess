@@ -86,10 +86,7 @@ public class WebSocketCommunicator extends Endpoint {
     public Client getMyClient() {
         return myClient;
     }
-
-    public void send(String msg) throws Exception {
-        this.session.getBasicRemote().sendText(msg);
-    }
+    
 
     public void login(String authToken) throws ResponseException {
         //add to map of Server Sessions. FIXME; server side!

@@ -50,6 +50,8 @@ public class WebSocketHandler {
     GameData gameData;
     ChessGame.TeamColor userColor;
     GameData oldGameData;
+    ChessGame game;
+    MakeMove makeMove;
 
 
     public WebSocketHandler(GameDAO gameDAO,AuthDAO authDAO, UserDAO userDAO, Server myServer) {
@@ -230,11 +232,11 @@ public class WebSocketHandler {
     private void makeMoveCase() throws Exception {
         System.out.println("MAKE_MOVE case reached");
 
-        MakeMove makeMove = new Gson().fromJson(message,MakeMove.class);
+        makeMove = new Gson().fromJson(message,MakeMove.class);
         username = authDAO.getAuth(authToken).username();
         gameID = makeMove.getGameID();
         gameData = gameDAO.getGameByID(gameID);
-        ChessGame game = gameData.game();
+        game = gameData.game();
 
         //determine actual color in database
         if(username.equals(gameData.whiteUsername())) {
@@ -296,69 +298,73 @@ public class WebSocketHandler {
             session.getRemote().sendString(sendMessage);  //error message, send to root only
         }
         else {  //if valid move...
-            //make move and load game for all users observing or playing game
-            //if successful message...
+            validMakeMove();
+        }
+    }
 
-            String otherTeamAuthToken=null;
-            String otherTeamUsername=null;
-            //if other player not null, get
-            if(userColor.equals(BLACK) && authDAO.getAuthByUsername(gameData.whiteUsername())!=null) {
-                System.out.println("hallelujha");
-                otherTeamAuthToken = authDAO.getAuthByUsername(gameData.whiteUsername()).authToken();
-                otherTeamUsername= gameData.whiteUsername();
-            }
-            else if (userColor.equals(WHITE) && authDAO.getAuthByUsername(gameData.blackUsername())!=null) {
-                System.out.println("hallelujah for reals");
-                otherTeamAuthToken = authDAO.getAuthByUsername(gameData.blackUsername()).authToken();
-                otherTeamUsername= gameData.blackUsername();
-            }
-            else {
-                System.out.println("Make Move else clause");
-                System.out.printf("userColor: %s\n",userColor);
-                System.out.printf("blackUsername: %s\n",gameData.blackUsername());
-                System.out.printf("authDAO.getAuth(gameData.blackUsername()): %s\n",authDAO.getAuth(gameData.blackUsername()));
-                System.out.printf("whiteUsername: %s\n",gameData.whiteUsername());
-                System.out.printf("authDAO.getAuth(gameData.whiteUsername()): %s\n",authDAO.getAuth(gameData.whiteUsername()));
-                System.out.printf("username: %s\n",username);
-            }
-            ChessPiece piece = game.getBoard().getPiece(makeMove.getMove().getStartPosition());  //get piece type before making move
+    private void validMakeMove() throws Exception {
+        //make move and load game for all users observing or playing game
+        //if successful message...
 
-            //loadGame send
-            gameData.game().makeMove(makeMove.getMove());
-            gameDAO.updateGame(gameData);
-            //update game in gameData3
-            gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);  //redundant
-            sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)));
-            System.out.printf("sendMessage: %s\n",sendMessage);
-            session.getRemote().sendString(sendMessage);  //reload game for root
-            connections.broadcast(gameID, new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)),otherTeamAuthToken,authToken);
+        String otherTeamAuthToken=null;
+        String otherTeamUsername=null;
+        //if other player not null, get
+        if(userColor.equals(BLACK) && authDAO.getAuthByUsername(gameData.whiteUsername())!=null) {
+            System.out.println("hallelujha");
+            otherTeamAuthToken = authDAO.getAuthByUsername(gameData.whiteUsername()).authToken();
+            otherTeamUsername= gameData.whiteUsername();
+        }
+        else if (userColor.equals(WHITE) && authDAO.getAuthByUsername(gameData.blackUsername())!=null) {
+            System.out.println("hallelujah for reals");
+            otherTeamAuthToken = authDAO.getAuthByUsername(gameData.blackUsername()).authToken();
+            otherTeamUsername= gameData.blackUsername();
+        }
+        else {
+            System.out.println("Make Move else clause");
+            System.out.printf("userColor: %s\n",userColor);
+            System.out.printf("blackUsername: %s\n",gameData.blackUsername());
+            System.out.printf("authDAO.getAuth(gameData.blackUsername()): %s\n",authDAO.getAuth(gameData.blackUsername()));
+            System.out.printf("whiteUsername: %s\n",gameData.whiteUsername());
+            System.out.printf("authDAO.getAuth(gameData.whiteUsername()): %s\n",authDAO.getAuth(gameData.whiteUsername()));
+            System.out.printf("username: %s\n",username);
+        }
+        ChessPiece piece = game.getBoard().getPiece(makeMove.getMove().getStartPosition());  //get piece type before making move
 
-            //now broadcast notification to everyone else playing or observing this game
-            String pieceString="?";
-            if(piece!=null) {
-                pieceString = this.toChar(game.getTeamTurn(), piece.getPieceType());
-            }
-            ChessMove makeYourMove = makeMove.getMove();
-            notificationMessage = username + " made the move "+pieceString+ makeYourMove.toString()+ "\n";
-            Notification notification1=new Notification(notificationMessage);
-            connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
+        //loadGame send
+        gameData.game().makeMove(makeMove.getMove());
+        gameDAO.updateGame(gameData);
+        //update game in gameData3
+        gameData.game().setTeamTurn((userColor==WHITE)?BLACK:WHITE);  //redundant
+        sendMessage=new Gson().toJson(new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)));
+        System.out.printf("sendMessage: %s\n",sendMessage);
+        session.getRemote().sendString(sendMessage);  //reload game for root
+        connections.broadcast(gameID, new LoadGame(new LoadGameObject(gameData,userColor,otherTeamAuthToken)),otherTeamAuthToken,authToken);
 
-            if(game.isInCheckmate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
-                notificationMessage ="You put " + otherTeamUsername+ " in checkmate";
-                session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
-                connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername  +" in checkmate."),null,authToken);
-            }
-            else if(game.isInCheck(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
-                notificationMessage ="You put " + otherTeamUsername+ " in check";
-                session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
-                connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername+" in check."),null,authToken);
-            }
+        //now broadcast notification to everyone else playing or observing this game
+        String pieceString="?";
+        if(piece!=null) {
+            pieceString = this.toChar(game.getTeamTurn(), piece.getPieceType());
+        }
+        ChessMove makeYourMove = makeMove.getMove();
+        notificationMessage = username + " made the move "+pieceString+ makeYourMove.toString()+ "\n";
+        Notification notification1=new Notification(notificationMessage);
+        connections.broadcast(gameID,notification1,null,authToken);  //otherTeamAuthToken only for load game
 
-            else if(game.isInStalemate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
-                notificationMessage ="Stalemate";
-                session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
-                connections.broadcast(gameID,new Notification("Stalemate"),null,authToken);
-            }
+        if(game.isInCheckmate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+            notificationMessage ="You put " + otherTeamUsername+ " in checkmate";
+            session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+            connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername  +" in checkmate."),null,authToken);
+        }
+        else if(game.isInCheck(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+            notificationMessage ="You put " + otherTeamUsername+ " in check";
+            session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+            connections.broadcast(gameID,new Notification(username+" put "+otherTeamUsername+" in check."),null,authToken);
+        }
+
+        else if(game.isInStalemate(game.getTeamTurn())) {  //if next player is left in Check or Checkmate print it out w/ notification
+            notificationMessage ="Stalemate";
+            session.getRemote().sendString(new Gson().toJson(new Notification(notificationMessage)));
+            connections.broadcast(gameID,new Notification("Stalemate"),null,authToken);
         }
     }
 

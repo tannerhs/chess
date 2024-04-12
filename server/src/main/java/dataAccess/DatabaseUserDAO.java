@@ -91,24 +91,6 @@ public class DatabaseUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         return null;
-//        try (Connection conn = CustomDatabaseManager.getConnection()) {
-//            //UserData addedUser = new UserData(username,password,email);
-//            //String statement = "CREATE DATABASE IF NOT EXISTS " + token;
-//            System.out.println("createUser reached");
-//
-//            try (var preparedStatement = conn.prepareStatement("SELECT username FROM users WHERE username='"+username+"'")) {
-//                preparedStatement.executeUpdate();
-//                var resultSet = preparedStatement.getGeneratedKeys();
-//                if (resultSet.next()) {
-//                    String authToken = resultSet.getString("authToken");
-//                    return new UserData(username,authToken);
-//
-//                }
-//                //System.out.println("ID: "+ ID);
-//            }
-//        } catch (SQLException e) {
-//            throw new DataAccessException(e.getMessage());
-//        }
     }
 
     @Override
