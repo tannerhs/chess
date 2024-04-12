@@ -153,10 +153,7 @@ public class WebSocketHandler {
                         || (joinPlayer.getPlayerColor()== WHITE && (myGameData2.whiteUsername()==null|| !myGameData2.whiteUsername().equals(authDAO.getAuth(authToken).username())))
                         || (joinPlayer.getPlayerColor()==ChessGame.TeamColor.BLACK && (myGameData2.blackUsername()==null ||!myGameData2.blackUsername().equals(authDAO.getAuth(authToken).username())))) {  //403, spot taken already
 
-                    System.out.println("spot taken");
-                    sendMessage=new Gson().toJson(new Error("NOPE! That color is already taken."));
-                    System.out.printf("sendMessage: %s\n",sendMessage);
-                    session.getRemote().sendString(sendMessage);  //error message, send to root only
+                    joinObserverBad();
                 }
                 //send load_game to root
                 else {

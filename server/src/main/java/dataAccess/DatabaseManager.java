@@ -59,12 +59,6 @@ public class DatabaseManager {
      * </code>
      */
     static Connection getConnection() throws DataAccessException {
-        try {
-            var conn = DriverManager.getConnection(connectionUrl, user, password);
-            conn.setCatalog(databaseName);
-            return conn;
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
+        return CustomDatabaseManager.getConnection();
     }
 }
