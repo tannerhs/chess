@@ -363,57 +363,18 @@ public class DrawChessBoard {
 
     private static void printPlayerDarkYellowBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_DARK_YELLOW);
-        if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_RED);
-        }
-        else {  //black team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        out.print(" ");
-        out.print(toUpperCase(player));
-        out.print(" ");
+        printPlayer(out,player);
     }
-
 
 
     private static void printPlayerDarkGreenBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_DARK_GREEN);
-        if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_RED);
-        }
-        else {  //black team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        out.print(" ");
-        out.print(toUpperCase(player));
-        out.print(" ");
+        printPlayer(out,player);
     }
 
     private static void printPlayerLightGreenBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_GREEN);
-        if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_RED);
-        }
-        else {  //black team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        out.print(" ");
-        out.print(toUpperCase(player));
-        out.print(" ");
-    }
-
-    private static void drawVerticalLine(PrintStream out) {
-
-        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
-                (BOARD_SIZE_IN_SQUARES - 1) * LINE_WIDTH_IN_CHARS;
-
-        for (int lineRow = 0; lineRow < LINE_WIDTH_IN_CHARS; ++lineRow) {
-            setRed(out);
-            out.print(EMPTY.repeat(boardSizeInSpaces));
-
-            out.print(SET_BG_COLOR_DARK_GREY);
-            out.println();
-        }
+        printPlayer(out,player);
     }
 
     private static void setRed(PrintStream out) {
@@ -424,19 +385,15 @@ public class DrawChessBoard {
 
     private static void printPlayerLightBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        if(isUpperCase(player)) {  //white team color
-            out.print(SET_TEXT_COLOR_RED);
-        }
-        else {  //black team color
-            out.print(SET_TEXT_COLOR_BLUE);
-        }
-        out.print(" ");
-        out.print(toUpperCase(player));
-        out.print(" ");
+        printPlayer(out,player);
     }
 
     private static void printPlayerDarkBackground(PrintStream out, char player) {
         out.print(SET_BG_COLOR_BLACK);
+        printPlayer(out,player);
+    }
+
+    private static void printPlayer(PrintStream out, char player) {
         if(isUpperCase(player)) {  //white team color
             out.print(SET_TEXT_COLOR_RED);
         }

@@ -184,7 +184,7 @@ public class Client implements ServerMessageObserver{
     }
 
 
-    private  int readInputNumber() {
+    public int readInputNumber() {
         int selection = 8;
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
@@ -393,7 +393,7 @@ public class Client implements ServerMessageObserver{
 
 
     //generalRepl, returns list of Strings, takes as input parameter names to request
-    private String[] generalRepl(String[] inputLabels) {
+    public String[] generalRepl(String[] inputLabels) {
             String[] inputParams=new String[inputLabels.length];
             Boolean validInput=false;
             for(int i=0; i<inputLabels.length;i++) {

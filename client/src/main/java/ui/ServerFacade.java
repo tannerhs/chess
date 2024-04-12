@@ -26,12 +26,6 @@ public class ServerFacade {
     HttpCommunicator httpCommunicator;
     WebSocketCommunicator webSocketCommunicator;
 
-    static final String ERROR_MESSAGE_403="Error: already taken\n";
-    static final String ERROR_MESSAGE_400="Error: bad request\n";
-    static final String ERROR_MESSAGE_401="Error: unauthorized\n";
-    static final String ERROR_MESSAGE_500="Error: bad request\n";
-    static final String UNKOWN_ERROR_MESSAGE="Error: unknown error";
-
     public ServerFacade(int port, Client myClient) {
         this.port=port;
         httpCommunicator=new HttpCommunicator(port);
@@ -107,21 +101,4 @@ public class ServerFacade {
     }
 
 
-    private static void printErrorMessage(PrintStream out, int statusCode) {
-        if(statusCode==400) {
-            out.printf(ERROR_MESSAGE_400);
-        }
-        else if(statusCode==401) {
-            out.printf(ERROR_MESSAGE_401);
-        }
-        else if(statusCode==403) {
-            out.printf(ERROR_MESSAGE_403);
-        }
-        else if(statusCode==500) {
-            out.printf(ERROR_MESSAGE_500);
-        }
-        else {
-            out.printf("%s with status code %d",UNKOWN_ERROR_MESSAGE,statusCode);
-        }
-    }
 }

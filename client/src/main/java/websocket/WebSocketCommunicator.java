@@ -86,7 +86,7 @@ public class WebSocketCommunicator extends Endpoint {
     public Client getMyClient() {
         return myClient;
     }
-    
+
 
     public void login(String authToken) throws ResponseException {
         //add to map of Server Sessions. FIXME; server side!
@@ -160,7 +160,7 @@ public class WebSocketCommunicator extends Endpoint {
         //make move
         //read in move
         String[] labels = {"startPosCol","startPosRow", "endPosCol", "endPosRow"};
-        String[] positions = generalRepl(labels);
+        String[] positions = myClient.generalRepl(labels);
         Integer startPosCol=(columnsByName.containsKey(positions[0]))? columnsByName.get(positions[0]): -1;
         Integer startPosRow = Integer.parseInt(positions[1]);
         ChessPosition startPos= new ChessPosition(startPosRow,startPosCol);
@@ -176,7 +176,7 @@ public class WebSocketCommunicator extends Endpoint {
                     || (client.getMostRecentGame().getBoard().getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.BLACK) &&
                     startPosRow==2)) {
                 listPromotionPieces(out);
-                Integer index = readInputNumber();
+                Integer index = myClient.readInputNumber();
                 promotionPiece=promotionPieceTypes.get(index);
             }
         }
@@ -220,45 +220,7 @@ public class WebSocketCommunicator extends Endpoint {
         }
         return true;
     }
-    private String[] generalRepl(String[] inputLabels) {
-        String[] inputParams=new String[inputLabels.length];
-        Boolean validInput=false;
-        for(int i=0; i<inputLabels.length;i++) {
-            validInput=false;
-            while (!validInput) {
-                System.out.printf("%s:%n>>>",inputLabels[i]);
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine();
-                String[] words = line.split(" ");
-                if (!words[0].isEmpty()) {
-                    inputParams[i] = words[0];
-                    validInput = true;
-                } else {  //invalid input (empty string)
-                    System.out.printf("invalid %s%n",inputLabels[i]);
-                }
-            }
-        }
-        return inputParams;
-    }
 
-
-
-    private  int readInputNumber() {
-        int selection = 8;
-        Scanner scanner = new Scanner(System.in);
-        String line = scanner.nextLine();
-        String[]  numbers = line.split(" ");
-        if(numbers.length==0) {
-            selection=8;  //default
-        }
-        else if(numbers[0].length()==0) {
-            selection=9;
-        }
-        else {
-            selection = Integer.parseInt(numbers[0]);  //just use first number, ignore others
-        }
-        return selection;
-    }
 
     private void listPromotionPieces(PrintStream out) {
         out.printf("Choose your promotion piece type by typing in the corresponding number:\n");
