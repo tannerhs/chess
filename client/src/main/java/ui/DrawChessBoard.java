@@ -68,7 +68,7 @@ public class DrawChessBoard {
         drawHeaders(out);  //bottom header
 
         //change back to normal terminal print settings
-        out.printf(SET_BG_COLOR_BLACK);  //fixme
+        out.printf(SET_BG_COLOR_BLACK);
         out.printf(SET_TEXT_COLOR_WHITE);
     }
 
@@ -132,7 +132,7 @@ public class DrawChessBoard {
         if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
             // Draw right line
             setRed(out);
-            out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));  //KEY LINE TODO
+            out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));  //KEY LINE
         }
         out.print(SET_BG_COLOR_DARK_GREY);
     }
@@ -333,7 +333,6 @@ public class DrawChessBoard {
                 }
 
                 if (((boardRow + 1) % 2) != ((boardCol + 1) % 2)) {
-                    //todo
                     if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
                         out.print(SET_BG_COLOR_GREEN);
                     }
@@ -345,7 +344,6 @@ public class DrawChessBoard {
                     }
                 }
                 else {
-                    //todo if
                     if(startPos!=null && highlightLocs.contains(new ChessPosition(8-boardRow,8-boardCol))) {
                         out.print(SET_BG_COLOR_DARK_GREEN);
                     }
@@ -358,7 +356,7 @@ public class DrawChessBoard {
                 }
             }
 
-            out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));  //KEY LINE TODO
+            out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));  //KEY LINE
     }
 
     private static void printPlayerDarkYellowBackground(PrintStream out, char player) {

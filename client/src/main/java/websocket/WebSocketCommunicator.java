@@ -88,22 +88,6 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
 
-    public void login(String authToken) throws ResponseException {
-        //add to map of Server Sessions. FIXME; server side!
-
-    }
-
-    public void logout(String authToken) throws ResponseException {  //FIXME replace action with server message
-        try {
-//            var action = new Action(Action.Type.EXIT, visitorName);
-//            this.session.getBasicRemote().sendText(new Gson().toJson(action));
-            this.session.close();
-        } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
-        //remove from map of Server Sessions. FIXME; server side!
-    }
-
     public JoinGameResponseWS joinGame(String authToken, ChessGame.TeamColor joinAsColor, JoinGameResponseHttp joinGameResponseHttp, Session session) throws Exception {
         System.out.println("JoinGameResponseWS reached");
         if(session==null) {

@@ -29,7 +29,7 @@ import static chess.ChessGame.TeamColor.WHITE;
 public class WebSocketHandler {
     WebSocketSessions connections= new WebSocketSessions();
     Map<Session,String> sessions = new HashMap<Session,String>();
-    GameDAO gameDAO = new DatabaseGameDAO();  //FIXME!!!  need these kept in common and passed from server?
+    GameDAO gameDAO = new DatabaseGameDAO();  //do not need these kept in common and passed from server it appears...since we have one database accessed by multiple DatabaseDAO instances
     AuthDAO authDAO = new DatabaseAuthDAO();
     UserDAO userDAO = new DatabaseUserDAO();
     Server myServer;
@@ -129,7 +129,7 @@ public class WebSocketHandler {
                 myGameData = gameDAO.getGameByID(gameID);
                 ChessGame myGame;
                 gameData=null;
-                //if null session...what do I do? TODO
+                //if null session...what do I do? not a problem
                 if(authToken==null|| authDAO.getAuth(authToken)==null ||
                         myGameData==null || myGameData.game()==null) {  //403, spot taken already
                     joinObserverBad();
@@ -146,7 +146,6 @@ public class WebSocketHandler {
                 myGameData2 = gameDAO.getGameByID(gameID);
                 oldGameData=null;  //used in Leave and Resign
 
-                //fixme, what does auth return when null?
                 //what about null session?
                 if(joinPlayer.getPlayerColor()==null || authToken==null|| authDAO.getAuth(authToken)==null ||
                         myGameData2==null || myGameData2.game()==null || joinPlayer.getPlayerColor()==null

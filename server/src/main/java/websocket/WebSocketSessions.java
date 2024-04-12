@@ -30,7 +30,7 @@ public class WebSocketSessions {
         if(connections.containsKey(gameID)) {
             System.out.printf("update existing hash map, add %s\n",authToken);
             addEntry = connections.get(gameID);
-            if(addEntry.containsKey(authToken)) {  //fixme, remove if-else
+            if(addEntry.containsKey(authToken)) {
                 System.out.println("uhhhh");
             }
             else {

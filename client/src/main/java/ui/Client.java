@@ -54,7 +54,6 @@ public class Client implements ServerMessageObserver{
         switch(serverMessage.getServerMessageType()) {
             case LOAD_GAME : {
                 LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
-                //System.out.println(loadGame.getGame());  //fixme
                 //do something useful like print whatever it is, game or string
                 PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
                 mostRecentGame=loadGame.getGame();
@@ -157,7 +156,7 @@ public class Client implements ServerMessageObserver{
                     RegisterResponse registerResponse;
                     try {
                         UserData addUser = registerRepl();
-                        registerResponse=  facade.register(addUser);  //FIXME CHECK TO MAKE SURE NO ERRORS THROWN?
+                        registerResponse=  facade.register(addUser);
                         if(registerResponse.statusCode()!=200) {
                             printErrorMessage(out,registerResponse.statusCode());
                             loggedIn=false;
@@ -169,7 +168,7 @@ public class Client implements ServerMessageObserver{
                         }
 
                     }
-                    catch(Exception e) {  //FIXME specify what the error is, like "username taken" or incorrect password!
+                    catch(Exception e) {  //future work: specify what the error is, like "username taken" or incorrect password!
                         out.print(e.getMessage());
                         loggedIn=false;
                     }
@@ -233,7 +232,7 @@ public class Client implements ServerMessageObserver{
                         out.print(e.getMessage());
                     }
                     break;
-                case 3:  //Create Game  //FIXME enforce unique game name
+                case 3:  //Create Game  //do not enforce unique game name!  That's why we have gameIDs
                     try {
                         CreateGameRequest createGameRequest = createGameRepl();
                         CreateGameResponse createGameResponse= facade.createGame(currentUserAuthToken,createGameRequest);
@@ -256,8 +255,6 @@ public class Client implements ServerMessageObserver{
                             printErrorMessage(out,listGamesResponse.statusCode());
                         }
                         else {
-                            //FIXME
-                            //out.printf("%s\n",listGamesResponse.response());
                             List<GameData> gameList=listGamesResponse.games();
                             for(int i=0; i<gameList.size();i++) {
                                 GameData game = gameList.get(i);
